@@ -19,7 +19,10 @@ if ('development' == env) {
 };
 
 app.post('/', jsonParser,function(req, res){
-	req.send(sitzplaetze);
+    if (!sitzplaetze == 0){
+        sitzplaetze--;
+    }
+	res.send("Sind vorhanden: " + sitzplaetze).end();
 });
 
 app.get('/', function(req, res){
@@ -27,4 +30,4 @@ app.get('/', function(req, res){
 	res.end();
 });
 
-app.listen(3000);
+app.listen(1337);
