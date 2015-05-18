@@ -5,7 +5,8 @@ var fs = require('fs')
 var app = express();
 var jsonParser = bodyParser.json();
 var sitzplaetze = 25;
-
+var freieSitzplaetze = 25;
+var belegteSitzplaetze = 0;
 //app.configure(function(){
 	
 var env = process.env.NODE_ENV || 'development';
@@ -19,14 +20,15 @@ if ('development' == env) {
 };
 
 app.post('/', jsonParser,function(req, res){
-    if (!sitzplaetze == 0){
-        sitzplaetze--;
+    if (!freieSitzplaetze == 0){
+        freieSitzplaetze--;
+        belegteSitzplaetze++;
     }
-	res.send("Sind vorhanden: " + sitzplaetze).end();
+	res.send(belegteSitzplaetze + " Sitzplaetz belegt").end();
 });
 
 app.get('/', function(req, res){
-	res.send("Es sind "+ sitzplaetze + " Sitzplätze frei.");
+    res.send("Von " + sitzplaetze + " Sitzplaetze sind \n" + freieSitzplaetze + " freie Sitzplaetze vorhanden");
 	res.end();
 });
 
