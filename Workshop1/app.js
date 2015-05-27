@@ -40,7 +40,7 @@ app.post('/bars/:id/details', function(req, res){ //Hinzufügen der sitzplätze 
     var newAnzahl = req.body;
     db.get('bars:'+req.params.id, function(err, rep){
        if(rep){
-           db.set('bars:'+newAnzahl.id+'/details', JSON.stringify(newAnzahl),function(err, rep){
+           db.set('bars:'+req.params.id+'/details', JSON.stringify(newAnzahl),function(err, rep){
 			 res.json(newAnzahl);
 		});
        }
