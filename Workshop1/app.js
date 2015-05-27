@@ -50,14 +50,6 @@ app.post('/bars/:id/details', function(req, res){ //Hinzufügen der sitzplätze 
    });
 })
 
-app.put('/',function(req, res){
-    if (!freieSitzplaetze == 0){
-        freieSitzplaetze--;
-        belegteSitzplaetze++;
-    }
-	res.send(belegteSitzplaetze + " Sitzplaetz belegt").end();
-});
-
 app.get('/bars/:id', function(req, res){ //Rückgabe der bar mittels bar/id
    db.get('bars:'+req.params.id, function(err, rep){
        if(rep){
@@ -79,9 +71,17 @@ app.get('/bars/:id/details', function(req, res){ //Rückgabe der Details der Bar
        }
    });
 });
+//müssen noch an die Datenbank angepasst werden
+/*app.put('/',function(req, res){
+    if (!freieSitzplaetze == 0){
+        freieSitzplaetze--;
+        belegteSitzplaetze++;
+    }
+	res.send(belegteSitzplaetze + " Sitzplaetz belegt").end();
+});
 
 app.get('/', function(req, res){
     res.send("Von " + sitzplaetze + " Sitzplaetze sind \n" + freieSitzplaetze + " freie Sitzplaetze vorhanden").end();
 });
-
+*/
 app.listen(3000);
