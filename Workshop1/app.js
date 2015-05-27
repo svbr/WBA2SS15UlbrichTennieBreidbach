@@ -7,8 +7,8 @@ var jsonParser = bodyParser.json();
 var sitzplaetze = 25;
 var freieSitzplaetze = 25;
 var belegteSitzplaetze = 0;
-//app.configure(function(){
-	
+
+
 var env = process.env.NODE_ENV || 'development';
 if ('development' == env) {
 	app.use(express.static(__dirname + '/public'));
@@ -18,8 +18,12 @@ if ('development' == env) {
 		res.end(err.status + ' ' + err.massage);
 	});
 };
-
 app.post('/', jsonParser,function(req, res){
+    var bar = req.body;
+    res.send("Gesamtanzahl der Sitzplätze der Bar " + JSON.stringify(bar.name) + ": " + JSON.stringify(bar.sitzplaetze) + " von dem " +  JSON.stringify(bar.loginname) + " geändert").end();
+});
+
+app.put('/', jsonParser,function(req, res){
     if (!freieSitzplaetze == 0){
         freieSitzplaetze--;
         belegteSitzplaetze++;
@@ -28,8 +32,7 @@ app.post('/', jsonParser,function(req, res){
 });
 
 app.get('/', function(req, res){
-    res.send("Von " + sitzplaetze + " Sitzplaetze sind \n" + freieSitzplaetze + " freie Sitzplaetze vorhanden");
-	res.end();
+    res.send("Von " + sitzplaetze + " Sitzplaetze sind \n" + freieSitzplaetze + " freie Sitzplaetze vorhanden").end();
 });
 
 app.listen(1337);
