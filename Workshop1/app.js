@@ -24,24 +24,24 @@ db.on('connect', function() { // Verbing zum Server hergestellt?
     console.log('connected');
 });
 
-app.post('/bars',function(req, res){ //Hinzufügen von einer Bar
+app.post('/bars',function(req, res){ //Hinzufügen von einer Bar (Ausgabe: Barname, ID)
     
     var newBar = req.body;
     
     db.incr('id:bars', function(err, rep){
 		newBar.id = rep;
 		db.set('bars:'+newBar.id, JSON.stringify(newBar),function(err, rep){
-			res.json(newBar);
+			res.send("Die Bar " + JSON.stringify(newBar.name) + " mit der ID " + JSON.stringify(newBar.id) + " wurde hinzugefügt!").end();
 		});
 	});
 });
 
-app.post('/bars/:id/details', function(req, res){ //Hinzufügen der sitzplätze einer bestimmten Bar
+app.post('/bars/:id/details', function(req, res){ //Hinzufügen der Sitzplätze einer bestimmten Bar
     var newAnzahl = req.body;
     db.get('bars:'+req.params.id, function(err, rep){
        if(rep){
            db.set('bars:'+req.params.id+'/details', JSON.stringify(newAnzahl),function(err, rep){
-			 res.json(newAnzahl);
+			 res.send("Die Details wurden der ID " + req.params.id + " hinzugefügt!").end();
 		});
        }
        else{
@@ -50,7 +50,7 @@ app.post('/bars/:id/details', function(req, res){ //Hinzufügen der sitzplätze 
    });
 })
 
-app.get('/bars/:id', function(req, res){ //Rückgabe der bar mittels bar/id
+app.get('/bars/:id', function(req, res){ //Rückgabe der Bar mittels bar/id
    db.get('bars:'+req.params.id, function(err, rep){
        if(rep){
            res.type('json').send(rep);
