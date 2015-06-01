@@ -24,21 +24,41 @@ db.on('connect', function() { // Verbing zum Server hergestellt?
     console.log('connected');
 });
 
-app.post('/bars',function(req, res){ //Hinzufügen von einer Bar (Ausgabe: Barname, ID)
+app.post('/user', function(req, res){
     
-    var newBar = req.body;
+    var newUser = req.body;
     
-    db.incr('id:bars', function(err, rep){
-		newBar.id = rep;
-		db.set('bars:'+newBar.id, JSON.stringify(newBar),function(err, rep){
-			res.send("Die Bar " + JSON.stringify(newBar.name) + " mit der ID " + JSON.stringify(newBar.id) + " wurde hinzugefügt!").end();
+    db.incr('id:user', function(err, rep){
+        newUser.id = rep;
+        db.set('user:'+ newUser.id, JSON.stringify(newUser),function(err, rep){
+			res.send("Der User " + JSON.stringify(newUser.name) + " mit der ID " + JSON.stringify(newUser.id) + " wurde hinzugefügt!").end();
 		});
-	});
+    });
+
 });
 
-app.post('/bars/:id/details', function(req, res){ //Hinzufügen der Sitzplätze einer bestimmten Bar
+
+app.post('/user/:uid/bars',function(req, res){ //Hinzufügen von einer Bar (Ausgabe: Barname, ID)
+    
+    var newBar = req.body;
+    db.get('user:'+ req.params.uid, function(err, req){
+        if(req){
+            db.incr('id:bars', function(err, rep){
+                newBar.id = rep;
+                db.set('user:' + req.params.uid + '/bars:'+newBar.id, JSON.stringify(newBar),function(err, rep){
+			         res.send("Die Bar " + JSON.stringify(newBar.name) + " mit der ID " + JSON.stringify(newBar.id) + " wurde hinzugefügt!").end();
+                });
+            });
+        }
+            else{
+                res.status(404).res.status(404).type('text').send("Der User mit der ID " + req.params.uid + " wurde nicht gefunden")
+        }
+    });
+});
+
+app.post('/user/:id/bars/:id/details', function(req, res){ //Hinzufügen der Sitzplätze einer bestimmten Bar
     var newAnzahl = req.body;
-    db.get('bars:'+req.params.id, function(err, rep){
+    db.get('user:'+req.params.id, function(err, rep){
        if(rep){
            db.set('bars:'+req.params.id+'/details', JSON.stringify(newAnzahl),function(err, rep){
 			 res.send("Die Details wurden der ID " + req.params.id + " hinzugefügt!").end();
@@ -49,6 +69,18 @@ app.post('/bars/:id/details', function(req, res){ //Hinzufügen der Sitzplätze 
        }
    });
 })
+
+app.get('/user/:id/', function(err, req){
+    db.get('user:'+req.params.id, function(err, rep){
+       if(rep){
+           res.type('json').send(rep);
+       }
+       else{
+           res.status(404).type('text').send("Die Bar mit der ID " + req.params.id + " wurde nicht gefunden");
+       }
+   });
+});
+
 
 app.get('/bars/:id', function(req, res){ //Rückgabe der Bar mittels bar/id
    db.get('bars:'+req.params.id, function(err, rep){
