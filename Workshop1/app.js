@@ -36,8 +36,8 @@ app.post('/user', function(req, res){
 
 });
 
-
-app.post('/user/:id/bars',function(req, res){ //Hinzufügen von einer Bar (Ausgabe: Barname, ID)
+//Hinzufügen von einer Bar durch einen User. Benötigt einenen existierenden User  (Ausgabe: Barname, ID)
+app.post('/user/:id/bars',function(req, res){
     
     var newBar = req.body;
     
@@ -69,6 +69,9 @@ app.post('/bars/:id/details', function(req, res){ //Hinzufügen der Sitzplätze 
        }
    });
 })
+
+
+
 
 /*app.put(...., function(){
     --> userrechte werden überprüft
@@ -110,8 +113,8 @@ app.get('/bars/:id/aktuell', function(req, res){
 app.get('/bars/:id/details', function(req, res){ //Rückgabe der Details der Bar mittels id
    db.get('bars:'+req.params.id+'/details', function(err, rep){
        if(rep){
-           var temp = rep.type('json');
-           res.send(JSON.stringify(temp.Typ));
+           var temp = JSON.parse(rep);
+           res.send(temp.Typ);
        }
        else{
            res.status(404).type('text').send("Die Bar mit der ID " + req.params.id + " wurde nicht gefunden");
