@@ -9,7 +9,6 @@ var jsonParser = bodyParser.json();
 
 app.use(bodyParser.json());
 
-
 var env = process.env.NODE_ENV || 'development';
 if ('development' == env) {
 	app.use(express.static(__dirname + '/public'));
@@ -46,8 +45,8 @@ app.post('/user/:id/bars',function(req, res){ //Hinzufügen von einer Bar (Ausga
         if(rep){
             db.incr('id:bars', function(err, rep){
                 newBar.id = rep;
-                db.set('user:' + req.params.id + '/bars/'+newBar.name, newBar,function(err, rep){
-			         res.send("Die Bar " + JSON.stringify(newBar.name) + " von dem User mit der ID " + req.params.id + " wurde hinzugefügt!").end();
+                db.set('bars:'+newBar.id, newBar,function(err, rep){
+			         res.send("Die Bar " + JSON.stringify(newBar.name) + " mit der ID " + newBar.id + " wurde von dem User mit der ID " + req.params.id + " hinzugefügt!").end();
                 });
             });
         }
@@ -83,13 +82,10 @@ app.get('/user/:id', function(err, req){
 });
 
 
-app.get('user/:id/bars', function(req, res){ //Rückgabe der Bar mittels bar/id
-   db.get('user:'+req.params.id, function(err, rep){
+app.get('/bars/:id', function(req, res){ //Rückgabe der Bar mittels bar/id
+   db.get('bars:'+req.params.id, function(err, rep){
        if(rep){
-           db.get('user:3', function(err, rep){
-               var user = rep.id;
-                res.send("der user ist: " + user).end();
-           });
+           res.send("Barname:").end();
        }
        else{
            res.status(404).type('text').send("Die Bar mit der ID " + req.params.id + " wurde nicht gefunden");
