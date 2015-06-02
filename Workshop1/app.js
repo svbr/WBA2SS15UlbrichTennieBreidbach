@@ -30,7 +30,7 @@ app.post('/user', function(req, res){
     
     db.incr('id:user', function(err, rep){
         newUser.id = rep;
-        db.set('user:'+ newUser.id, JSON.stringify(newUser),function(err, rep){
+        db.set('user:'+ newUser.id, newUser,function(err, rep){
 			res.send("Der User " + JSON.stringify(newUser.name) + " mit der ID " + JSON.stringify(newUser.id) + " wurde hinzugefügt!").end();
 		});
     });
@@ -38,20 +38,21 @@ app.post('/user', function(req, res){
 });
 
 
-app.post('/user/:uid/bars',function(req, res){ //Hinzufügen von einer Bar (Ausgabe: Barname, ID)
+app.post('/user/:id/bars',function(req, res){ //Hinzufügen von einer Bar (Ausgabe: Barname, ID)
     
     var newBar = req.body;
-    db.get('user:'+ req.params.uid, function(err, req){
-        if(req){
+    
+    db.get('user:'+ req.params.id, function(err, rep){
+        if(rep){
             db.incr('id:bars', function(err, rep){
                 newBar.id = rep;
-                db.set('user:' + req.params.uid + '/bars:'+newBar.id, JSON.stringify(newBar),function(err, rep){
-			         res.send("Die Bar " + JSON.stringify(newBar.name) + " mit der ID " + JSON.stringify(newBar.id) + " wurde hinzugefügt!").end();
+                db.set('user:' + req.params.id + '/bars/'+newBar.name, newBar,function(err, rep){
+			         res.send("Die Bar " + JSON.stringify(newBar.name) + " von dem User mit der ID " + req.params.id + " wurde hinzugefügt!").end();
                 });
             });
         }
             else{
-                res.status(404).res.status(404).type('text').send("Der User mit der ID " + req.params.uid + " wurde nicht gefunden")
+                res.status(404).res.status(404).type('text').send("Der User mit der ID " + req.params.id + " wurde nicht gefunden")
         }
     });
 });
@@ -70,7 +71,7 @@ app.post('/user/:id/bars/:id/details', function(req, res){ //Hinzufügen der Sit
    });
 })
 
-app.get('/user/:id/', function(err, req){
+app.get('/user/:id', function(err, req){
     db.get('user:'+req.params.id, function(err, rep){
        if(rep){
            res.type('json').send(rep);
@@ -82,10 +83,13 @@ app.get('/user/:id/', function(err, req){
 });
 
 
-app.get('/bars/:id', function(req, res){ //Rückgabe der Bar mittels bar/id
-   db.get('bars:'+req.params.id, function(err, rep){
+app.get('user/:id/bars', function(req, res){ //Rückgabe der Bar mittels bar/id
+   db.get('user:'+req.params.id, function(err, rep){
        if(rep){
-           res.type('json').send(rep);
+           db.get('user:3', function(err, rep){
+               var user = rep.id;
+                res.send("der user ist: " + user).end();
+           });
        }
        else{
            res.status(404).type('text').send("Die Bar mit der ID " + req.params.id + " wurde nicht gefunden");
@@ -103,6 +107,8 @@ app.get('/bars/:id/details', function(req, res){ //Rückgabe der Details der Bar
        }
    });
 });
+
+
 //müssen noch an die Datenbank angepasst werden
 /*app.put('/',function(req, res){
     if (!freieSitzplaetze == 0){
