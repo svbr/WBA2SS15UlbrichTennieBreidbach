@@ -85,6 +85,22 @@ app.post('/bars/:id/oeffnungszeiten', function(req,res){
 
 });
 
+//Getränkekarte
+app.post('/bars/:id/karte', function(req, res){
+	var newKarte = req.body;
+	db.get('bars:'+req.params.id, function(err, rep){
+       if(rep){
+		   db.set('bars:'+req.params.id+'/karte', JSON.stringify(newKarte),function(err, rep){
+			res.send("Die Karte wurde der ID " + req.params.id + " hinzugefügt!").end();
+		});
+       }
+       else{
+           res.status(404).type('text').send("Die Bar mit der ID " + req.params.id + " wurde nicht gefunden");
+       }
+   });
+
+});
+
 /*app.put(...., function(){
     --> userrechte werden überprüft
     --> daten werden barbeitet... je nach dem was im JSON-Objekt dinn ist
@@ -134,7 +150,19 @@ app.get('/bars/:id/details', function(req, res){ //Rückgabe der Details der Bar
    });
 });
 
+//get Karte
 
+app.get('/bars/:id/karte', function(req, res){ //Rückgabe der Karte der Bar mittels id
+   db.get('bars:'+req.params.id+'/karte', function(err, rep){
+       if(rep){
+           var temp = JSON.parse(rep);
+           res.send(temp);
+       }
+       else{
+           res.status(404).type('text').send("Die Bar mit der ID " + req.params.id + " wurde nicht gefunden");
+       }
+   });
+});
 
 
 //müssen noch an die Datenbank angepasst werden
