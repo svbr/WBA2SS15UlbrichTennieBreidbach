@@ -19,10 +19,13 @@ if ('development' == env) {
 	});
 };
 
-db.on('connect', function() { // Verbing zum Server hergestellt?
+// Verbing zum Server hergestellt?
+db.on('connect', function() { 
     console.log('connected');
 });
 
+
+// User wird hinzugefügt (Benötigt: Username) (Ausgabe: Username, UserID)
 app.post('/user', function(req, res){
     
     var newUser = req.body;
@@ -36,27 +39,26 @@ app.post('/user', function(req, res){
 
 });
 
-//Hinzufügen von einer Bar durch einen User. Benötigt einenen existierenden User  (Ausgabe: Barname, ID)
+//Hinzufügen von einer Bar durch einen User. (Benötigt: Barname, UserID) - (Ausgabe: Barname, BarID)
 app.post('/user/:id/bars',function(req, res){
-    
     var newBar = req.body;
-    
     db.get('user:'+ req.params.id, function(err, rep){
         if(rep){
             db.incr('id:bars', function(err, rep){
                 newBar.id = rep;
                 db.set('bars:'+newBar.id, JSON.stringify(newBar),function(err, rep){
-			         res.send("Die Bar " + JSON.stringify(newBar.name) + " mit der ID " + newBar.id + " wurde von dem User mit der ID " + req.params.id + " hinzugefügt!").end();
+			         res.send("Die Bar " + JSON.stringify(newBar.name) + " mit der ID " + newBar.id + " wurde von dem User mit der ID " +                        req.params.id + " hinzugefügt!").end();
                 });
             });
         }
-            else{
-                res.status(404).res.status(404).type('text').send("Der User mit der ID " + req.params.id + " wurde nicht gefunden")
+        else{
+            res.status(404).res.status(404).type('text').send("Der User mit der ID " + req.params.id + " wurde nicht gefunden")
         }
     });
 });
 
-app.post('/bars/:id/details', function(req, res){ //Hinzufügen der Sitzplätze einer bestimmten Bar
+// Hinzufügen der Details der Bar
+app.post('/bars/:id/details', function(req, res){ 
     var newAnzahl = req.body;
     db.get('bars:'+req.params.id, function(err, rep){
        if(rep){
