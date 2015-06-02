@@ -23,6 +23,9 @@ db.on('connect', function() { // Verbing zum Server hergestellt?
     console.log('connected');
 });
 
+//Hinzufügen eines Users
+//Benötigt: Username
+//Ausgabe: Username, UserID
 app.post('/user', function(req, res){
     
     var newUser = req.body;
@@ -36,8 +39,10 @@ app.post('/user', function(req, res){
 
 });
 
-
-app.post('/user/:id/bars',function(req, res){ //Hinzufügen von einer Bar (Ausgabe: Barname, ID)
+//Hinzufügen von einer Bar 
+//Benötigt: (UserID)
+//Ausgabe: Barname, BarID, UserID
+app.post('/user/:id/bars',function(req, res){ 
     
     var newBar = req.body;
     
@@ -56,7 +61,10 @@ app.post('/user/:id/bars',function(req, res){ //Hinzufügen von einer Bar (Ausga
     });
 });
 
-app.post('/bars/:id/details', function(req, res){ //Hinzufügen der Sitzplätze einer bestimmten Bar
+//Hinzfügen der Details der Bar
+//Benötigt: Sitzplaetze, Adresse, Typ, Behindertengerecht, Gegebenheiten; (BarID)
+//Ausgabe: BarID
+app.post('/bars/:id/details', function(req, res){ 
     var newAnzahl = req.body;
     db.get('bars:'+req.params.id, function(err, rep){
        if(rep){
@@ -70,6 +78,10 @@ app.post('/bars/:id/details', function(req, res){ //Hinzufügen der Sitzplätze 
    });
 });
 
+//Hinzufügen der Öffnungszeiten einer Bar
+//Benötigt: montagvon, montagbis, dienstagvon, dienstagbis, mittwochvon, mittwochbis, donnerstagvon, donnerstagbis, freitagvon, freitagbis,
+//          samstagvon, samstagbis, sonntagvon, sonntagbis; (BarID)
+//Ausgabe: Wochentage(von,bis)
 app.post('/bars/:id/oeffnungszeiten', function(req,res){
     var zeiten = req.body;
     db.get('bars:'+req.params.id, function(err, rep){
@@ -85,7 +97,9 @@ app.post('/bars/:id/oeffnungszeiten', function(req,res){
 
 });
 
-//Getränkekarte
+//Hinzufügen einer Getränkekarte einer Bar
+//Benötigt: (BarID)
+//Ausgabe: BarID
 app.post('/bars/:id/karte', function(req, res){
 	var newKarte = req.body;
 	db.get('bars:'+req.params.id, function(err, rep){
@@ -107,6 +121,9 @@ app.post('/bars/:id/karte', function(req, res){
     --> änderung werden gespeichert
 });*/
 
+//Ausgabe des Users
+//Benötigt: (UserID)
+//Ausgabe: UserID, Username
 app.get('/user/:id', function(err, res){
     db.get('user:'+req.params.id, function(err, rep){
        if(rep){
@@ -118,8 +135,10 @@ app.get('/user/:id', function(err, res){
    });
 });
 
-
-app.get('/bars/:id', function(req, res){ //Rückgabe der Bar mittels bar/id
+//Ausgabe der Bar
+//Benötigt: (BarID)
+//Ausgabe: BarID, Barname
+app.get('/bars/:id', function(req, res){ 
    db.get('bars:'+req.params.id, function(err, rep){
        if(rep){
            res.type('json').send(rep);
@@ -138,11 +157,14 @@ app.get('/bars/:id/aktuell', function(req, res){
 
 });
 
-app.get('/bars/:id/details', function(req, res){ //Rückgabe der Details der Bar mittels id
+//Ausgabe der Details einer Bar
+//Benötigt: (BarID)
+//Ausgabe: Sitzplaetze, Adresse, Typ, Behindertengerecht, Gegebenheiten
+app.get('/bars/:id/details', function(req, res){
    db.get('bars:'+req.params.id+'/details', function(err, rep){
        if(rep){
            var temp = rep.type('json');
-           res.send(JSON.parse(temp.Typ));
+           res.send(JSON.parse(temp));
        }
        else{
            res.status(404).type('text').send("Die Bar mit der ID " + req.params.id + " wurde nicht gefunden");
@@ -150,8 +172,9 @@ app.get('/bars/:id/details', function(req, res){ //Rückgabe der Details der Bar
    });
 });
 
-//get Karte
-
+//Ausgabe der Karte einer Bar
+//Benötigt: (BarID)
+//Ausgabe: ggf. Getränke
 app.get('/bars/:id/karte', function(req, res){ //Rückgabe der Karte der Bar mittels id
    db.get('bars:'+req.params.id+'/karte', function(err, rep){
        if(rep){
