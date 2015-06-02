@@ -19,10 +19,13 @@ if ('development' == env) {
 	});
 };
 
-db.on('connect', function() { // Verbing zum Server hergestellt?
+// Verbing zum Server hergestellt?
+db.on('connect', function() { 
     console.log('connected');
 });
 
+
+// User wird hinzugefügt (Benötigt: Username) (Ausgabe: Username, UserID)
 app.post('/user', function(req, res){
     
     var newUser = req.body;
@@ -36,27 +39,26 @@ app.post('/user', function(req, res){
 
 });
 
-
-app.post('/user/:id/bars',function(req, res){ //Hinzufügen von einer Bar (Ausgabe: Barname, ID)
-    
+//Hinzufügen von einer Bar durch einen User. (Benötigt: Barname, UserID) - (Ausgabe: Barname, BarID)
+app.post('/user/:id/bars',function(req, res){
     var newBar = req.body;
-    
     db.get('user:'+ req.params.id, function(err, rep){
         if(rep){
             db.incr('id:bars', function(err, rep){
                 newBar.id = rep;
                 db.set('bars:'+newBar.id, JSON.stringify(newBar),function(err, rep){
-			         res.send("Die Bar " + JSON.stringify(newBar.name) + " mit der ID " + newBar.id + " wurde von dem User mit der ID " + req.params.id + " hinzugefügt!").end();
+			         res.send("Die Bar " + JSON.stringify(newBar.name) + " mit der ID " + newBar.id + " wurde von dem User mit der ID " +                        req.params.id + " hinzugefügt!").end();
                 });
             });
         }
-            else{
-                res.status(404).res.status(404).type('text').send("Der User mit der ID " + req.params.id + " wurde nicht gefunden")
+        else{
+            res.status(404).res.status(404).type('text').send("Der User mit der ID " + req.params.id + " wurde nicht gefunden")
         }
     });
 });
 
-app.post('/bars/:id/details', function(req, res){ //Hinzufügen der Sitzplätze einer bestimmten Bar
+// Hinzufügen der Details der Bar
+app.post('/bars/:id/details', function(req, res){ 
     var newAnzahl = req.body;
     db.get('bars:'+req.params.id, function(err, rep){
        if(rep){
@@ -68,22 +70,10 @@ app.post('/bars/:id/details', function(req, res){ //Hinzufügen der Sitzplätze 
            res.status(404).type('text').send("Die Bar mit der ID " + req.params.id + " wurde nicht gefunden");
        }
    });
-});
+})
 
-app.post('/bars/:id/oeffnungszeiten', function(req,res){
-    var zeiten = req.body;
-    db.get('bars:'+req.params.id, function(err, rep){
-        if(rep){
-            db.set('bars:'+req.params.id+'/oeffnungszeiten', JSON.stringify(zeiten),function(err,rep){
-                res.send("Die Öffnungszeiten sind: \n Montag: von " + zeiten.montagvon +" bis " + zeiten.montagbis + "\n Dienstag: von " +                             zeiten.dienstagvon + " bis "+zeiten.dienstagbis+"\n Mittwoch: von" +zeiten.mittwochvon+ " bis "+zeiten.mittwochbis+"\n Donnerstag:                     von" +zeiten.donnerstagvon+" bis "+zeiten.donnerstagbis+ "\n Freitag: von " +zeiten.freitagvon+" bis " +zeiten.freitagbis+ "\n                         Samstag: von " +zeiten.samstagvon+ " bis "+zeiten.samstagbis+"\n Sonntag: von "+zeiten.sonntagvon+" bis "+zeiten.sonntagbis+"").end();
-            });
-        }
-        else{
-            res.status(404).type('text').send("Die Öffnungszeiten sind nicht angegeben.");
-        }
-    });
 
-});
+
 
 /*app.put(...., function(){
     --> userrechte werden überprüft
@@ -125,16 +115,14 @@ app.get('/bars/:id/aktuell', function(req, res){
 app.get('/bars/:id/details', function(req, res){ //Rückgabe der Details der Bar mittels id
    db.get('bars:'+req.params.id+'/details', function(err, rep){
        if(rep){
-           var temp = rep.type('json');
-           res.send(JSON.parse(temp.Typ));
+           var temp = JSON.parse(rep);
+           res.send(temp.Typ);
        }
        else{
            res.status(404).type('text').send("Die Bar mit der ID " + req.params.id + " wurde nicht gefunden");
        }
    });
 });
-
-
 
 
 //müssen noch an die Datenbank angepasst werden
