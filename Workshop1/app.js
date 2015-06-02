@@ -110,7 +110,8 @@ app.get('/bars/:id/aktuell', function(req, res){
 app.get('/bars/:id/details', function(req, res){ //Rückgabe der Details der Bar mittels id
    db.get('bars:'+req.params.id+'/details', function(err, rep){
        if(rep){
-           res.type('json').send(rep);
+           var temp = rep.type('json');
+           res.send(JSON.stringify(temp.Typ));
        }
        else{
            res.status(404).type('text').send("Die Bar mit der ID " + req.params.id + " wurde nicht gefunden");
