@@ -78,6 +78,20 @@ app.post('/bars/:id/details', function(req, res){
    });
 });
 
+app.post('/bars/:id/sitzplaetze', function(req, res){
+    var newSp = req.body;
+    db.get('bars:'+req.params.id, function(err, rep){
+       if(rep){
+           db.set('bars:'+req.params.id+'/sitzplaetze', JSON.stringify(newSp),function(err, rep){
+			 res.send("Die Sitzplaetze wurden der ID " + req.params.id + " hinzugefügt!").end();
+		});
+       }
+       else{
+           res.status(404).type('text').send("Die Bar mit der ID " + req.params.id + " wurde nicht gefunden");
+       }
+   });
+});
+
 //Hinzufügen der Öffnungszeiten einer Bar
 //Benötigt: montagvon, montagbis, dienstagvon, dienstagbis, mittwochvon, mittwochbis, donnerstagvon, donnerstagbis, freitagvon, freitagbis,
 //          samstagvon, samstagbis, sonntagvon, sonntagbis; (BarID)
@@ -122,6 +136,28 @@ app.post('/bars/:id/events', function(req, res){
     });
 });
 
+app.put('/bars/:id/sitzplaetze', function(req, res){
+    var newSp = req.body;
+    db.get('bars:'+req.params.id+'/sitzplaetze', function(err, rep){
+       if(rep){
+           var temp = JSON.parse(rep);
+           if(newSp.asp > temp.sitzplaetze){ //achtung!!! Groß und Kleinschreibung
+               res.send("Der neue asp wert ist zu hoch!");
+           } else{
+                delete temp.asp;
+                temp.asp = newSp.asp;
+                db.set('bars:'+req.params.id+'/sitzplaetze', JSON.stringify(temp),function(err, rep){
+			         res.send("aktuell").end();
+		      });
+           }
+       }
+       else{
+           res.status(404).type('text').send("Die Bar mit der ID " + req.params.id + " wurde nicht gefunden");
+       }
+   });
+});
+
+
 
 /*app.put(...., function(){
     --> userrechte werden überprüft
@@ -132,7 +168,7 @@ app.post('/bars/:id/events', function(req, res){
 //Ausgabe des Users
 //Benötigt: (UserID)
 //Ausgabe: UserID, Username
-app.get('/user/:id', function(err, res){
+app.get('/user/:id', function(req, res){
     db.get('user:'+req.params.id, function(err, rep){
        if(rep){
            res.type('json').send(rep);
@@ -161,6 +197,21 @@ app.get('/bars/:id/aktuell', function(req, res){
     var currentdate = new Date();
 	var tag = currentdate.getDate(); //aktueller tag, 0-6, 0 == sonntag
 	var stunde = currentdate.getHours(); //aktuelle stunde
+    
+    var dd = currentdate.getDate();
+    var mm = currentdate.getMonth()+1; //January is 0!
+    var yyyy = currentdate.getFullYear();
+
+    if(dd<10) { 
+        dd='0'+dd
+    } 
+
+    if(mm<10) {
+        mm='0'+mm
+    } 
+
+    var today = dd+'.'+mm+'.'+yyyy;
+    
 	db.get('bars:'+req.params.id+'/oeffnungszeiten', function(err, rep){
 		
 		if(rep){
@@ -222,10 +273,14 @@ app.get('/bars/:id/aktuell', function(req, res){
 						var zustand = "geschlossen";
 					}
 					break;
-		}
+            }
+            res.send(zustand + "!");
+        }
 	else{
 		res.status(404).type('text').send("Die Bar mit der ID " + req.params.id + " wurde nicht gefunden");	
 	}
+});
+
     //db.get --> liefert json-Objekt, das die bardaten enthält (bar, sitzplätze, öffnungszeiten, karte, Event)
         //--> aktuelles Datum muss ermittelt werden
         //--> daten verwerten und auf aktuelles Datum angepasst werden
@@ -239,7 +294,7 @@ app.get('/bars/:id/aktuell', function(req, res){
 app.get('/bars/:id/details', function(req, res){
    db.get('bars:'+req.params.id+'/details', function(err, rep){
        if(rep){
-           var temp = rep.type('json');
+           var temp = rep;
            res.send(JSON.parse(temp));
        }
        else{
@@ -247,6 +302,19 @@ app.get('/bars/:id/details', function(req, res){
        }
    });
 });
+
+
+app.get('/bars/:id/sitzplaetze', function(req, res){
+    db.get('bars:'+ req.params.id+'/sitzplaetze', function(err, rep){
+        if(rep){
+            res.type('json').send(rep);
+        }
+        else{
+             res.status(404).type('text').send("Die Bar mit der ID " + req.params.id + " wurde nicht gefunden");
+        }
+    });
+});
+
 
 
 app.get('/bars/:id/oeffnungszeiten', function(req,rep){
@@ -276,10 +344,12 @@ app.get('/bars/:id/karte', function(req, res){ //Rückgabe der Karte der Bar mit
 });
 
 app.get('/bars/:id/events', function(req, res){
-    db.lrange('bars:'+req.params.id+'/events', 0, -1, function(err, rep) {
-    res.send("Events: " + rep);
+            db.lrange('bars:'+req.params.id+'/events', 0, -1, function(err, rep) {
+                res.send("Events: " + rep);
     });
+    
 });
+
 
 //müssen noch an die Datenbank angepasst werden
 /*app.put('/',function(req, res){
