@@ -115,6 +115,14 @@ app.post('/bars/:id/karte', function(req, res){
 
 });
 
+app.post('/bars/:id/events', function(req, res){
+    var newEvent = req.body;
+    db.rpush(['bars:'+req.params.id+'/events', JSON.stringify(newEvent)], function(err, rep){
+        res.send(rep).end();
+    });
+});
+
+
 /*app.put(...., function(){
     --> userrechte werden überprüft
     --> daten werden barbeitet... je nach dem was im JSON-Objekt dinn ist
@@ -172,6 +180,18 @@ app.get('/bars/:id/details', function(req, res){
    });
 });
 
+
+app.get('/bars/:id/oeffnungszeiten', function(req,rep){
+    db.get('bars:'+ req.params.id+'/oeffnungszeiten', function(err, rep){
+        if(rep){
+            res.type('json').send(rep);
+        }
+        else{
+             res.status(404).type('text').send("Die Bar mit der ID " + req.params.id + " wurde nicht gefunden");
+        }
+    });
+});
+
 //Ausgabe der Karte einer Bar
 //Benötigt: (BarID)
 //Ausgabe: ggf. Getränke
@@ -186,7 +206,6 @@ app.get('/bars/:id/karte', function(req, res){ //Rückgabe der Karte der Bar mit
        }
    });
 });
-
 
 //müssen noch an die Datenbank angepasst werden
 /*app.put('/',function(req, res){
