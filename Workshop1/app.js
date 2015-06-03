@@ -351,6 +351,35 @@ app.get('/bars/:id/events', function(req, res){
 });
 
 
+app.delete('/user/:id', function(req, res){
+    db.exists('user:'+req.params.id, function(err, rep){
+        if(rep === 1){
+            db.del('user:'+req.params.id,function(err, rep){
+                res.send("Der User mit der ID " + req.params.id + " wurde gelöscht!").end();
+            });
+        }
+        else{
+            res.status(404).send("Der User wurde nicht gefunden!").end();   
+        }
+    });
+});
+
+app.delete('/bars/:id', function(req, res){
+    db.exists('bar:'+req.params.id, function(err, rep){
+        if(rep === 1){
+            db.del('bar:'+req.params.id,function(err, rep){
+                res.send("Die Bar mit der ID " + req.params.id + " wurde gelöscht!").end();
+            });
+        }
+        else{
+            res.send("Der User wurde nicht gefunden!").end();   
+        }
+    });
+});
+    
+
+
+
 //müssen noch an die Datenbank angepasst werden
 /*app.put('/',function(req, res){
     if (!freieSitzplaetze == 0){
