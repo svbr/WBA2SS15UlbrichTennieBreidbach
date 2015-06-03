@@ -118,7 +118,7 @@ app.post('/bars/:id/karte', function(req, res){
 app.post('/bars/:id/events', function(req, res){
     var newEvent = req.body;
     db.rpush(['bars:'+req.params.id+'/events', JSON.stringify(newEvent)], function(err, rep){
-        res.send(rep).end();
+        res.send("Das " + rep + ". Event "+ JSON.stringify(newEvent.event)+ "wurde hinzugefügt.");
     });
 });
 
@@ -205,6 +205,12 @@ app.get('/bars/:id/karte', function(req, res){ //Rückgabe der Karte der Bar mit
            res.status(404).type('text').send("Die Bar mit der ID " + req.params.id + " wurde nicht gefunden");
        }
    });
+});
+
+app.get('/bars/:id/events', function(req, res){
+    db.lrange('bars:'+req.params.id+'/events', 0, -1, function(err, rep) {
+    res.send("Events: " + rep);
+    });
 });
 
 //müssen noch an die Datenbank angepasst werden
