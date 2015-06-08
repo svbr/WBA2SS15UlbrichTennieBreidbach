@@ -200,6 +200,94 @@ app.get('/bars/:id', function(req, res){
             });
    });
 
+function geoeffnet(barid){
+    
+    
+    db.get('bars:'+ barid +'/oeffnungszeiten', function(err, rep){
+        var zeiten = JSON.parse(rep);
+		
+		if(rep){
+            db.get('bars:' + barid + '/details', function(err, rep){
+            if(rep){
+                var temp = JSON.parse(rep);
+                delete temp.geoeffnet;
+                var currentdate = new Date();
+	           var tag = currentdate.getDate(); //aktueller tag, 0-6, 0 == sonntag
+	           var stunde = currentdate.getHours(); //aktuelle stunde
+			switch(tag){
+			case 1:
+					if(zeiten.montagvon <= stunde && zeiten.montagbis >= stunde){
+						temp.geoeffnet = "true";
+					}
+					else{
+						temp.geoeffnet = "false";
+					}
+					break;
+			case 2:
+					if(zeiten.dienstagvon <= stunde && zeiten.dienstagbis >= stunde){
+						temp.geoeffnet = "true";
+					}
+					else{
+						temp.geoeffnet = "false";
+					}
+					break;
+			case 3:
+					if(zeiten.mittwochvon <= stunde && zeiten.mittwochbis >= stunde){
+						temp.geoeffnet = "true";
+					}
+					else{
+						temp.geoeffnet = "false";
+					}
+					break;
+			case 4:
+					if(zeiten.donnerstagvon <= stunde && zeiten.donnerstagbis >= stunde){
+						temp.geoeffnet = "true";
+					}
+					else{
+						temp.geoeffnet = "false";
+					}
+					break;
+			case 5:
+					if(zeiten.freitagvon <= stunde && zeiten.freitagbis >= stunde){
+						temp.geoeffnet = "true";
+					}
+					else{
+						temp.geoeffnet = "false";
+					}
+					break;
+			case 6:
+					if(zeiten.samstagvon <= stunde && zeiten.samstagbis >= stunde){
+						temp.geoeffnet = "true";
+					}
+					else{
+						temp.geoeffnet = "false";
+					}
+					break;
+			case 0:
+					if(zeiten.sonntagvon <= stunde && zeiten.sonntagbis >= stunde){
+						temp.geoeffnet = "true";
+					}
+					else{
+						temp.geoeffnet = "false";
+					}
+					break;
+            }
+        } else {
+            res.status(404).type('text').send("Die Bar mit der ID " + req.params.id + " wurde nicht gefunden");
+        }
+            });
+ 
+        }
+	else{
+		res.status(404).type('text').send("Die Bar mit der ID " + req.params.id + " wurde nicht gefunden");	
+	}
+    });
+}
+
+function geoeffnet2 (barid, zeiten){
+    
+}
+
 app.get('/bars/:id/aktuell', function(req, res){
     var currentdate = new Date();
 	var tag = currentdate.getDate(); //aktueller tag, 0-6, 0 == sonntag
@@ -219,73 +307,14 @@ app.get('/bars/:id/aktuell', function(req, res){
 
     var today = dd+'.'+mm+'.'+yyyy;
     
-	db.get('bars:'+req.params.id+'/oeffnungszeiten', function(err, rep){
-		
-		if(rep){
-			var zeiten = JSON.parse(rep);
-			switch(tag){
-			case 1:
-					if(zeiten.montagvon <= stunde && zeiten.montagbis >= stunde){
-						var zustand = "geoeffnet";
-					}
-					else{
-						var zustand = "geschlossen";
-					}
-					break;
-			case 2:
-					if(zeiten.dienstagvon <= stunde && zeiten.dienstagbis >= stunde){
-						var zustand = "geoeffnet";
-					}
-					else{
-						var zustand = "geschlossen";
-					}
-					break;
-			case 3:
-					if(zeiten.mittwochvon <= stunde && zeiten.mittwochbis >= stunde){
-						var zustand = "geoeffnet";
-					}
-					else{
-						var zustand = "geschlossen";
-					}
-					break;
-			case 4:
-					if(zeiten.donnerstagvon <= stunde && zeiten.donnerstagbis >= stunde){
-						var zustand = "geoeffnet";
-					}
-					else{
-						var zustand = "geschlossen";
-					}
-					break;
-			case 5:
-					if(zeiten.freitagvon <= stunde && zeiten.freitagbis >= stunde){
-						var zustand = "geoeffnet";
-					}
-					else{
-						var zustand = "geschlossen";
-					}
-					break;
-			case 6:
-					if(zeiten.samstagvon <= stunde && zeiten.samstagbis >= stunde){
-						var zustand = "geoeffnet";
-					}
-					else{
-						var zustand = "geschlossen";
-					}
-					break;
-			case 0:
-					if(zeiten.sonntagvon <= stunde && zeiten.sonntagbis >= stunde){
-						var zustand = "geoeffnet";
-					}
-					else{
-						var zustand = "geschlossen";
-					}
-					break;
+    db.get('bars:' + req.params.id + '/details', function(err, rep){
+            if(rep){
+                var temp = JSON.parse(rep);
+                res.type('json').send(temp).end();
             }
-            res.send(zustand + "!");
-        }
-	else{
-		res.status(404).type('text').send("Die Bar mit der ID " + req.params.id + " wurde nicht gefunden");	
-	}
+            else {
+                res.send("deine mudda");
+            }
     });
 });
 
