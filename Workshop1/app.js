@@ -286,14 +286,12 @@ app.get('/bars/:id/aktuell', function(req, res){
 	else{
 		res.status(404).type('text').send("Die Bar mit der ID " + req.params.id + " wurde nicht gefunden");	
 	}
+    });
 });
 
-    //db.get --> liefert json-Objekt, das die bardaten enthält (bar, sitzplätze, öffnungszeiten, karte, Event)
-        //--> aktuelles Datum muss ermittelt werden
-        //--> daten verwerten und auf aktuelles Datum angepasst werden
-    //ausgebe durch res.send
 
-});
+
+
 
 //Ausgabe der Details einer Bar
 //Benötigt: (BarID)
@@ -409,7 +407,7 @@ app.delete('/bars/:id', function(req, res){
             });
         }
         else{
-            res.send("Die Bar wurde nicht gefunden!").end();   
+            res.status(404).send("Die Bar wurde nicht gefunden!").end();   
         }
     });
 });
