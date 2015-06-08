@@ -207,7 +207,7 @@ function geoeffnet(barid){
         var zeiten = JSON.parse(rep);
 		
 		if(rep){
-            db.get('bars:' + barid + '/details', function(err, rep){
+            db.get('bars:' + barid + '/details', function(err, rep, zeiten){
             if(rep){
                 var temp = JSON.parse(rep);
                 delete temp.geoeffnet;
@@ -272,6 +272,8 @@ function geoeffnet(barid){
 					}
 					break;
             }
+            db.set('bars:' + barid + '/details', temp, function(err, rep){
+            });
         } else {
             res.status(404).type('text').send("Die Bar mit der ID " + req.params.id + " wurde nicht gefunden");
         }
@@ -284,9 +286,6 @@ function geoeffnet(barid){
     });
 }
 
-function geoeffnet2 (barid, zeiten){
-    
-}
 
 app.get('/bars/:id/aktuell', function(req, res){
     var currentdate = new Date();
