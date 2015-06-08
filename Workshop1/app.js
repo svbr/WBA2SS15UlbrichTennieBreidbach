@@ -33,7 +33,7 @@ app.post('/user', function(req, res){
     db.incr('id:user', function(err, rep){
         newUser.id = rep;
         db.set('user:'+ newUser.id, JSON.stringify(newUser),function(err, rep){
-			res.send("Der User " + JSON.stringify(newUser.name) + " mit der ID " + JSON.stringify(newUser.id) + " wurde hinzugefügt!").end();
+			res.type('json').send(newUser).end();
 		});
     });
 
@@ -51,12 +51,12 @@ app.post('/user/:id/bars',function(req, res){
             db.incr('id:bars', function(err, rep){
                 newBar.id = rep;
                 db.set('bars:'+newBar.id, JSON.stringify(newBar),function(err, rep){
-			         res.send("Die Bar " + JSON.stringify(newBar.name) + " mit der ID " + newBar.id + " wurde von dem User mit der ID " + req.params.id + " hinzugefügt!").end();
+                    res.type('json').send(newBar).end();
                 });
             });
         }
             else{
-                res.status(404).res.status(404).type('text').send("Der User mit der ID " + req.params.id + " wurde nicht gefunden")
+                res.status(404).type('text').send("Der User mit der ID " + req.params.id + " wurde nicht gefunden")
         }
     });
 });
