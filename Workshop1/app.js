@@ -69,7 +69,7 @@ app.post('/bars/:id/details', function(req, res){
     db.get('bars:'+req.params.id, function(err, rep){
        if(rep){
            db.set('bars:'+req.params.id+'/details', JSON.stringify(newAnzahl),function(err, rep){
-			 res.send("Die Details wurden der ID " + req.params.id + " hinzugefügt!").end();
+			 res.type('json').send(newAnzahl).end();
 		});
        }
        else{
@@ -83,7 +83,7 @@ app.post('/bars/:id/sitzplaetze', function(req, res){
     db.get('bars:'+req.params.id, function(err, rep){
        if(rep){
            db.set('bars:'+req.params.id+'/sitzplaetze', JSON.stringify(newSp),function(err, rep){
-			 res.send("Die Sitzplaetze wurden der ID " + req.params.id + " hinzugefügt!").end();
+			 res.type('json').send(newSp).end();
 		});
        }
        else{
@@ -101,7 +101,7 @@ app.post('/bars/:id/oeffnungszeiten', function(req,res){
     db.get('bars:'+req.params.id, function(err, rep){
         if(rep){
             db.set('bars:'+req.params.id+'/oeffnungszeiten', JSON.stringify(zeiten),function(err,rep){
-                res.send("Die Öffnungszeiten sind: \n Montag: von " + zeiten.montagvon +" bis " + zeiten.montagbis + "\n Dienstag: von " +                             zeiten.dienstagvon + " bis "+zeiten.dienstagbis+"\n Mittwoch: von" +zeiten.mittwochvon+ " bis "+zeiten.mittwochbis+"\n Donnerstag: von" +zeiten.donnerstagvon+" bis "+zeiten.donnerstagbis+ "\n Freitag: von " +zeiten.freitagvon+" bis " +zeiten.freitagbis+ "\n Samstag: von " +zeiten.samstagvon+ " bis "+zeiten.samstagbis+"\n Sonntag: von "+zeiten.sonntagvon+" bis "+zeiten.sonntagbis+"").end();
+                res.type('json').send(zeiten).end();
             });
         }
         else{
@@ -114,12 +114,12 @@ app.post('/bars/:id/oeffnungszeiten', function(req,res){
 //Hinzufügen einer Getränkekarte einer Bar
 //Benötigt: (BarID)
 //Ausgabe: BarID
-app.post('/bars/:id/karte', function(req, res){
+app.post('/bars/:id/getraenkekarte', function(req, res){
 	var newKarte = req.body;
 	db.get('bars:'+req.params.id, function(err, rep){
        if(rep){
 		   db.set('bars:'+req.params.id+'/karte', JSON.stringify(newKarte),function(err, rep){
-			res.send("Die Karte wurde der ID " + req.params.id + " hinzugefügt!").end();
+			res.type('json').send(newKarte).end();
 		});
        }
        else{
@@ -359,13 +359,13 @@ app.get('/bars/:id/oeffnungszeiten', function(req, res){
 //Ausgabe der Karte einer Bar
 //Benötigt: (BarID)
 //Ausgabe: ggf. Getränke
-app.get('/bars/:id/karte', function(req, res){ //Rückgabe der Karte der Bar mittels id
+app.get('/bars/:id/getraenkekarte', function(req, res){ //Rückgabe der Karte der Bar mittels id
    db.exists('bars:' + req.params.id, function(err, rep){
        if(rep === 1){
             db.get('bars:'+req.params.id+'/karte', function(err, rep){
                 if(rep){
                     var temp = JSON.parse(rep);
-                    res.send(temp);
+                    res.send(temp).end();
                 }
                 else{
                     res.status(404).type('text').send("Die Karte der Bar mit der ID " + req.params.id + " wurde nicht gefunden");
@@ -390,7 +390,8 @@ app.delete('/user/:id', function(req, res){
     db.exists('user:'+req.params.id, function(err, rep){
         if(rep === 1){
             db.del('user:'+req.params.id,function(err, rep){
-                res.send("Der User mit der ID " + req.params.id + " wurde gelöscht!").end();
+                var temp = JSON.parse(rep);
+                    res.send(temp);
             });
         }
         else{
@@ -403,7 +404,8 @@ app.delete('/bars/:id', function(req, res){
     db.exists('bars:'+req.params.id, function(err, rep){
         if(rep === 1){
             db.del('bars:'+req.params.id,function(err, rep){
-                res.send("Die Bar mit der ID " + req.params.id + " wurde gelöscht!").end();
+                var temp = JSON.parse(rep);
+                    res.send(temp).end();
             });
         }
         else{
