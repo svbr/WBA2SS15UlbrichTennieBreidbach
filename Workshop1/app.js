@@ -50,6 +50,13 @@ app.post('/user/:id/bars',function(req, res){
         if(rep){
             db.incr('id:bars', function(err, rep){
                 newBar.id = rep;
+                //json-array wird angelegt damit mit kein post für event benötigt wird
+                var temp = {
+                    barEvent: []
+                };
+                db.set('barsEvent:'+newBar.id, JSON.stringify(temp), function(err, rep){
+                });
+                
                 db.set('bars:'+newBar.id, JSON.stringify(newBar),function(err, rep){
                     res.type('json').send(newBar).end();
                 });
@@ -129,19 +136,6 @@ app.post('/bars/:id/getraenkekarte', function(req, res){
 
 });
 
-app.post('/bars/:id/events', function(req, res){
-	var newEvents = req.body;
-	db.get('bars:'+req.params.id, function(err, rep){
-		if(rep){
-			db.set('barsEvent'+req.params.id, JSON.stringify(newEvents),function(err, rep){
-				res.type('json').send(newEvents).end(); // ???
-		});
-	}
-       else{
-           res.status(404).type('text').send("Die Bar mit der ID " + req.params.id + " wurde nicht gefunden");
-       }
-   });
-});
 // newEvent = req.body;
 // newEvent./bars/:id/events.length
 // neue Events hinzufügen	
@@ -150,12 +144,12 @@ app.post('/bars/:id/events', function(req, res){
 app.put('/bars/:id/events', function(req, res){
 	newEvent = req.body;
 	db.get('barsEvent:'+req.params.id, function(err, rep){
-		if(rep ===1){
+		if(rep){
 			oldEventlist = JSON.parse(rep);
-			oldEventlist.barsEvent1.push(newEvent);
-			
-		
-		res.type('json').send(oldEventlist).end();			
+			oldEventlist.barEvent.push(newEvent);
+            db.set('barsEvent:'+req.params.id, JSON.stringify(oldEventlist), function(err, rep){
+                res.type('json').send(oldEventlist).end();			
+            });
 			
 		}
 	});
