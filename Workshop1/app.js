@@ -438,10 +438,15 @@ app.get('/bars/:id/getraenkekarte', function(req, res){ //Rückgabe der Karte de
     
 
 app.get('/bars/:id/events', function(req, res){
-        db.lrange('bars:'+req.params.id+'/events', 0, -1, function(err, rep) {
-           res.send("Events: " + rep);
-    });  
-});
+	db.get('bars:'+ req.params.id+'/events', function(err, rep){
+		if(rep){
+			res.type('json').send(rep);
+		}
+       else{
+           res.status(404).type('text').send("Für die Bar mit der ID " + req.params.id + " wurden keine Events gefunden");
+       }
+   });
+});	
 
 
 app.delete('/user/:id', function(req, res){
