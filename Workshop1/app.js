@@ -8,7 +8,7 @@ var app = express();
 var jsonParser = bodyParser.json();
 
 app.use(bodyParser.json());
-
+ var zeiten;
 var env = process.env.NODE_ENV || 'development';
 if ('development' == env) {
 	app.use(express.static(__dirname + '/public'));
@@ -200,11 +200,10 @@ app.get('/bars/:id', function(req, res){
             });
    });
 
-function geoeffnet(barid){
-    
+function geoeffnet(barid, res){
     
     db.get('bars:'+ barid +'/oeffnungszeiten', function(err, rep){
-        var zeiten = JSON.parse(rep);
+        zeiten = JSON.parse(rep);
 		
 		if(rep){
             db.get('bars:' + barid + '/details', function(err, rep, zeiten){
@@ -212,8 +211,8 @@ function geoeffnet(barid){
                 var temp = JSON.parse(rep);
                 delete temp.geoeffnet;
                 var currentdate = new Date();
-	           var tag = currentdate.getDate(); //aktueller tag, 0-6, 0 == sonntag
-	           var stunde = currentdate.getHours(); //aktuelle stunde
+                var tag = currentdate.getDay(); //aktueller tag, 0-6, 0 == sonntag
+                var stunde = currentdate.getHours(); //aktuelle stunde
 			switch(tag){
 			case 1:
 					if(zeiten.montagvon <= stunde && zeiten.montagbis >= stunde){
@@ -272,19 +271,21 @@ function geoeffnet(barid){
 					}
 					break;
             }
-            db.set('bars:' + barid + '/details', temp, function(err, rep){
+            db.set('bars:' + barid + '/details', JSON.stringify(temp), function(err, rep){
+                return 0;
             });
         } else {
-            res.status(404).type('text').send("Die Bar mit der ID " + req.params.id + " wurde nicht gefunden");
+            return 1;
         }
             });
  
         }
 	else{
-		res.status(404).type('text').send("Die Bar mit der ID " + req.params.id + " wurde nicht gefunden");	
+		return 2;
 	}
     });
-}
+    return zeiten;
+};
 
 
 app.get('/bars/:id/aktuell', function(req, res){
@@ -306,15 +307,25 @@ app.get('/bars/:id/aktuell', function(req, res){
 
     var today = dd+'.'+mm+'.'+yyyy;
     
-    db.get('bars:' + req.params.id + '/details', function(err, rep){
+    res.send(geoeffnet(JSON.stringify(req.params.id + "test" )));
+    
+    
+    
+    if (geoeffnet(req.params.id)==1){
+        res.status(404).type('text').send("Die Bar mit der ID " + req.params.id + " wurde nicht gefunden");
+    } else if (geoeffnet(req.params.id)==2){
+        res.status(404).type('text').send("Die Bar mit der ID " + req.params.id + " wurde nicht gefunden");
+    } else {
+        db.get('bars:' + req.params.id + '/details', function(err, rep){
             if(rep){
                 var temp = JSON.parse(rep);
                 res.type('json').send(temp).end();
             }
             else {
-                res.send("deine mudda");
+                res.status(404).type('text').send("Die Bar mit der ID " + req.params.id + " wurde nicht gefunden");
             }
-    });
+        });
+    }
 });
 
 
