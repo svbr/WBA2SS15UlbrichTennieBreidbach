@@ -130,10 +130,35 @@ app.post('/bars/:id/getraenkekarte', function(req, res){
 });
 
 app.post('/bars/:id/events', function(req, res){
-    var newEvent = req.body;
-    db.rpush(['bars:'+req.params.id+'/events', JSON.stringify(newEvent)], function(err, rep){
-        res.send("Das " + rep + ". Event "+ JSON.stringify(newEvent.event)+ " wurde hinzugefügt.");
-    });
+	var newEvents = req.body;
+	db.get('bars:'+req.params.id, function(err, rep){
+		if(rep){
+			db.set('barsEvent'+req.params.id, JSON.stringify(newEvents),function(err, rep){
+				res.type('json').send(newEvents).end(); // ???
+		});
+	}
+       else{
+           res.status(404).type('text').send("Die Bar mit der ID " + req.params.id + " wurde nicht gefunden");
+       }
+   });
+});
+// newEvent = req.body;
+// newEvent./bars/:id/events.length
+// neue Events hinzufügen	
+// daten zum array hinzufügen
+
+app.put('/bars/:id/events', function(req, res){
+	newEvent = req.body;
+	db.get('barsEvent:'+req.params.id, function(err, rep){
+		if(rep ===1){
+			oldEventlist = JSON.parse(rep);
+			oldEventlist.barsEvent1.push(newEvent);
+			
+		
+		res.type('json').send(oldEventlist).end();			
+			
+		}
+	});
 });
 
 app.put('/bars/:id/sitzplaetze', function(req, res){
