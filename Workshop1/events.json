@@ -1,0 +1,8 @@
+{
+	"/bars/:id/events":[
+		{"datum" : "08.06.15" , "event" : "Happy Hour"},
+		{"datum" : "09.06.15" , "event" : "Live Musik"}
+	]}
+		
+	path:[
+	]	
