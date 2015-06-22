@@ -84,6 +84,9 @@ app.post('/user/:id/bars',function(req, res){
                     barEvent: []
                 };
                 
+                db.set('maxAnzahlBars', JSON.stringify(newBar.id), function(err, rep){
+                });
+                
                 db.set('barsEvent:'+newBar.id, JSON.stringify(temp), function(err, rep){
                 });
                 
@@ -250,6 +253,11 @@ app.get('/bars/:id', function(req, res){
    });
 
 
+
+
+
+
+
 app.get('/bars/:id/aktuell', function(req, res){
     var currentdate = new Date();
 	var tag = currentdate.getDay(); //aktueller tag, 0-6, 0 == sonntag
@@ -338,11 +346,27 @@ app.get('/bars/:id/aktuell', function(req, res){
             });
         },
         function(callback){
-            db.get('bars:'+ id+'/sitzplaetze', function(err, rep){
+            if(temp.offen == "true"){
+                db.get('bars:'+ id+'/sitzplaetze', function(err, rep){
+                    if(rep){
+                        temp.sitzplaetze = JSON.parse(rep);
+                        callback();
+                    }
+                });
+            }
+            callback();
+        },
+        function(callback){
+            db.get('barsEvent:' + id, function(err, rep){
                 if(rep){
-                    temp.sitzplaetze = JSON.parse(rep);
-                    callback();
+                    var events = JSON.parse(rep);
+                    for(var i = 0; i < events.barEvent.length; i++){
+                        if(today == events.barEvent[i].date){
+                            temp.event = events.barEvent[i];
+                        }
+                    }
                 }
+                callback();
             });
         }
     ], function(){
