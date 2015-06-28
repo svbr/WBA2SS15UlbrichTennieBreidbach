@@ -9,7 +9,7 @@ var app = express();
 var jsonParser = bodyParser.json();
 
 app.use(bodyParser.json());
- var zeiten;
+
 var env = process.env.NODE_ENV || 'development';
 if ('development' == env) {
 	app.use(express.static(__dirname + '/public'));
@@ -84,7 +84,7 @@ app.post('/user/:id/bars',function(req, res){
                     barEvent: []
                 };
                 
-                db.set('maxAnzahlBars', JSON.stringify(newBar.id), function(err, rep){
+                db.set('maxAnzahlBars', JSON.stringify(newBar), function(err, rep){
                 });
                 
                 db.set('barsEvent:'+newBar.id, JSON.stringify(temp), function(err, rep){
@@ -223,6 +223,69 @@ app.put('/bars/:id/sitzplaetze', function(req, res){
     --> daten werden barbeitet... je nach dem was im JSON-Objekt dinn ist
     --> änderung werden gespeichert
 });*/
+
+
+app.get('/bars', function(req, res){
+    var data = [];
+    var test;
+    var ort = req.body;
+    
+    async.parallel([
+        function(callback){ //Liste aller Bars erstellen
+            db.keys('bars:*', function(err, rep){
+                if(rep.length == 0){
+                    callback();
+                } else {
+                    db.mget(rep, function(err, rep){
+                        rep.forEach(function(val){
+                            data.push(JSON.parse(val));         
+                        });
+                        data = data.map(function(bars){
+                            return {id: bars.id, name: bars.name};
+                        });
+                        var i = 0, p = 0;
+                        var temp = [];
+                        while(i < data.length){
+                            if(JSON.stringify(data[i].id) === undefined){
+                                test = data[i];
+                            } else { temp[p++] = data[i]; }
+                            i++;
+                        }
+                        data = temp;
+                        callback();
+                    }); 
+                }
+            });
+        },
+        function(callback){
+            var i = 0;
+            async.forEach(data, function(bars, callback){
+                test = bars.id;
+                db.get('bars:' + bars.id + '/details', function(err, rep){
+                    if(rep){
+                        test = JSON.parse(rep);
+                        var ortsAbfrage = JOSN.parse(rep);
+                        if(ortsAbfrage.stadt == ort.stadt){
+                            data.push(ort.stadt);
+                            i++;
+                        } else {
+                            data[i] = 0;
+                        }
+                        callback();
+                    }
+                    
+                });
+                callback();
+            });
+            
+        }
+    
+    ], function(){
+        res.send(test);
+    });                   
+});
+
+
 
 //Ausgabe des Users
 //Benötigt: (UserID)
