@@ -7,14 +7,33 @@ var bodyparser = require('body-parser');
 var jsonParser = bodyparser.json();
 var app = express();
 
-app.use(express.static(__dirname + '/pages'));
+app.use('/public', express.static(__dirname + '/public'));
 
-app.set('view engine', 'ejs');
+app.locals.title = 'Kneipentour';
+
+app.all('*', function(req, res, next) {
+  fs.readFile('posts.json', function(err, data) {
+    res.locals.posts = JSON.parse(data);
+    next();
+  });
+});
+
+//app.set('view engine', 'ejs');
 
 //Hauptseite
 app.get('/', function(req, res) {
-  res.render('pages/index');
+  res.render('index.ejs');
 });
+
+app.get('/post/:bar', function(req, res, next) {
+  res.locals.posts.forEach(function(post) {
+    if (req.params.bar === post.bar) {
+      res.render('post.ejs', { post: post });
+    }
+  })
+});
+
+/*
 
 //Barsseite
 app.get('/bars/:id', function(req, res) {
@@ -37,3 +56,12 @@ app.get('/bars/:id/sitzplaetze', function(req, res) {
 });
 
 // Weitere Seiten hinzufügen (POST, PUT, DELETE)
+*/
+
+//Gibt JSON aus
+app.get('/api/posts', function(req, res) {
+  res.json(res.locals.posts);
+});
+
+app.listen(3000);
+console.log('app is listening at localhost:3000');
