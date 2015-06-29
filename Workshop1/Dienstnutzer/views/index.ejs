@@ -2,6 +2,10 @@
 
 <main role="main">
   <div class="container">
+    <form>
+  		<br><br><br>Bar suchen: <input type='text' id='bar' name='bar'> <br>
+  		<input type='submit' value='SEND' name='submit'>
+  	</form>
     <% posts.forEach(function(post){ %>
       <h3>
         <a href="/post/<%= post.bar %>">
