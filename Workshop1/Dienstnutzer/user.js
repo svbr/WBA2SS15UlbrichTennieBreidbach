@@ -9,8 +9,10 @@ var app = express();
 
 app.use('/public', express.static(__dirname + '/public'));
 
+// Lokale Variable, wird an html weiter gegeben
 app.locals.title = 'Kneipentour';
 
+// json Datei einlesen
 app.all('*', function(req, res, next) {
   fs.readFile('posts.json', function(err, data) {
     res.locals.posts = JSON.parse(data);
@@ -20,7 +22,7 @@ app.all('*', function(req, res, next) {
 
 //app.set('view engine', 'ejs');
 
-//Hauptseite
+//Hauptseite wird aufgerufen
 app.get('/', function(req, res) {
   res.render('index.ejs');
 });
