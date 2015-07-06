@@ -1,6 +1,6 @@
 var express = require('express');
 var bodyParser = require('body-parser');
-var fs = require('fs')
+var fs = require('fs');
 var redis = require('redis');
 var async = require('async');
 
@@ -104,7 +104,7 @@ app.post('/user/:id/bars',function(req, res){
 //Hinzfügen der Details der Bar
 //Benötigt: Sitzplaetze, Adresse, Typ, Behindertengerecht, Gegebenheiten; (BarID)
 //Ausgabe: BarID
-app.post('/bars/:id/details', function(req, res){ 
+app.post('user/:id/bars/:bid/details', function(req, res){ 
     var newAnzahl = req.body;
     db.get('bars:'+req.params.id, function(err, rep){
        if(rep){
@@ -225,12 +225,13 @@ app.put('/bars/:id/sitzplaetze', function(req, res){
 });*/
 
 
-app.get('/bars', function(req, res){
+app.put('/bars', function(req, res){
     var data = [];
     var test;
     var ort = req.body;
+    console.log(ort);
     
-    async.parallel([
+    async.series([
         function(callback){ //Liste aller Bars erstellen
             db.keys('bars:*', function(err, rep){
                 if(rep.length == 0){
@@ -258,33 +259,37 @@ app.get('/bars', function(req, res){
             });
         },
         function(callback){
+            console.log(data);
             var i = 0;
             async.forEach(data, function(bars, callback){
-                test = bars.id;
+                console.log(" ich bin hier" + i);
+                console.log("ID:" + bars.id);
+                console.log(ort.stadt);
                 db.get('bars:' + bars.id + '/details', function(err, rep){
                     if(rep){
-                        test = JSON.parse(rep);
-                        var ortsAbfrage = JOSN.parse(rep);
+                        console.log(data);
+                        var ortsAbfrage = JSON.parse(rep);
+                        console.log(ortsAbfrage.stadt);
+                        console.log(ort.stadt);
                         if(ortsAbfrage.stadt == ort.stadt){
                             data.push(ort.stadt);
                             i++;
+                            
                         } else {
-                            data[i] = 0;
+                            delete data[i++];
+                            console.log(data.length);
                         }
                         callback();
                     }
-                    
                 });
-                callback();
+                
             });
-            
         }
     
     ], function(){
-        res.send(test);
+        res.send(data);
     });                   
 });
-
 
 
 //Ausgabe des Users
