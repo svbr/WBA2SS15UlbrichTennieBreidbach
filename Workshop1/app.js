@@ -218,12 +218,7 @@ app.put('/bars/:id/sitzplaetze', function(req, res){
 
 
 
-/*app.put(...., function(){
-    --> userrechte werden überprüft
-    --> daten werden barbeitet... je nach dem was im JSON-Objekt dinn ist
-    --> änderung werden gespeichert
-});*/
-
+//ausgabe einer Liste der Bars die in der Stadt geöffnet hat.
 
 app.put('/bars', function(req, res){
     var data = [];
@@ -262,9 +257,6 @@ app.put('/bars', function(req, res){
             console.log(data);
             var i = 0;
             async.forEach(data, function(bars, callback){
-                console.log(" ich bin hier" + i);
-                console.log("ID:" + bars.id);
-                console.log(ort.stadt);
                 db.get('bars:' + bars.id + '/details', function(err, rep){
                     if(rep){
                         console.log(data);
@@ -272,20 +264,20 @@ app.put('/bars', function(req, res){
                         console.log(ortsAbfrage.stadt);
                         console.log(ort.stadt);
                         if(ortsAbfrage.stadt == ort.stadt){
-                            data.push(ort.stadt);
-                            i++;
+                            data[i++].stadt = ort.stadt;
                             
                         } else {
                             delete data[i++];
-                            console.log(data.length);
+                            console.log("ID:" + bars.id + " gelöscht!");
                         }
-                        callback();
+                        callback(); //Problem: der Callback funktioniert nur für die foreach. Also müsste noch einer 
+                                    //in der eigenetlichen Funktion ein callback gesetzt werden. Aber dieser wird schon vorher
+                                    //abgegeben bevor die foreach fertig ist.
                     }
                 });
-                
             });
+            callback(); //callback wird benötigt
         }
-    
     ], function(){
         res.send(data);
     });                   
@@ -320,11 +312,8 @@ app.get('/bars/:id', function(req, res){
             });
    });
 
-
-
-
-
-
+//Die Aktuellen Daten der Bar(:id) werden angezeigt. 
+//Ausgabe: Geöffnet oder nicht, Gesamtsitzplätze, aktuelle Sitzplätze
 
 app.get('/bars/:id/aktuell', function(req, res){
     var currentdate = new Date();
@@ -344,7 +333,7 @@ app.get('/bars/:id/aktuell', function(req, res){
     var id = req.params.id;
     var temp = {};
     
-    async.parallel([
+    async.series([
         function(callback){
             db.get('bars:'+ id + '/oeffnungszeiten', function(err, rep){
                 var zeiten = JSON.parse(rep);
@@ -418,11 +407,10 @@ app.get('/bars/:id/aktuell', function(req, res){
                 db.get('bars:'+ id+'/sitzplaetze', function(err, rep){
                     if(rep){
                         temp.sitzplaetze = JSON.parse(rep);
-                        callback();
                     }
-                });
+                    callback();
+                }); 
             }
-            callback();
         },
         function(callback){
             db.get('barsEvent:' + id, function(err, rep){
