@@ -26,7 +26,7 @@ app.get('/about', function(req, res) {
 
 // bars Seite
 // alle Bars auflisten
-app.get('/bars/:id', function(req, res) {
+app.get('/bars', function(req, res) {
   res.render('pages/bar');
 });
 
