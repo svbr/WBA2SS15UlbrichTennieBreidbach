@@ -267,23 +267,15 @@ app.put('/user/:id/bars/:bid/sitzplaetze', function(req, res){
     });
 });
     
+//ausgabe einer Liste der Bars die in der Stadt geöffnet hat.
 
-
-
-
-/*app.put(...., function(){
-    --> userrechte werden überprüft
-    --> daten werden barbeitet... je nach dem was im JSON-Objekt dinn ist
-    --> änderung werden gespeichert
-});*/
-
-
-app.get('/bars', function(req, res){
+app.put('/bars', function(req, res){
     var data = [];
     var test;
     var ort = req.body;
+    console.log(ort);
     
-    async.parallel([
+    async.series([
         function(callback){ //Liste aller Bars erstellen
             db.keys('bars:*', function(err, rep){
                 if(rep.length == 0){
@@ -294,7 +286,7 @@ app.get('/bars', function(req, res){
                             data.push(JSON.parse(val));         
                         });
                         data = data.map(function(bars){
-                            return {bid: bars.bid, name: bars.name};
+                            return {id: bars.bid, name: bars.name};
                         });
                         var i = 0, p = 0;
                         var temp = [];
@@ -311,26 +303,129 @@ app.get('/bars', function(req, res){
             });
         },
         function(callback){
+            console.log(data);
             var i = 0;
+            
             async.forEach(data, function(bars, callback){
-                test = bars.id;
-                db.get('bars:' + bars.bid + '/details', function(err, rep){
+                db.get('bars:' + bars.id + '/details', function(err, rep){
                     if(rep){
-                        test = JSON.parse(rep);
+                        console.log(data);
                         var ortsAbfrage = JSON.parse(rep);
+                        console.log(ortsAbfrage.stadt);
+                        console.log(ort.stadt);
                         if(ortsAbfrage.stadt == ort.stadt){
-                            data.push(ort.stadt);
-                            i++;
+                            data[i++].stadt = ort.stadt;
+                            
                         } else {
-                            data[i] = 0;
+                            delete data[i++];
+                            console.log("ID:" + bars.id + " gelöscht!");
                         }
                         callback();
                     }
-                    
                 });
-                callback();
-            });
+            }, callback);
+        },
+        function(callback){
+            var test, temp = [];
+            var currentdate = new Date();
+            var tag = currentdate.getDay(); //aktueller tag, 0-6, 0 == sonntag
+            var stunde = currentdate.getHours(); //aktuelle stunde
             
+            var i = 0, j = 0, p = 0;
+            while(j < data.length){
+                console.log(data[j]);
+                if(data[j] === undefined){
+                    console.log(data[j]);
+                } else { 
+                    temp[p++] = data[j]; 
+                }
+                j++;
+            }
+            data = temp;
+            console.log(data);
+            async.forEach(data, function(bars, callback){
+                db.get('bars:' + bars.id + '/oeffnungszeiten', function(err, rep){
+                   if(rep){
+                       var zeiten = JSON.parse(rep); 
+                       if(rep){
+                            switch(tag){
+                                case 1:
+                                    if(zeiten.montagvon <= stunde && zeiten.montagbis >= stunde){
+                                        data[i++].offen = "true";
+                                    }   
+                                    else{
+                                        data[i++].offen = "false";
+                                    }					       
+                                    break;
+			         
+                                case 2:                                   
+                                    if(zeiten.dienstagvon <= stunde && zeiten.dienstagbis >= stunde){
+                                        data[i++].offen = "true";
+                                    }
+                                    else{
+                                        data[i++].offen = "false";
+                                    }
+                                    break;
+                                case 3:
+                                    if(zeiten.mittwochvon <= stunde && zeiten.mittwochbis >= stunde){
+                                        data[i++].offen = "true";
+                                    }
+                                    else{
+                                        data[i++].offen = "false";
+                                    }
+                                    break;
+                                case 4:
+                                    if(zeiten.donnerstagvon <= stunde && zeiten.donnerstagbis >= stunde){
+                                        data[i++].offen = "true";
+                                    }
+                                    else{
+                                        data[i++].offen = "false";
+                                    }
+                                    break;
+                                case 5:
+                                    if(zeiten.freitagvon <= stunde && zeiten.freitagbis >= stunde){
+                                        data[i++].offen = "true";
+                                    }
+                                    else{
+                                        data[i++].offen = "false";
+                                    }
+                                    break;
+                                case 6:
+                                    if(zeiten.samstagvon <= stunde && zeiten.samstagbis >= stunde){
+                                        data[i++].offen = "true";
+                                    }
+                                    else{
+                                        data[i++].offen = "false";
+                                    }
+                                    break;
+                                case 0:
+                                    if(zeiten.sonntagvon <= stunde && zeiten.sonntagbis >= stunde){
+                                        data[i++].offen = "true";
+                                    }
+                                    else{
+                                        data[i++].offen = "false";
+                                    }
+                                    break;
+                            }
+                           callback();
+                       }
+                   }
+                       
+                });
+            }, callback);
+        },
+        function(callback){
+            var i = 0;
+            async.forEach(data, function(bars, callback){
+                db.get('bars:' + bars.id + '/sitzplaetze', function(err, rep){
+                    if(rep){
+                        var temp = JSON.parse(rep);
+                        data[i].sitzplaetze = temp.sitzplaetze;
+                        data[i++].asp = temp.asp;
+                    }
+                    callback();
+                });
+            }, callback);
         }
     
     ], function(){
@@ -357,7 +452,7 @@ app.get('/user/:id', function(req, res){
 //Ausgabe der Bar
 //Benötigt: (BarID)
 //Ausgabe: BarID, Barname
-app.get('/user/:id/bars/:bid', function(req, res){
+app.get('/bars/:bid', function(req, res){
             db.get('bars:'+req.params.bid, function(err, rep){
                 if(rep){
                     res.type('json').send(rep);
@@ -389,10 +484,10 @@ app.get('/bars/:bid/aktuell', function(req, res){
         mm='0'+mm
     } 
     var today = dd+'.'+mm+'.'+yyyy;
-    var id = req.params.id;
+    var bid = req.params.bid;
     var temp = {};
     
-    async.parallel([
+    async.series([
         function(callback){
             db.get('bars:'+ bid + '/oeffnungszeiten', function(err, rep){
                 var zeiten = JSON.parse(rep);
@@ -466,11 +561,11 @@ app.get('/bars/:bid/aktuell', function(req, res){
                 db.get('bars:'+ bid+'/sitzplaetze', function(err, rep){
                     if(rep){
                         temp.sitzplaetze = JSON.parse(rep);
-                        callback();
                     }
+                    callback();
                 });
             }
-            callback();
+            
         },
         function(callback){
             db.get('barsEvent:' + bid, function(err, rep){
