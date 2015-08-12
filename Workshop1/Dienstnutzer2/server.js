@@ -34,7 +34,6 @@ app.get('/login', function(req, res) {
 	res.render('pages/login');
 });
 
-// bars Seite
 // alle Bars auflisten ??
 app.get('/bars', function(req, res) {
   res.render('pages/bars');
