@@ -19,17 +19,29 @@ app.get('/', function(req, res) {
 	res.render('pages/index');
 });
 
+// Suche
+app.get('/search', function(req, res) {
+	res.render('pages/search');
+});
+
 // about page
 app.get('/about', function(req, res) {
 	res.render('pages/about');
 });
 
-// bars Seite
-// alle Bars auflisten
-app.get('/bars', function(req, res) {
-  res.render('pages/bar');
+// Login
+app.get('/login', function(req, res) {
+	res.render('pages/login');
 });
 
+// bars Seite
+// alle Bars auflisten ??
+app.get('/bars', function(req, res) {
+  res.render('pages/bars');
+});
+
+// Weitere Seiten
+/*
 // Aktuell in einer Stadt??
 app.get('/bars/:id/aktuell', function(req, res) {
   res.render('pages/barsaktuell');
@@ -39,8 +51,7 @@ app.get('/bars/:id/aktuell', function(req, res) {
 app.get('/bars/:id/details', function(req, res) {
   res.render('pages/barsdetails');
 });
-
-
+*/
 
 app.listen(8080);
 console.log('8080 is the magic port');
