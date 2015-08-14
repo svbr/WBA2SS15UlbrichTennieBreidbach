@@ -269,6 +269,39 @@ app.put('/user/:id/bars/:bid/sitzplaetze', function(req, res){
     
 //ausgabe einer Liste der Bars die in der Stadt geöffnet hat.
 
+app.get('/bars', function(req, res){
+    var data = [];
+    db.keys('bars:*', function(err, rep){
+                if(rep.length == 0){
+                } else {
+                    db.mget(rep, function(err, rep){
+                        rep.forEach(function(val){
+                            data.push(JSON.parse(val));         
+                        });
+                        
+                        data = data.map(function(bars){
+                            return {id: bars.bid, name: bars.name, userID: bars.userID};
+                        });
+                        
+                        var i = 0, p = 0;
+                        var temp = [];
+                        while(i < data.length){
+                            if(JSON.stringify(data[i].id) === undefined){
+                                test = data[i];
+                            } else { temp[p++] = data[i]; }
+                            i++;
+                        }
+                        data = temp;
+                        console.log(data);
+                        res.send(data);
+                    });
+                }
+       
+    });
+
+});
+
+
 app.put('/bars', function(req, res){
     var data = [];
     var test;

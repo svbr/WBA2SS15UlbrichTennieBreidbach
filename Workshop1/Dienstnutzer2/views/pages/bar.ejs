@@ -20,15 +20,11 @@
                 <h1>Kneipentour</h1>
             </div>
         </main>
-        <%
-        for(var i = 0; i < bars.length; i++){%>
-            <h1>Profil von <%= bars[i].userID %></h1>
-            <ul>
-                <li><%= bars[i].id %></li>
-                <li><%= bars[i].name %></li>
-            </ul><%
-        }
-        %>
+        <h1>Profil von <%= bars.userID %></h1>
+        <ul>
+          <li><%= bars.bid %></li>
+          <li><%= bars.name %></li>
+        </ul>
     <footer>
         <% include ./views/partials/footer.ejs %>
     </footer>
