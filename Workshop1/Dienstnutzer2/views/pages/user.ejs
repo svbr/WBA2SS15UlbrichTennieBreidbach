@@ -20,17 +20,12 @@
                 <h1>Kneipentour</h1>
             </div>
         </main>
-        <!-- Hyperlink zu Nutzer überarbeiten
-        mit user.ejs?-->
-        <%
-        for(var i = 0; i < bars.length; i++){%>
-            <h1>Profil von <a class="<%= bars[i].userID %>" href="http://localhost:8080/user/<%= bars[i].userID %>"> <%= bars[i].userID %></a></h1>
-            <ul>
-                <li><h3><a class="<%= bars[i].id %>" href="http://localhost:8080/bars/<%= bars[i].id %>"><%= bars[i].id %></a><h3></li>
-                <li><%= bars[i].name %></li>
-            </ul><%
-        }
-        %>
+        <h1>Profil von <%= user.id %></h1>
+        <ul>
+          <!-- Alles bars des Users auflisten -->
+          <li><%= user.id %></li>
+          <li><%= user.name %></li>
+        </ul>
     <footer>
         <% include ./views/partials/footer.ejs %>
     </footer>
