@@ -83,7 +83,7 @@ app.get("/bars/:bid", function(req, res, next){
       var externalRequest = http.request(options, function(externalResponse){
         console.log("Connected Bars get");
         externalResponse.on("data", function(chunk){
-          var bars = JSON.parse(chunk);
+          var bars = JSON.parse(chunk); 
           var html = ejs.render(filestring, {bars: bars, filename: __dirname + '/bars.ejs'});
           res.setHeader("content-type", "text/html");
           res.writeHead(200);
