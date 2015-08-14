@@ -257,22 +257,19 @@ app.get('/bars', function(req, res){
 
 app.put('/bars', function(req, res){
     var data = [];
-    var ort = req.body;
-    console.log(ort);
     
     async.series([
         function(callback){ //Liste aller Bars erstellen
             db.keys('bars:*', function(err, rep){
                 if(rep.length == 0){
                     res.status(404).type('text').send("Keine Bars vorhanden!");
-                    callback();
                 } else {
                     db.mget(rep, function(err, rep){
                         rep.forEach(function(val){
                             data.push(JSON.parse(val));         
                         });
                         data = data.map(function(bars){
-                            return {id: bars.bid, name: bars.name};
+                            return {id: bars.bid, name: bars.name, adresse: bars.adresse, stadt: bars.stadt, typ: bars.typ, gegebenheiten: bars.gegebenheiten};
                         });
                         var i = 0, p = 0;
                         var temp = [];
@@ -300,6 +297,7 @@ app.put('/bars', function(req, res){
                         data[i++].stadt = ort.stadt;
                         callback();
                     }
+                    
                 });
             }, callback);
         },
@@ -527,7 +525,7 @@ app.get('/bars/:bid/aktuell', function(req, res){
                     }
                     callback();
                 } else {
-                    callback();
+                    res.status(404).type('text').send("Die Bar mit der ID " + req.params.bid + " wurde nicht gefunden");
                 }      
             });
         },
