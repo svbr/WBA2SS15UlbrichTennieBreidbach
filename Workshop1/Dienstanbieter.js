@@ -148,6 +148,68 @@ app.post('/user/:id/bars/:bid/getraenkekarte', function(req, res){
 
 });
 
+app.put('/user/:id/bars/:bid/getraenkekarte', function(req, res){
+    db.get('bars:'+ req.params.bid, function(err,rep){
+        if(rep){
+            var newKarte = req.body;
+            var temp = JSON.parse(rep);
+            db.set('bars:'+req.params.bid, JSON.stringify(newKarte), function(err, rep){
+                res.type('json').send(newKarte).end();
+            });
+        }
+        else{
+            res.status(404).type('text').send("Die Bar mit der ID " + req.params.bid + " wurde nicht gefunden");
+        }
+    });
+});
+
+app.put('/user/:id', function(req, res){
+    db.get('user:'+ req.params.id, function(err,rep){
+        if(rep){
+            var newUser = req.body;
+            newUser.id = req.params.id;
+            var temp = JSON.parse(rep);
+            db.set('user:'+req.params.id, JSON.stringify(newUser), function(err, rep){
+                res.type('json').send(newUser).end();
+            });
+        }
+        else{
+            res.status(404).type('text').send("Der User mit der ID " + req.params.id + " wurde nicht gefunden");
+        }
+    });
+});
+
+app.put('/user/:id/bars/:bid', function(req, res){
+    db.get('bars:'+ req.params.bid, function(err,rep){
+        if(rep){
+            var newBar = req.body;
+            newBar.bid = req.params.bid;
+            var temp = JSON.parse(rep);
+            db.set('bars:'+req.params.bid, JSON.stringify(newBar), function(err, rep){
+                res.type('json').send(newBar).end();
+            });
+        }
+        else{
+            res.status(404).type('text').send("Die Bar mit der ID " + req.params.bid + " wurde nicht gefunden");
+        }
+    });
+});
+
+app.put('/user/:id/bars/:bid/oeffnungszeiten', function(req, res){
+    db.get('bars:'+ req.params.bid, function(err,rep){
+        if(rep){
+            var newZeiten = req.body;
+            var temp = JSON.parse(rep);
+            db.set('bars:'+req.params.bid, JSON.stringify(newZeiten), function(err, rep){
+                res.type('json').send(newZeiten).end();
+            });
+        }
+        else{
+            res.status(404).type('text').send("Die Bar mit der ID " + req.params.bid + " wurde nicht gefunden");
+        }
+    });
+});
+
 // newEvent = req.body;
 // newEvent./bars/:id/events.length
 // neue Events hinzufügen	
