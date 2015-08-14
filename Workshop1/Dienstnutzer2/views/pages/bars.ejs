@@ -26,8 +26,8 @@
         for(var i = 0; i < bars.length; i++){%>
             <h1>Profil von <a class="<%= bars[i].userID %>" href="http://localhost:8080/user/<%= bars[i].userID %>"> <%= bars[i].userID %></a></h1>
             <ul>
-                <li><h3><a class="<%= bars[i].id %>" href="http://localhost:8080/bars/<%= bars[i].id %>"><%= bars[i].id %></a><h3></li>
-                <li><%= bars[i].name %></li>
+                <li><h4>Bar Nr. <a class="<%= bars[i].id %>" href="http://localhost:8080/bars/<%= bars[i].id %>"><%= bars[i].id %></a><h4></li>
+                <li><h4>Name: <%= bars[i].name %></h4></li>
             </ul><%
         }
         %>
