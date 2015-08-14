@@ -24,34 +24,6 @@ db.on('connect', function() { // Verbing zum Server hergestellt?
     console.log('connected');
 });
 
-//!!TesttZone!!
-
-app.get('/test', function(req, res){
-    var local = {};
-    
-    async.parallel([
-        function(callback){
-            db.get('user:1', function(err, rep){
-                local.bars = JSON.parse(rep);
-                callback();
-            });
-        },
-        function(callback){
-            db.get('bars:1', function(err, rep){
-                local.user = JSON.parse(rep);
-                callback();
-            });
-        
-        }
-    ], function(){
-        res.send(local);
-    });
-
-});
-
-//!!TestzoneEnde!!
-
-
 //Hinzufügen eines Users
 //Benötigt: Username
 //Ausgabe: Username, UserID
@@ -254,6 +226,7 @@ app.get('/bars', function(req, res){
     var data = [];
     db.keys('bars:*', function(err, rep){
                 if(rep.length == 0){
+                    res.status(404).type('text').send("Keine Bars vorhanden!");
                 } else {
                     db.mget(rep, function(err, rep){
                         rep.forEach(function(val){
@@ -291,6 +264,7 @@ app.put('/bars', function(req, res){
         function(callback){ //Liste aller Bars erstellen
             db.keys('bars:*', function(err, rep){
                 if(rep.length == 0){
+                    res.status(404).type('text').send("Keine Bars vorhanden!");
                     callback();
                 } else {
                     db.mget(rep, function(err, rep){
