@@ -33,7 +33,7 @@ app.get('/about', function(req, res) {
 app.get('/login', function(req, res) {
 	res.render('./pages/login.ejs');
 });
-
+// Alle bars auflisten
 app.get('/bars', function(req, res){
     fs.readFile("./views/pages/bars.ejs", {encoding:"utf-8"}, function(err, filestring){
     if(err){
@@ -64,8 +64,8 @@ app.get('/bars', function(req, res){
   });
 });
 
-// bars Seite
-// alle Bars auflisten ??
+// Bar Seite
+// eine Bar auflisten
 app.get("/bars/:bid", function(req, res, next){
   fs.readFile("./views/pages/bar.ejs", {encoding:"utf-8"}, function(err, filestring){
     if(err){
@@ -96,6 +96,35 @@ app.get("/bars/:bid", function(req, res, next){
   });
 });
 
+app.get("/user/:id", function(req, res, next){
+  fs.readFile("./views/pages/user.ejs", {encoding:"utf-8"}, function(err, filestring){
+    if(err){
+      throw err;
+    } else{
+      var options = {
+        host: "localhost",
+        port: 3000,
+        path: "/user/"+req.params.id,
+        method:"GET",
+        headers:{
+          accept:"application/json"
+        }
+      }
+      var externalRequest = http.request(options, function(externalResponse){
+        console.log("Connected User get");
+        externalResponse.on("data", function(chunk){
+          var user = JSON.parse(chunk);
+          var html = ejs.render(filestring, {user: user, filename: __dirname + '/user.ejs'});
+          res.setHeader("content-type", "text/html");
+          res.writeHead(200);
+          res.write(html);
+          res.end();
+        });
+      });
+      externalRequest.end();
+    }
+  });
+});
 // Weitere Seiten
 /*
 // Aktuell in einer Stadt??
