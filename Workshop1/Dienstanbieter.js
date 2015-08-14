@@ -285,23 +285,6 @@ app.put('/bars', function(req, res){
             });
         },
         function(callback){
-            console.log(data);
-            var i = 0;
-            
-            async.forEach(data, function(bars, callback){
-                db.get('bars:' + bars.id, function(err, rep){
-                    if(rep){
-                        console.log(data);
-                        var ortsAbfrage = JSON.parse(rep);
-                        console.log(ortsAbfrage.stadt);
-                        data[i++].stadt = ort.stadt;
-                        callback();
-                    }
-                    
-                });
-            }, callback);
-        },
-        function(callback){
             var test, temp = [];
             var currentdate = new Date();
             var tag = currentdate.getDay(); //aktueller tag, 0-6, 0 == sonntag
