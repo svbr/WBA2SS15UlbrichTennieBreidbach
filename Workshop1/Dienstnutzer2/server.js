@@ -125,6 +125,46 @@ app.get("/user/:id", function(req, res, next){
     }
   });
 });
+
+app.get('/add', function(req, res){
+    res.render('./pages/add.ejs');
+    
+});
+
+app.post('/add', function(req, res){
+    var test = req.body;
+    console.log(test);
+   fs.readFile("./views/pages/add.ejs", {encoding:"utf-8"}, function(err, filestring){
+    if(err){
+      throw err;
+    } else{
+      var options = {
+        host: "localhost",
+        port: 3000,
+        path: "/user/1/bars",
+        method:"POST"
+      }
+      var externalRequest = http.request(options, function(externalResponse){
+        console.log("Connected Bars post");
+        externalResponse.on("data", function(chunk){
+          var newBar = JSON.parse(chunk);
+          var html = ejs.render(filestring, {user: newBar, filename: __dirname + '/add.ejs'});
+          res.setHeader("content-type", "text/html");
+          res.writeHead(200);
+          res.write(html);
+          res.end();
+        });
+      });
+      externalRequest.on('error', function(e) {
+        console.log('problem with request: ' + e.message);
+      });
+      externalRequest.setHeader("content-type", "application/json");
+      externalRequest.write(JSON.stringify(test));
+      console.log(test);
+      externalRequest.end();
+    }
+});
+});
 // Weitere Seiten
 /*
 // Aktuell in einer Stadt??

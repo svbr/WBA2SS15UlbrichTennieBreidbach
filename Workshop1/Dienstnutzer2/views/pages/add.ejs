@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<% include ../partials/head %>
+    <script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+    <script src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+    
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    
+    <script type="text/javascript">
+    $(document).ready(function() {
+        $("#form").submit(function(event) {
+            
+            var newBar = {
+                name: $("#name").val(),
+                adresse: $("#adresse").val(),
+                stadt: $("#stadt").val(),
+                typ: $("#typ").val(),
+                gegebenheiten: $("#gegebenheiten").val()
+            };
+            alert(newBar.name);
+            //alert("name: "+newBar.name + " adresse: " + newBar.adresse + " stadt: " + newBar.stadt + " typ: " + newBar.typ + " gegebenheiten: " + newBar.gegebenheiten);
+            $.ajax({
+				type: 'POST',
+                host: 'localhost',
+                port: 8080,
+				url: '/add',
+                dataType: 'application/json',
+                contenType: 'application/json',
+				data: JSON.stringify(newBar)
+				}).done(function(data){
+				    alert(data);
+				}).fail(function(e){
+				    alert(e.name);
+				});
+				event.preventDefault();
+            });
+            
+        });
+    
+    </script>
+</head>
+<body class="container">
+
+<header>
+  <% include ../partials/header %>
+</header>
+
+  <main>
+    <div class="row">
+			<div class="col-sm-8">
+        <div class="jumbotron">
+          <h1>Kneipentour</h1>
+          <p>Der schnellste Weg zum Kater</p>
+        </div>
+      </div>
+      <div class="col-sm-4">
+
+				<div class="well">
+                    <form id="form" method="POST">
+                        Barname: <br/> <input id="name" type="text"><br>
+                        Adresse: <br/> <input id="adresse" type="text"><br>
+                        Stadt: <br/> <input id="stadt" type="text"><br>          
+                        Typ: <br/> <input id="typ" type="text"><br>
+                        Gegebenheiten: <br/> <input id="gegebenheiten" type="text"><br>
+                        <input type="submit" value="Add">
+                    </form>
+                </div>
+      </div>
+    </div>
+
+  </main>
+
+    <footer>
+  		<% include ../partials/footer %>
+    </footer>
+
+</body>
+</html>
