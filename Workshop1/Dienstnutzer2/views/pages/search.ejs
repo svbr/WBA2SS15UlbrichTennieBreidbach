@@ -2,6 +2,41 @@
 <html lang="en">
 <head>
 	<% include ../partials/head %>
+    <script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+    <script src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+    
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    
+    <script type="text/javascript">
+    $(document).ready(function() {
+        $("#form").submit(function(event) {
+            
+            var search = {
+                stadt: $("#stadt").val()
+            };
+            
+            $.ajaxSetup({
+                contentType: "application/json; charset=utf-8"
+            });
+            $.ajax({
+				type: 'GET',
+                host: 'localhost',
+                port: 8080,
+				url: '/search1'
+				}).done(function(data){
+                    JSON.stringify(data);
+                    alert(data);
+                    
+				}).fail(function(e){
+				    alert("fehler");
+				});
+				event.preventDefault();
+            });
+            
+        });
+        
+    
+    </script>
 </head>
 <body class="container">
 
@@ -14,12 +49,12 @@
   <main>
         <div class="jumbotron">
           <h1>Kneipentour</h1>
-					<form>
-						<br><br><br>Bar suchen: <input type='text' id='bar' name='bar'>
-						<input type='submit' value='Suche' name='submit'>
+					<form id='form'>
+						<br><br><br>Bar suchen: <input type='text' id='stadt' name='bar'>
+						<input type='submit' value='Suche'>
 					</form>
     		</div>
-
+        <div id="results"></div>
     </main>
 
     <footer>

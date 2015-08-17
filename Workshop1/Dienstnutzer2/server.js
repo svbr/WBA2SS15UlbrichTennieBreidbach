@@ -25,6 +25,47 @@ app.get('/search', function(req, res) {
 	res.render('./pages/search.ejs');
 });
 
+app.get('/search1', function(req, res) {
+    var search = req.body;
+    console.log(search);
+   fs.readFile("./views/pages/search.ejs", {encoding:"utf-8"}, function(err, filestring){
+    if(err){
+      throw err;
+    } else{
+      var options = {
+        host: "localhost",
+        port: 3000,
+        path: "/suchbars",
+        method:"GET",
+        headers:{
+          accept:"application/json"
+        }
+      }
+      var externalRequest = http.request(options, function(externalResponse){
+        console.log("Connected Bars get");
+        externalResponse.on("data", function(chunk){
+            var bars = JSON.parse(chunk);
+            var temp = [];
+            var k = 0;
+            /*for(var i = 0; i < bars.length; i++){
+                if(search.stadt == bars[i].stadt){
+                    temp[k++] = bars[i];
+                }
+            }
+            bars = temp;*/
+            console.log(bars);
+          //var html = ejs.render(filestring, {bars: bars, filename: __dirname + '/views/pages/search.ejs'});
+          res.setHeader("content-type", "application/json");
+          //res.writeHead(200);
+          res.send(bars);
+          res.end();
+        });
+      });
+      externalRequest.end();
+    }
+});
+});
+
 // about page
 app.get('/about', function(req, res) {
 	res.render('./pages/about.ejs');

@@ -317,7 +317,7 @@ app.get('/bars', function(req, res){
 });
 
 
-app.put('/bars', function(req, res){
+app.get('/suchbars', function(req, res){
     var data = [];
     
     async.series([
@@ -333,6 +333,7 @@ app.put('/bars', function(req, res){
                         data = data.map(function(bars){
                             return {id: bars.bid, name: bars.name, adresse: bars.adresse, stadt: bars.stadt, typ: bars.typ, gegebenheiten: bars.gegebenheiten};
                         });
+                        //console.log(data);
                         var i = 0, p = 0;
                         var temp = [];
                         while(i < data.length){
@@ -341,6 +342,7 @@ app.put('/bars', function(req, res){
                             i++;
                         }
                         data = temp;
+                        
                         callback();
                     }); 
                 }
@@ -351,8 +353,8 @@ app.put('/bars', function(req, res){
             var currentdate = new Date();
             var tag = currentdate.getDay(); //aktueller tag, 0-6, 0 == sonntag
             var stunde = currentdate.getHours(); //aktuelle stunde
-            
-            var i = 0, j = 0, p = 0;
+            var i = 0;
+            /*var i = 0, j = 0, p = 0;
             while(j < data.length){
                 if(data[j] === undefined){
                 } else { 
@@ -360,7 +362,7 @@ app.put('/bars', function(req, res){
                 }
                 j++;
             }
-            data = temp;
+            data = temp;*/
             async.forEach(data, function(bars, callback){
                 db.get('bars:' + bars.id + '/oeffnungszeiten', function(err, rep){
                    if(rep){
