@@ -22,8 +22,12 @@
         </main>
         <h1>Profil von <%= bars.userID %></h1>
         <ul>
-          <li><%= bars.bid %></li>
-          <li><%= bars.name %></li>
+          <li><p>Bar ID:</p><%= bars.bid %></li>
+          <li><p>Name:</p><%= bars.name %></li>
+          <li><p>Adresse:</p><%= bars.adresse %></li>
+          <li><p>Stadt.</p><%= bars.stadt %></li>
+          <li><p>Typ:</p><%= bars.typ %></li>
+          <li><p>Gegebenheiten:</p><%= bars.gegebenheiten %></li>
         </ul>
     <footer>
         <% include ./views/partials/footer.ejs %>
