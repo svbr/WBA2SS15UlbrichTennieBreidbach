@@ -18,7 +18,7 @@
                 typ: $("#typ").val(),
                 gegebenheiten: $("#gegebenheiten").val()
             };
-            //alert("name: "+newBar.name + " adresse: " + newBar.adresse + " stadt: " + newBar.stadt + " typ: " + newBar.typ + " gegebenheiten: " + newBar.gegebenheiten);
+            
             $.ajaxSetup({
                 contentType: "application/json; charset=utf-8"
             });
@@ -29,7 +29,7 @@
 				url: '/add',
 				data: JSON.stringify(newBar),
 				}).done(function(data){
-				    alert("geschafft");
+				    //alert("geschafft");
                     $("#name").val('');
                     $("#adresse").val('');
                     $("#stadt").val('');
