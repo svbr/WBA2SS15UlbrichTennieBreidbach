@@ -7,6 +7,7 @@ var bodyparser = require('body-parser');
 var jsonParser = bodyparser.json();
 var app = express();
 
+app.use(jsonParser);
 //app.use('/views', express.static(__dirname + '/views'));
 
 // set the view engine to ejs
@@ -148,7 +149,7 @@ app.post('/add', function(req, res){
         console.log("Connected Bars post");
         externalResponse.on("data", function(chunk){
           var newBar = JSON.parse(chunk);
-          var html = ejs.render(filestring, {user: newBar, filename: __dirname + '/add.ejs'});
+          var html = ejs.render(filestring, {newBar: newBar, filename: __dirname + '/views/pages/add.ejs'});
           res.setHeader("content-type", "text/html");
           res.writeHead(200);
           res.write(html);

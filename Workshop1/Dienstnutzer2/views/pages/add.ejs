@@ -18,20 +18,25 @@
                 typ: $("#typ").val(),
                 gegebenheiten: $("#gegebenheiten").val()
             };
-            alert(newBar.name);
             //alert("name: "+newBar.name + " adresse: " + newBar.adresse + " stadt: " + newBar.stadt + " typ: " + newBar.typ + " gegebenheiten: " + newBar.gegebenheiten);
+            $.ajaxSetup({
+                contentType: "application/json; charset=utf-8"
+            });
             $.ajax({
 				type: 'POST',
                 host: 'localhost',
                 port: 8080,
 				url: '/add',
-                dataType: 'application/json',
-                contenType: 'application/json',
-				data: JSON.stringify(newBar)
+				data: JSON.stringify(newBar),
 				}).done(function(data){
-				    alert(data);
+				    alert("geschafft");
+                    $("#name").val('');
+                    $("#adresse").val('');
+                    $("#stadt").val('');
+                    $("#typ").val('');
+                    $("#gegebenheiten").val('');
 				}).fail(function(e){
-				    alert(e.name);
+				    alert("fehler");
 				});
 				event.preventDefault();
             });
