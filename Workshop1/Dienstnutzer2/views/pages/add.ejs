@@ -4,13 +4,13 @@
 	<% include ../partials/head %>
     <script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
     <script src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
-    
+
     <meta http-equiv="content-type" content="text/html; charset=utf-8">
-    
+
     <script type="text/javascript">
     $(document).ready(function() {
         $("#form").submit(function(event) {
-            
+
             var newBar = {
                 name: $("#name").val(),
                 adresse: $("#adresse").val(),
@@ -18,7 +18,7 @@
                 typ: $("#typ").val(),
                 gegebenheiten: $("#gegebenheiten").val()
             };
-            
+
             $.ajaxSetup({
                 contentType: "application/json; charset=utf-8"
             });
@@ -40,9 +40,9 @@
 				});
 				event.preventDefault();
             });
-            
+
         });
-    
+
     </script>
 </head>
 <body class="container">
@@ -65,11 +65,12 @@
                     <form id="form" method="POST">
                         Barname: <br/> <input id="name" type="text"><br>
                         Adresse: <br/> <input id="adresse" type="text"><br>
-                        Stadt: <br/> <input id="stadt" type="text"><br>          
+                        Stadt: <br/> <input id="stadt" type="text"><br>
                         Typ: <br/> <input id="typ" type="text"><br>
                         Gegebenheiten: <br/> <input id="gegebenheiten" type="text"><br>
                         <input type="submit" value="Add">
                     </form>
+										<p>Es dürfen keine Felder frei bleiben.</p>
                 </div>
       </div>
     </div>
