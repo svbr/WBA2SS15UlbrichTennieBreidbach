@@ -32,7 +32,6 @@
                     $.each(data, function(index, element) {
                         if(element.name === $('#uname').val() && element.passwort == $('#pass').val()){
                                 document.getElementById('hide').removeAttribute('style');
-                                
                                 $('#pruefen').replaceWith("<div  class='well' id='pruefen'><p>Eingeloggt als:<br/>UserID: " + element.id + "<br/> Username: " + element.name + " <br/></p></div>");
                                 temp = true;
                         }
@@ -42,7 +41,7 @@
                     }
             }
             }).fail(function(data){
-                alert("kakasd"); 
+                alert("fail"); 
             });
         });
         $("#form").submit(function(event) {
@@ -108,14 +107,32 @@
               </form>
         </div>
       </div>
-      <div class="col-sm-4">
+      <div class="col-sm-8">
 				<div class="well" id='hide' style="display:none">
                     <form id="form" method="POST">
+                        <p><strong>Algemeine Details</strong></p>
                         <label for="name">Barname: </label><br/> <input id="name" type="text" required ><br>
                         <label for="adresse">Adresse: </label><br/> <input id="adresse" type="text" required><br>
                         <label for="stadt">Stadt: </label> <br/> <input id="stadt" type="text" required><br>
                         <label for="typ">Typ: </label> <br/> <input id="typ" type="text" required><br>
-                        <label for="gegebenheiten">Gegebenheiten: </label>  <br/> <input id="gegebenheiten" type="text" required><br><br>
+                        <label for="gegebenheiten">Gegebenheiten: </label>  <br/> <input id="gegebenheiten" type="text" required><br>
+                        <label for="sitzplaetze">Gesamte Sitzplaezte: </label>  <br/> <input id="sitzplaetze" type="text" required><br>
+                        <br>
+                        <p><strong>Öffnungszeiten</strong></p>
+                        <label for="montagVon">Montag von: </label> <input id="montagVon" type="text" required>
+                        <label for="montagBis">bis: </label> <input id="montagBis" type="text" required ><br>
+                        <label for="dienstagVon">Dienstag von: </label> <input id="dienstagVon" type="text" required >
+                        <label for="dienstagBis">bis: </label> <input id="dienstagBis" type="text" required ><br>
+                        <label for="mittwochVon">Mittwoch von: </label> <input id="mittwochVon" type="text" required >
+                        <label for="mittwochBis">bis: </label> <input id="mitwochBis" type="text" required ><br>
+                        <label for="donnerstagVon">Donnerstag von: </label> <input id="donnerstagVon" type="text" required >
+                        <label for="donnerstagBis">bis: </label> <input id="donnerstagBis" type="text" required ><br>
+                        <label for="freitagVon">Freitag von: </label> <input id="freitagVon" type="text" required >
+                        <label for="freitagBis">bis: </label> <input id="freitagBis" type="text" required ><br>
+                        <label for="samstagVon">Samstag von: </label> <input id="samstagVon" type="text" required >
+                        <label for="samstagBis">bis: </label> <input id="samstagBis" type="text" required ><br>
+                        <label for="sonntagVon">Sonntag von: </label> <input id="sonntagVon" type="text" required >
+                        <label for="sonntagBis">bis: </label> <input id="sonntagBis" type="text" required ><br>
                         <input type="submit" id="test" value="ADD">
                     </form>
 				    <p>Es dürfen keine Felder frei bleiben.</p>

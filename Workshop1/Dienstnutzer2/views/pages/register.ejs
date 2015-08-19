@@ -10,36 +10,64 @@
     <script type="text/javascript">
     $(document).ready(function() {
         $("#form").submit(function(event) {
-					event.preventDefault();
+            event.preventDefault();
             $('#pruefen').append("<p id='pruefen'></p>");
             if($("#passwort2").val() === $("#passwort").val()){
                 var newUser = {
                     name: $("#name").val(),
                     passwort: $("#passwort").val()
                 };
-
-                $.ajaxSetup({
-                    contentType: "application/json; charset=utf-8"
-                });
                 $.ajax({
-				    type: 'POST',
+				    type: 'GET',
                     host: 'localhost',
                     port: 8080,
-				    url: '/register',
-				    data: JSON.stringify(newUser),
-				}).done(function(data){
-				        //alert("geschafft");
-                        $("#name").val('');
-                        $("#passwort").val('');
-                        $("#passwort2").val('');
-                    }).fail(function(e){
-				    alert("fehler");
-				});
-				event.preventDefault();
+				    url: '/user',
+                    data: { id: 'val1',
+                            name: 'val2',
+                            passwort: 'val3'
+                            },
+                    dataType: 'json',
+                    success: function(data){
+                        $('#pruefen').replaceWith("<div id='pruefen'></div>");
+                            var temp = false
+                            $.each(data, function(index, element) {
+                                if(element.name === $('#name').val()){
+                                    temp = true;
+                            }
+                        });
+                        if(temp == true){
+                            $('#pruefen').append("Der Benutzername gibt es schon!");
+                        } else {
+                            $.ajaxSetup({
+                                contentType: "application/json; charset=utf-8"
+                            });
+
+                            $.ajax({
+                                type: 'POST',
+                                host: 'localhost',
+                                port: 8080,
+                                url: '/register',
+                                data: JSON.stringify(newUser),
+                            }).done(function(data){
+                                    //alert("geschafft");
+                                    $("#name").val('');
+                                    $("#passwort").val('');
+                                    $("#passwort2").val('');
+                                    $('#pruefen').append("Benutzer wurde angelegt!")
+                                }).fail(function(e){
+                                alert("fehler");
+                            });
+                            event.preventDefault();
+                        }
+                    }
+                }).fail(function(data){
+                    alert("fail"); 
+                });
+                
             } else {
                 $('#pruefen').append("Passwort stimmt nicht überein!");
 
-						}
+            }
             });
 
         });

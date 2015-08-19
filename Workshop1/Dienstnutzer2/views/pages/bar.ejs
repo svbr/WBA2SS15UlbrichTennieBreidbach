@@ -20,15 +20,17 @@
                 <h1>Kneipentour</h1>
             </div>
         </main>
-        <h1>Profil von <%= bars.userID %></h1>
-        <ul>
-          <br><li><h4>Bar ID:</h4><%= bars.bid %></li>
-          <li><h4>Name:</h4><%= bars.name %></li>
-          <br><li><h4>Adresse:</h4><%= bars.adresse %></li>
-          <br><li><h4>Stadt:</h4><%= bars.stadt %></li>
-          <br><li><h4>Typ:</h4><%= bars.typ %></li>
-          <br><li><h4>Gegebenheiten:</h4><%= bars.gegebenheiten %></li>
-        </ul>
+        <div>
+            <h1>Profil von <%= bars.userID %></h1>
+            <ul>
+              <br><li><h4>Bar ID:</h4><%= bars.bid %></li>
+              <li><h4>Name:</h4><%= bars.name %></li>
+              <br><li><h4>Adresse:</h4><%= bars.adresse %></li>
+              <br><li><h4>Stadt:</h4><%= bars.stadt %></li>
+              <br><li><h4>Typ:</h4><%= bars.typ %></li>
+              <br><li><h4>Gegebenheiten:</h4><%= bars.gegebenheiten %></li>
+            </ul>
+        </div>
     <footer>
         <% include ./views/partials/footer.ejs %>
     </footer>
