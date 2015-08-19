@@ -11,10 +11,6 @@
     $(document).ready(function() {
         $("#form").submit(function(event) {
             
-            var search = {
-                stadt: $("#stadt").val()
-            };
-            
             $.ajaxSetup({
                 contentType: "application/json; charset=utf-8"
             });
@@ -22,10 +18,23 @@
 				type: 'GET',
                 host: 'localhost',
                 port: 8080,
-				url: '/search1'
+				url: '/search1',
+                data: { id: 'val1',
+                        name: 'val2',
+                        stadt: 'val3',
+                        offen: 'val4',
+                        sitzplaetze: 'val5',
+                        asp: 'val6' },
+                dataType: 'json',
+                success: function(data){
+                    $.each(data, function(index, element) {
+                        if(element.stadt == $("#search").val() || element.name == $("#search").val() || element.offen == $("#search").val()){
+                            $('#results').append("<h3>" + element.name.toString() + "</h3><br/> ID: " + element.id.toString()+ "<br/>Stadt: " + element.stadt.toString()+ "<br/>Geöffnet: " + element.offen.toString() + "<br/> Sitzplätze: " + element.sitzplaetze.toString() + "<br/>Aktuelle Sitzplätze: " + element.asp.toString());
+                        }
+                    });
+                }
 				}).done(function(data){
-                    JSON.stringify(data);
-                    alert(data);
+                    alert("Passt");
                     
 				}).fail(function(e){
 				    alert("fehler");
@@ -50,7 +59,7 @@
         <div class="jumbotron">
           <h1>Kneipentour</h1>
 					<form id='form'>
-						<br><br><br>Bar suchen: <input type='text' id='stadt' name='bar'>
+						<br><br><br>Bar suchen: <input type='text' id='search' name='bar'>
 						<input type='submit' value='Suche'>
 					</form>
     		</div>

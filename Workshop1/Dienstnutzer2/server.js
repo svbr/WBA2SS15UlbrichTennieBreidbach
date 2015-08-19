@@ -55,7 +55,7 @@ app.get('/search1', function(req, res) {
             bars = temp;*/
             console.log(bars);
           //var html = ejs.render(filestring, {bars: bars, filename: __dirname + '/views/pages/search.ejs'});
-          res.setHeader("content-type", "application/json");
+          //res.setHeader("content-type", "application/json");
           //res.writeHead(200);
           res.send(bars);
           res.end();
@@ -137,6 +137,7 @@ app.get('/bars', function(req, res){
 
         } else {
             externalResponse.on("data", function(chunk){
+<<<<<<< Updated upstream
 
             var bars = JSON.parse(chunk);
             var html = ejs.render(filestring, {bars: bars, filename: __dirname + '/bars.ejs'});
@@ -144,6 +145,15 @@ app.get('/bars', function(req, res){
             res.writeHead(200);
             res.write(html);
             res.end();
+=======
+                
+                var bars = JSON.parse(chunk);
+                var html = ejs.render(filestring, {bars: bars, filename: __dirname + '/bars.ejs'});
+                res.setHeader("content-type", "text/html");
+                res.writeHead(200);
+                res.write(html);
+                res.end();
+>>>>>>> Stashed changes
             });
         }
       });
