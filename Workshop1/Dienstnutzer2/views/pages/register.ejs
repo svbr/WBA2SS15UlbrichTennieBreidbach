@@ -10,31 +10,34 @@
     <script type="text/javascript">
     $(document).ready(function() {
         $("#form").submit(function(event) {
+            $('#pruefen').append("<p id='pruefen'></p>");
+            if($("#passwort2").val() === $("#passwort").val()){
+                var newUser = {
+                    name: $("#name").val(),
+                    passwort: $("#passwort").val()
+                };
 
-            var newUser = {
-                name: $("#name").val(),
-                passwort: $("#passwort").val()
-								passwort2: $("#passwort2").val()
-            };
-
-            $.ajaxSetup({
-                contentType: "application/json; charset=utf-8"
-            });
-            $.ajax({
-				type: 'POST',
-                host: 'localhost',
-                port: 8080,
-				url: '/register',
-				data: JSON.stringify(newUser),
+                $.ajaxSetup({
+                    contentType: "application/json; charset=utf-8"
+                });
+                $.ajax({
+				    type: 'POST',
+                    host: 'localhost',
+                    port: 8080,
+				    url: '/register',
+				    data: JSON.stringify(newUser),
 				}).done(function(data){
-				    //alert("geschafft");
-                    $("#name").val('');
-                    $("#passwort").val('');
-										$("#passwort2").val('');
-      	}).fail(function(e){
+				        //alert("geschafft");
+                        $("#name").val('');
+                        $("#passwort").val('');
+                        $("#passwort2").val('');     
+                    }).fail(function(e){
 				    alert("fehler");
 				});
 				event.preventDefault();
+            } else {
+                $('#pruefen').append("Passwort stimmt nicht überein!");
+            }
             });
 
         });
@@ -68,6 +71,7 @@
 											<br/> <input id="passwort2" type="password" required><br>
                         <input type="submit" value="Registrieren">
                     </form>
+                    <p id="pruefen"></p>
                 </div>
       </div>
     </div>
