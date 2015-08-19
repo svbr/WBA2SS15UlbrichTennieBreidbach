@@ -14,6 +14,7 @@
             var newUser = {
                 name: $("#name").val(),
                 passwort: $("#passwort").val()
+								passwort2: $("#passwort2").val()
             };
 
             $.ajaxSetup({
@@ -29,6 +30,7 @@
 				    //alert("geschafft");
                     $("#name").val('');
                     $("#passwort").val('');
+										$("#passwort2").val('');
       	}).fail(function(e){
 				    alert("fehler");
 				});
@@ -58,8 +60,12 @@
 				<div class="well">
                     <p>Neuen Nutzer registrieren:</p>
                     <form id="form" method="POST">
-                      Username: <br/> <input id="name" type="text"><br>
-                      Passwort: <br/> <input id="passwort" type="password"><br>
+											<label for="name">Benutzername:</label>
+                      <br/> <input id="name" type="text" required><br>
+                      <label for="bname">Passwort:</label>
+											<br/> <input id="passwort" type="password" required><br>
+											<label for="bname">Passwort wiederholen:</label>
+											<br/> <input id="passwort2" type="password" required><br>
                         <input type="submit" value="Registrieren">
                     </form>
                 </div>
@@ -67,6 +73,7 @@
     </div>
 
   </main>
+
 
     <footer>
   		<% include ../partials/footer %>
