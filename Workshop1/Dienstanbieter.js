@@ -282,7 +282,7 @@ app.put('/user/:id/bars/:bid/sitzplaetze', function(req, res){
     });
 });
     
-//ausgabe einer Liste der Bars die in der Stadt geöffnet hat.
+
 
 app.get('/bars', function(req, res){
     var data = [];
@@ -316,6 +316,7 @@ app.get('/bars', function(req, res){
 
 });
 
+//ausgabe einer Liste der Bars die in der Stadt geöffnet hat.
 
 app.get('/suchbars', function(req, res){
     var data = [];

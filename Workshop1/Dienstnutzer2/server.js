@@ -92,14 +92,19 @@ app.get('/bars', function(req, res){
       }
       var externalRequest = http.request(options, function(externalResponse){
         console.log("Connected Bars get");
-        externalResponse.on("data", function(chunk){
-          var bars = JSON.parse(chunk);
-          var html = ejs.render(filestring, {bars: bars, filename: __dirname + '/bars.ejs'});
-          res.setHeader("content-type", "text/html");
-          res.writeHead(200);
-          res.write(html);
-          res.end();
-        });
+        if(externalResponse.statusCode == 404){
+            
+        } else {
+            externalResponse.on("data", function(chunk){
+            
+            var bars = JSON.parse(chunk);
+            var html = ejs.render(filestring, {bars: bars, filename: __dirname + '/bars.ejs'});
+            res.setHeader("content-type", "text/html");
+            res.writeHead(200);
+            res.write(html);
+            res.end();
+            });
+        }
       });
       externalRequest.end();
     }
