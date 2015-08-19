@@ -10,6 +10,7 @@
     <script type="text/javascript">
     $(document).ready(function() {
         $("#form").submit(function(event) {
+					event.preventDefault();
             $('#pruefen').append("<p id='pruefen'></p>");
             if($("#passwort2").val() === $("#passwort").val()){
                 var newUser = {
@@ -30,14 +31,15 @@
 				        //alert("geschafft");
                         $("#name").val('');
                         $("#passwort").val('');
-                        $("#passwort2").val('');     
+                        $("#passwort2").val('');
                     }).fail(function(e){
 				    alert("fehler");
 				});
 				event.preventDefault();
             } else {
                 $('#pruefen').append("Passwort stimmt nicht überein!");
-            }
+
+						}
             });
 
         });
@@ -62,7 +64,7 @@
 <!-- Passwort bestätigen noch hinzufügen -->
 				<div class="well">
                     <p>Neuen Nutzer registrieren:</p>
-                    <form id="form" method="POST">
+                    <form id="form">
 											<label for="name">Benutzername:</label>
                       <br/> <input id="name" type="text" required><br>
                       <label for="bname">Passwort:</label>
