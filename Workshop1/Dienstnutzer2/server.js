@@ -138,15 +138,6 @@ app.get('/bars', function(req, res){
 					res.render('./pages/barsnotfound.ejs');
         } else {
             externalResponse.on("data", function(chunk){
-<<<<<<< Updated upstream
-
-            var bars = JSON.parse(chunk);
-            var html = ejs.render(filestring, {bars: bars, filename: __dirname + '/bars.ejs'});
-            res.setHeader("content-type", "text/html");
-            res.writeHead(200);
-            res.write(html);
-            res.end();
-=======
 
                 var bars = JSON.parse(chunk);
                 var html = ejs.render(filestring, {bars: bars, filename: __dirname + '/bars.ejs'});
@@ -154,7 +145,6 @@ app.get('/bars', function(req, res){
                 res.writeHead(200);
                 res.write(html);
                 res.end();
->>>>>>> Stashed changes
             });
         }
       });
