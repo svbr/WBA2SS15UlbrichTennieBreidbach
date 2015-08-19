@@ -27,9 +27,10 @@
                         asp: 'val6' },
                 dataType: 'json',
                 success: function(data){
+                    $('#results').replaceWith("<div id='results'></div>");
                     $.each(data, function(index, element) {
                         if(element.stadt == $("#search").val() || element.name == $("#search").val() || element.offen == $("#search").val()){
-                            $('#results').append("<h3>" + element.name.toString() + "</h3><br/> ID: " + element.id.toString()+ "<br/>Stadt: " + element.stadt.toString()+ "<br/>Geöffnet: " + element.offen.toString() + "<br/> Sitzplätze: " + element.sitzplaetze.toString() + "<br/>Aktuelle Sitzplätze: " + element.asp.toString());
+                            $('#results').append($("<div class='jumbotron' id='test'> <h3>" + element.name.toString() + "</h3><br/> ID: " + element.id.toString()+ "<br/>Stadt: " + element.stadt.toString()+ "<br/>Geöffnet: " + element.offen.toString() + "<br/> Sitzplätze: " + element.sitzplaetze.toString() + "<br/>Aktuelle Sitzplätze: " + element.asp.toString() + "</div>"));
                         }
                     });
                 }
