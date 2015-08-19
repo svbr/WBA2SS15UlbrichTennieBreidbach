@@ -470,6 +470,28 @@ app.get('/user/:id', function(req, res){
    });
 });
 
+app.get('/user', function(req, res){
+    var data = [];
+    db.keys('user:*', function(err, rep){
+                if(rep.length == 0){
+                    res.status(404).type('text').send("Keine User vorhanden!");
+                } else {
+                    db.mget(rep, function(err, rep){
+                        rep.forEach(function(val){
+                            data.push(JSON.parse(val));         
+                        });
+                        console.log(data);
+                        data = data.map(function(user){
+                            return {id: user.id, name: user.name, passwort: user.passwort};
+                        });
+                        res.type('json').send(data);
+                    });
+                    
+                }
+    });
+});
+
+
 //Ausgabe der Bar
 //Benötigt: (BarID)
 //Ausgabe: BarID, Barname

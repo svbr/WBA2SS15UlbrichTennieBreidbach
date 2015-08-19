@@ -20,6 +20,37 @@ app.get('/', function(req, res) {
 	res.render('./pages/index.ejs');
 });
 
+app.get('/user', function(req, res){
+    fs.readFile("./views/pages/add.ejs", {encoding:"utf-8"}, function(err, filestring){
+    if(err){
+      throw err;
+    } else{
+      var options = {
+        host: "localhost",
+        port: 3000,
+        path: "/user",
+        method:"GET",
+        headers:{
+          accept:"application/json"
+        }
+      }
+      var externalRequest = http.request(options, function(externalResponse){
+        console.log("Connected User get");
+        externalResponse.on("data", function(chunk){
+            var user = JSON.parse(chunk);
+            console.log(user);
+            res.send(user);
+            res.end();
+        });
+      });
+      externalRequest.end();
+    }
+});
+
+});
+
+
+
 // Suche
 app.get('/search', function(req, res) {
 	res.render('./pages/search.ejs');
