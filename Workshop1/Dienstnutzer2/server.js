@@ -134,7 +134,8 @@ app.get('/bars', function(req, res){
       var externalRequest = http.request(options, function(externalResponse){
         console.log("Connected Bars get");
         if(externalResponse.statusCode == 404){
-
+					console.log("Got response: " + externalResponse.statusCode);
+					res.render('./pages/barsnotfound.ejs');
         } else {
             externalResponse.on("data", function(chunk){
 <<<<<<< Updated upstream
@@ -146,7 +147,7 @@ app.get('/bars', function(req, res){
             res.write(html);
             res.end();
 =======
-                
+
                 var bars = JSON.parse(chunk);
                 var html = ejs.render(filestring, {bars: bars, filename: __dirname + '/bars.ejs'});
                 res.setHeader("content-type", "text/html");
