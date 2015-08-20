@@ -1,11 +1,32 @@
 <!DOCTYPE html>
 <html lang="en">
-    <script>
-        <meta http-equiv="content-type" content="text/html; charset=utf-8">
-    </script>
+    
 
     <head>
 	   <% include ./views/partials/head.ejs %>
+        <script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+        <script src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+        <meta http-equiv="content-type" content="text/html; charset=utf-8">
+        <script>
+            $(document).ready(function() {
+                $("#löschen").submit(function(event){
+                    var test = bars.id;
+                    
+                    $.ajax({
+                        type: 'DELETE',
+                        host: 'localhost',
+                        port: 8080,
+				        url: '/user/' + test,
+                        success: function(data){
+                            alert('gelöscht');
+                        }
+                    }).fail(function(data){
+                        alert("fail");
+                    });
+                    event.preventDefault();
+            });
+        
+        </script>
     </head>
     <body class="container">
 
@@ -20,11 +41,12 @@
                 <h1>Kneipentour</h1>
             </div>
         </main>
-        <div>
-            <h1>Profil von <%= bars.userID %></h1>
+        <div class="jumbotron" >
+            <form style="float: right">
+                <input type="submit" id="löschen" value="Bar löschen" style="height: 50px; width: 100px;">
+            </form>
+            <h1><%= bars.name %></h1>
             <ul>
-              <br><li><h4>Bar ID:</h4><%= bars.bid %></li>
-              <li><h4>Name:</h4><%= bars.name %></li>
               <br><li><h4>Adresse:</h4><%= bars.adresse %></li>
               <br><li><h4>Stadt:</h4><%= bars.stadt %></li>
               <br><li><h4>Typ:</h4><%= bars.typ %></li>
@@ -40,6 +62,14 @@
                         <li>Sonntag von:    <%= oeffnungszeiten.sonntagvon %> bis <%= oeffnungszeiten.sonntagbis %></li>
                     </ul>
                 </li>
+                <li><h4>Events</h4></li>
+                        <%for(var i = 0; i < bars.length; i++){%>
+                            <ul>
+                                <li><h4>Event <%= events[i].event %></a><h4></li>
+                                <li><h4>Am: <%= bars[i].datum %></h4></li>
+                                <li><h4>Um: <%= bars[i].uhrzeit %> Uhr</h4></li>
+                            </ul><%
+                        }%>
             </ul>
         </div>
     <footer>

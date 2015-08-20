@@ -66,7 +66,7 @@ app.get('/search', function(req, res) {
 	res.render('./pages/search.ejs');
 });
 
-app.get('/search1', function(req, res) {
+app.get('/aktuell', function(req, res) {
     var search = req.body;
     console.log(search);
    fs.readFile("./views/pages/search.ejs", {encoding:"utf-8"}, function(err, filestring){
@@ -76,7 +76,7 @@ app.get('/search1', function(req, res) {
       var options = {
         host: "localhost",
         port: 3000,
-        path: "/suchbars",
+        path: "/aktuell",
         method:"GET",
         headers:{
           accept:"application/json"
@@ -457,6 +457,37 @@ app.post('/user/:id/bars/:bid/sitzplaetze', function(req, res){
     }
 });
 });
+
+app.delete('/user/:id', function(req, res){
+    fs.readFile("./views/pages/user.ejs", {encoding:"utf-8"}, function(err, filestring){
+    if(err){
+      throw err;
+    } else{
+      var options = {
+        host: "localhost",
+        port: 3000,
+        path: "/user/"+req.params.id,
+        method:"DELETE",
+        headers:{
+          accept:"application/json"
+        }
+      }
+      var externalRequest = http.request(options, function(externalResponse){
+        console.log("Connected User delete");
+        externalResponse.on("data", function(chunk){
+          var user = JSON.parse(chunk);
+          var html = ejs.render(filestring, {user: user, filename: __dirname + '/user.ejs'});
+          res.setHeader("content-type", "text/html");
+          res.writeHead(200);
+          res.write(html);
+          res.end();
+        });
+      });
+      externalRequest.end();
+    }
+  });
+});
+
 
 // Weitere Seiten
 /*
