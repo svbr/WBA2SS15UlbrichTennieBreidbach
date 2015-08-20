@@ -197,6 +197,8 @@ app.get('/bars', function(req, res){
 // Bar Seite
 // eine Bar auflisten
 app.get("/bars/:bid", function(req, res, next){
+    var bar, sitzplatz, events;
+    
   fs.readFile("./views/pages/bar.ejs", {encoding:"utf-8"}, function(err, filestring){
     if(err){
       throw err;
@@ -214,15 +216,101 @@ app.get("/bars/:bid", function(req, res, next){
         console.log("Connected Bars get");
         externalResponse.on("data", function(chunk){
           var bars = JSON.parse(chunk);
-          var html = ejs.render(filestring, {bars: bars, filename: __dirname + '/bars.ejs'});
+          /*var html = ejs.render(filestring, {bars: bars, filename: __dirname + '/bars.ejs'});
           res.setHeader("content-type", "text/html");
           res.writeHead(200);
           res.write(html);
-          res.end();
+          res.end();*/
+            bar = bars;
         });
       });
       externalRequest.end();
     }
+  });
+    fs.readFile("./views/pages/bar.ejs", {encoding:"utf-8"}, function(err, filestring){
+    if(err){
+      throw err;
+    } else{
+      var options = {
+        host: "localhost",
+        port: 3000,
+        path: "/bars/"+ req.params.bid + "/sitzplaetze",
+        method:"GET",
+        headers:{
+          accept:"application/json"
+        }
+      }
+      var externalRequest = http.request(options, function(externalResponse){
+        console.log("Connected sitzplaetze get");
+        externalResponse.on("data", function(chunk){
+          var sitzplaetze = JSON.parse(chunk);
+          /*var html = ejs.render(filestring, {bars: bars, filename: __dirname + '/bars.ejs'});
+          res.setHeader("content-type", "text/html");
+          res.writeHead(200);
+          res.write(html);
+          res.end();*/
+            sitzplatz = sitzplaetze;
+        });
+      });
+      externalRequest.end();
+    }
+  });
+    fs.readFile("./views/pages/bar.ejs", {encoding:"utf-8"}, function(err, filestring){
+    if(err){
+      throw err;
+    } else{
+      var options = {
+        host: "localhost",
+        port: 3000,
+        path: "/bars/"+ req.params.bid + "/events",
+        method:"GET",
+        headers:{
+          accept:"application/json"
+        }
+      }
+      var externalRequest = http.request(options, function(externalResponse){
+        console.log("Connected events get");
+        externalResponse.on("data", function(chunk){
+          var event = JSON.parse(chunk);
+          /*var html = ejs.render(filestring, {bars: bars, filename: __dirname + '/bars.ejs'});
+          res.setHeader("content-type", "text/html");
+          res.writeHead(200);
+          res.write(html);
+          res.end();*/
+            events = event;
+        });
+      });
+      externalRequest.end();
+    }
+  });
+    // getränkekarte fehlt!!!!
+    fs.readFile("./views/pages/bar.ejs", {encoding:"utf-8"}, function(err, filestring){
+        if(err){
+          throw err;
+        } else{
+          var options = {
+            host: "localhost",
+            port: 3000,
+            path: "/bars/"+req.params.bid + "/oeffnungszeiten",
+            method:"GET",
+            headers:{
+              accept:"application/json"
+            }
+          }
+          var externalRequest = http.request(options, function(externalResponse){
+            console.log("Connected oeffnungszeiten get");
+            externalResponse.on("data", function(chunk){
+              var oeffnungszeiten = JSON.parse(chunk);
+                
+              var html = ejs.render(filestring, {oeffnungszeiten: oeffnungszeiten, bars: bar, sitzplaetze: sitzplatz, events: events,  filename: __dirname + '/bars.ejs'});
+              res.setHeader("content-type", "text/html");
+              res.writeHead(200);
+              res.write(html);
+              res.end();
+            });
+          });
+          externalRequest.end();
+        }
   });
 });
 

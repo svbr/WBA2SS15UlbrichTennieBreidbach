@@ -30,12 +30,12 @@
                     $('#results').replaceWith("<div id='results'></div>");
                     $.each(data, function(index, element) {
                         if(element.stadt == $("#search").val() || element.name == $("#search").val() || element.offen == $("#search").val()){
-                            $('#results').append($("<div class='jumbotron' id='test'> <h3>" + element.name.toString() + "</h3><br/> ID: " + element.id.toString()+ "<br/>Stadt: " + element.stadt.toString()+ "<br/>Geöffnet: " + element.offen.toString() + "<br/> Sitzplätze: " + element.sitzplaetze.toString() + "<br/>Aktuelle Sitzplätze: " + element.asp.toString() + "</div>"));
+                            $('#results').append($("<div class='jumbotron' id='test'> <h3><a href='http://localhost:8080/bars/" + element.id + "'> "+ element.name.toString() + "</a></h3><br/> ID: " + element.id.toString()+ "<br/>Stadt: " + element.stadt.toString()+ "<br/>Geöffnet: " + element.offen.toString() + "<br/> Sitzplätze: " + element.sitzplaetze.toString() + "<br/>Aktuelle Sitzplätze: " + element.asp.toString() + "</div>"));
                         }
                     });
                 }
 				}).done(function(data){
-                    alert("Passt");
+                    //alert("Passt");
                     
 				}).fail(function(e){
 				    alert("fehler");
