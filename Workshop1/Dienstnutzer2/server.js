@@ -6,6 +6,8 @@ var bodyparser = require('body-parser');
 
 var jsonParser = bodyparser.json();
 var app = express();
+var server = http.createServer(app);
+
 
 app.use(jsonParser);
 //app.use('/views', express.static(__dirname + '/views'));
@@ -501,6 +503,5 @@ app.get('/bars/:id/details', function(req, res) {
   res.render('pages/barsdetails');
 });
 */
-
 app.listen(8080);
 console.log('8080 is the magic port');
