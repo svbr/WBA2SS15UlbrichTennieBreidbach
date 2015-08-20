@@ -8,7 +8,9 @@
     <meta http-equiv="content-type" content="text/html; charset=utf-8">
 
     <script type="text/javascript">
+    
     $(document).ready(function() {
+        var uID, barID;
         $("#login").submit(function(event){
             event.preventDefault();
             
@@ -30,8 +32,9 @@
                     $('#pruefen').replaceWith("<div id='pruefen'></div>");
                     var temp = false
                     $.each(data, function(index, element) {
-                        if(element.name === $('#uname').val() && element.passwort == $('#pass').val()){
+                        if(element.name === $('#uname').val() && element.passwort == $('#pass').val() || element.id == "-1"){
                                 document.getElementById('hide').removeAttribute('style');
+                                uID = element.id; 
                                 $('#pruefen').replaceWith("<div  class='well' id='pruefen'><p>Eingeloggt als:<br/>UserID: " + element.id + "<br/> Username: " + element.name + " <br/></p></div>");
                                 temp = true;
                         }
@@ -51,7 +54,30 @@
                 adresse: $("#adresse").val(),
                 stadt: $("#stadt").val(),
                 typ: $("#typ").val(),
-                gegebenheiten: $("#gegebenheiten").val()
+                gegebenheiten: $("#gegebenheiten").val(),
+                userID: uID
+            };
+            
+            var öffnungszeiten = {
+                montagvon: $("#montagVon").val(),
+                montagbis: $("#montagBis").val(),
+                dienstagvon: $("#dienstagVon").val(),
+                dienstagbis: $("#dienstagBis").val(),
+                mittwochevon: $("#mittwochVon").val(),
+                mittwochbis:  $("#mittwochBis").val(),
+                donnerstagvon: $("#donnerstagVon").val(),
+                donnerstagbis: $("#donnerstagBis").val(),
+                freitagvon: $("#freitagVon").val(),
+                freitagbis: $("#freitagBis").val(),
+                samstagvon: $("#samstagVon").val(),
+                samstagbis: $("#samstagBis").val(),
+                sonntagvon: $("#sonntagVon").val(),
+                sonntagbis: $("#sonntagBis").val()
+            };
+            
+            var sitzplätze = {
+                sitzplaetze: $("#sitzplaetze").val(),
+                asp: "0"
             };
 
             $.ajaxSetup({
@@ -64,8 +90,34 @@
 				url: '/add',
 				data: JSON.stringify(newBar),
                 success: function(data){
+                    barID = data.bid;
+                    /*öffnungszeiten.barID = barID;
+                    sitzplätze.barID = barID;
+                    öffnungszeiten.userID = uID;
+                    sitzplätze.userID = uID;*/
+                    
+                    $.ajax({
+                        type: 'POST',
+                        host: 'localhost',
+                        port: 8080,
+				        url: "user/" + uID + "/bars/" + barID + "/oeffnungszeiten",
+				        data: JSON.stringify(öffnungszeiten),
+                    }).fail(function(data){
+                        alert("fail oeffnugnszeiten");
+                    });
+                    
+                    $.ajax({
+                        type: 'POST',
+                        host: 'localhost',
+                        port: 8080,
+				        url: "user/" + uID + "/bars/" + barID + "/sitzplaetze",
+				        data: JSON.stringify(sitzplätze),
+                    }).fail(function(data){
+                        alert("fail sitzplaetze");
+                    });
                 }
 				}).done(function(data){
+                    
 				    //alert("geschafft");
                     $("#name").val('');
                     $("#adresse").val('');
