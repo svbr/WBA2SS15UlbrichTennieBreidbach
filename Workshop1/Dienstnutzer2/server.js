@@ -35,13 +35,23 @@ app.get('/user', function(req, res){
         }
       }
       var externalRequest = http.request(options, function(externalResponse){
-        console.log("Connected User get");
-        externalResponse.on("data", function(chunk){
-            var user = JSON.parse(chunk);
-            console.log(user);
-            res.send(user);
-            res.end();
-        });
+          console.log("Connected User get");
+          if(externalResponse.statusCode == 404){
+              console.log("kein Nutzer vorhanden");
+              var noUser = {
+                  id: "-1",
+              };
+              
+              res.send(noUser);
+              res.end();
+          } else {
+                externalResponse.on("data", function(chunk){
+                var user = JSON.parse(chunk);
+                console.log(user);
+                res.send(user);
+                res.end();
+            });
+          }
       });
       externalRequest.end();
     }
@@ -255,6 +265,9 @@ app.get('/add', function(req, res){
 app.post('/add', function(req, res){
     var test = req.body;
     console.log(test);
+    var user = test.userID;
+    console.log(user);
+    
    fs.readFile("./views/pages/add.ejs", {encoding:"utf-8"}, function(err, filestring){
     if(err){
       throw err;
@@ -262,17 +275,19 @@ app.post('/add', function(req, res){
       var options = {
         host: "localhost",
         port: 3000,
-        path: "/user/1/bars",
+        path: "/user/" + user + "/bars",
         method:"POST"
       }
       var externalRequest = http.request(options, function(externalResponse){
         console.log("Connected Bars post");
         externalResponse.on("data", function(chunk){
           var newBar = JSON.parse(chunk);
-          var html = ejs.render(filestring, {newBar: newBar, filename: __dirname + '/views/pages/add.ejs'});
-          res.setHeader("content-type", "text/html");
-          res.writeHead(200);
-          res.write(html);
+          //var html = ejs.render(filestring, {newBar: newBar, filename: __dirname + '/views/pages/add.ejs'});
+          //res.setHeader("content-type", "text/html");
+          //res.writeHead(200);
+          //res.write(html);
+            console.log(newBar);
+            res.send(newBar);
           res.end();
         });
       });
@@ -286,6 +301,75 @@ app.post('/add', function(req, res){
     }
 });
 });
+
+app.post('/user/:id/bars/:bid/oeffnungszeiten', function(req, res){
+    var oeffnungszeiten = req.body;
+    console.log(oeffnungszeiten);
+   fs.readFile("./views/pages/add.ejs", {encoding:"utf-8"}, function(err, filestring){
+    if(err){
+      throw err;
+    } else{
+      var options = {
+        host: "localhost",
+        port: 3000,
+        path: "/user/" + req.params.id + "/bars/" + req.params.bid + "/oeffnungszeiten",
+        method:"POST"
+      }
+      var externalRequest = http.request(options, function(externalResponse){
+        console.log("Connected oeffnungszeiten post");
+        externalResponse.on("data", function(chunk){
+          var oeffnungszeiten = JSON.parse(chunk);
+          var html = ejs.render(filestring, {oeffnungszeiten: oeffnungszeiten, filename: __dirname + '/views/pages/add.ejs'});
+          res.setHeader("content-type", "text/html");
+          res.writeHead(200);
+          res.write(html);
+          res.end();
+        });
+      });
+      externalRequest.on('error', function(e) {
+        console.log('problem with request: ' + e.message);
+      });
+      externalRequest.setHeader("content-type", "application/json");
+      externalRequest.write(JSON.stringify(oeffnungszeiten));
+      externalRequest.end();
+    }
+});
+});
+
+app.post('/user/:id/bars/:bid/sitzplaetze', function(req, res){
+    var sitzplaetze = req.body;
+    console.log(sitzplaetze);
+   fs.readFile("./views/pages/add.ejs", {encoding:"utf-8"}, function(err, filestring){
+    if(err){
+      throw err;
+    } else{
+      var options = {
+        host: "localhost",
+        port: 3000,
+        path: "/user/" + req.params.id + "/bars/" + req.params.bid + "/sitzplaetze",
+        method:"POST"
+      }
+      var externalRequest = http.request(options, function(externalResponse){
+        console.log("Connected sitzplaetze post");
+        externalResponse.on("data", function(chunk){
+          var sitzplaezte = JSON.parse(chunk);
+          var html = ejs.render(filestring, {sitzplaezte: sitzplaezte, filename: __dirname + '/views/pages/add.ejs'});
+          res.setHeader("content-type", "text/html");
+          res.writeHead(200);
+          res.write(html);
+          res.end();
+        });
+      });
+      externalRequest.on('error', function(e) {
+        console.log('problem with request: ' + e.message);
+      });
+      externalRequest.setHeader("content-type", "application/json");
+      externalRequest.write(JSON.stringify(sitzplaetze));
+      externalRequest.end();
+    }
+});
+});
+
 // Weitere Seiten
 /*
 // Aktuell in einer Stadt??
