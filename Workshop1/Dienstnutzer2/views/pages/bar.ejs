@@ -23,8 +23,11 @@
             </div>
         </main>
         <div class="jumbotron">
-            <form style="float: right" id="löschen" name="<%=bars.id%>">
+            <form style="float: right" id="löschen" value="<%= bars.id %>">
                 <input type="submit" value="Bar löschen" style="height: 50px; width: 100px;">
+            </form>
+            <form id="test">
+                <input type="text" id="blub" value="<%=bars.bid%>">
             </form>
             <h1><%= bars.name %></h1>
             <ul>
@@ -59,12 +62,11 @@
         <script type='text/javascript'>
             $(document).ready(function() {
                 $("#löschen").submit(function(event){
-                    var test = $("#löschen").attr();
-                    alert(test);
+                    var test = $("#blub").val();
                     $.ajax({
                         type: 'DELETE',
-                        //host: 'localhost',
-                        //port: 8080,
+                        host: 'localhost',
+                        port: 8080,
 				        url: '/bars/' + test,
                         success: function(data){
                             alert('gelöscht');
