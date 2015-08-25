@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<% include ../partials/head %>
+	<script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+	<script src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+
+	<meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+	<script type="text/javascript">
+
+	$(document).ready(function() {
+			var uID, barID;
+			$("#login").submit(function(event){
+					event.preventDefault();
+
+
+					$.ajaxSetup({
+							contentType: "application/json; charset=utf-8"
+					});
+					$.ajax({
+			type: 'GET',
+							host: 'localhost',
+							port: 8080,
+			url: '/user',
+							data: { id: 'val1',
+											name: 'val2',
+											passwort: 'val3'
+											},
+							dataType: 'json',
+							success: function(data){
+									$('#pruefen').replaceWith("<div id='pruefen'></div>");
+									var temp = false
+									$.each(data, function(index, element) {
+											if(element.name === $('#uname').val() && element.passwort == $('#pass').val() || element.id == "-1"){
+															document.getElementById('hide').removeAttribute('style');
+															uID = element.id;
+															$('#hide').replaceWith("<div  class='well' id='hide'><p>Eingeloggt als:<br/>UserID: " + element.id + "<br/> Username: " + element.name + " <br/></p></div>");
+															temp = true;
+											}
+									});
+									if(temp == false){
+											$('#pruefen').append("Der Benutzername oder das Passwort sind falsch!");
+									}
+					}
+					}).fail(function(data){
+							alert("fail");
+					});
+					event.preventDefault();
+			});
+		});
+			</script>
+</head>
+<body class="container">
+
+<header>
+  <% include ../partials/header %>
+</header>
+
+  <main>
+    <div class="row">
+			<div class="col-sm-8">
+        <div class="jumbotron">
+          <h1>Kneipentour</h1>
+          <p>Der schnellste Weg zum Kater</p>
+        </div>
+      </div>
+      <div class="col-sm-4">
+
+				<div class="well">
+					<p>Einloggen:</p>
+								<form id='login' method="POST">
+						<label for="name">Username: </label> <br/> <input id="uname" type="text" required><br>
+						<label for="pass">Passwort: </label> <br/> <input id="pass" type="password" required><br>
+						<input type="submit" value="Login">
+              </form>
+        </div>
+      </div>
+			<div class="col-sm-8">
+				<div class="well" id='hide' style="display:none">
+					<ul>
+          <li><p>
+            UserID: </p></li>
+          <li><p>
+            Username: </p></li>
+        </ul>
+				
+				<!--Alle bars des Users auflisten-->
+
+			</div>
+    </div>
+
+  </main>
+
+    <footer>
+  		<% include ../partials/footer %>
+    </footer>
+
+</body>
+</html>

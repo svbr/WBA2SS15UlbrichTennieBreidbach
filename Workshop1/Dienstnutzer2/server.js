@@ -43,7 +43,7 @@ app.get('/user', function(req, res){
               var noUser = {
                   id: "-1",
               };
-              
+
               res.send(noUser);
               res.end();
           } else {
@@ -115,8 +115,34 @@ app.get('/about', function(req, res) {
 });
 
 // Login
-app.get('/login', function(req, res) {
-	res.render('./pages/login.ejs');
+app.get('/profil', function(req, res) {
+	res.render('./pages/profil.ejs');
+});
+
+app.post('/profil', function(req, res) {
+	var test = req.body;
+	console.log(test);
+	fs.readFile("./views/pages/profil.ejs", {encoding:"utf-8"}, function(err, filestring){
+	 if(err){
+		 throw err;
+	 } else{
+		 var options = {
+			 host: "localhost",
+			 port: 3000,
+			 path: "/user/",
+			 method:"POST"
+		 }
+		 var externalRequest = http.request(options, function(externalResponse){
+		 	console.log("Connected User post");
+			externalResponse.on("data", function(chunk){
+			          var user = JSON.parse(chunk);
+								console.log(user);
+            res.send(user);
+          res.end();
+				});
+			});
+		}
+	});
 });
 
 //User anlegen / registrieren
@@ -200,7 +226,7 @@ app.get('/bars', function(req, res){
 // eine Bar auflisten
 app.get("/bars/:bid", function(req, res, next){
     var bar, sitzplatz, events;
-    
+
   fs.readFile("./views/pages/bar.ejs", {encoding:"utf-8"}, function(err, filestring){
     if(err){
       throw err;
@@ -303,7 +329,7 @@ app.get("/bars/:bid", function(req, res, next){
             console.log("Connected oeffnungszeiten get");
             externalResponse.on("data", function(chunk){
               var oeffnungszeiten = JSON.parse(chunk);
-                
+
               var html = ejs.render(filestring, {oeffnungszeiten: oeffnungszeiten, bars: bar, sitzplaetze: sitzplatz, events: events,  filename: __dirname + '/bars.ejs'});
               res.setHeader("content-type", "text/html");
               res.writeHead(200);
@@ -357,7 +383,7 @@ app.post('/add', function(req, res){
     console.log(test);
     var user = test.userID;
     console.log(user);
-    
+
    fs.readFile("./views/pages/add.ejs", {encoding:"utf-8"}, function(err, filestring){
     if(err){
       throw err;
