@@ -23,7 +23,7 @@
             </div>
         </main>
         <div class="jumbotron">
-            <form style="float: right" id="löschen" value="<%= bars.id %>">
+            <form style="float: right" id="löschen">
                 <input type="submit" value="Bar löschen" style="height: 50px; width: 100px;">
             </form>
             <form id="test">
@@ -67,10 +67,9 @@
                         type: 'DELETE',
                         host: 'localhost',
                         port: 8080,
-				        url: '/bars/' + test,
-                        success: function(data){
-                            alert('gelöscht');
-                        }
+				        url: '/bars/' + test
+                    }).done(function(data){
+                        alert("test");
                     }).fail(function(data){
                         alert("fail");
                     });

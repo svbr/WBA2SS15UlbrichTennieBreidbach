@@ -462,11 +462,8 @@ app.post('/user/:id/bars/:bid/sitzplaetze', function(req, res){
 
 app.delete('/bars/:id', function(req, res){
     console.log('test2');
-    fs.readFile("./views/pages/bar.ejs", {encoding:"utf-8"}, function(err, filestring){
-    if(err){
-      throw err;
-    } else{
-      var options = {
+    
+    var options = {
         host: "localhost",
         port: 3000,
         path: "/bars/"+req.params.id,
@@ -474,22 +471,16 @@ app.delete('/bars/:id', function(req, res){
         headers:{
           accept:"application/json"
         }
-      }
-      var externalRequest = http.request(options, function(externalResponse){
+    }
+    var externalRequest = http.request(options, function(externalResponse){
         console.log("Connected Bar delete");
         externalResponse.on("data", function(chunk){
           console.log(chunk);
           var user = JSON.parse(chunk);
-          var html = ejs.render(filestring, {user: user, filename: __dirname + '/bars.ejs'});
-          res.setHeader("content-type", "text/html");
-          res.writeHead(200);
-          res.write(html);
           res.end();
         });
       });
       externalRequest.end();
-    }
-  });
 });
 
 
