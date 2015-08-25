@@ -7,26 +7,7 @@
         <script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
         <script src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
         <meta http-equiv="content-type" content="text/html; charset=utf-8">
-        <script>
-            $(document).ready(function() {
-                $("#löschen").submit(function(event){
-                    var test = bars.id;
-                    
-                    $.ajax({
-                        type: 'DELETE',
-                        host: 'localhost',
-                        port: 8080,
-				        url: '/user/' + test,
-                        success: function(data){
-                            alert('gelöscht');
-                        }
-                    }).fail(function(data){
-                        alert("fail");
-                    });
-                    event.preventDefault();
-            });
-        
-        </script>
+
     </head>
     <body class="container">
 
@@ -41,9 +22,9 @@
                 <h1>Kneipentour</h1>
             </div>
         </main>
-        <div class="jumbotron" >
-            <form style="float: right">
-                <input type="submit" id="löschen" value="Bar löschen" style="height: 50px; width: 100px;">
+        <div class="jumbotron">
+            <form style="float: right" id="löschen" name="<%=bars.id%>">
+                <input type="submit" value="Bar löschen" style="height: 50px; width: 100px;">
             </form>
             <h1><%= bars.name %></h1>
             <ul>
@@ -75,6 +56,26 @@
     <footer>
         <% include ./views/partials/footer.ejs %>
     </footer>
-
+        <script type='text/javascript'>
+            $(document).ready(function() {
+                $("#löschen").submit(function(event){
+                    var test = $("#löschen").attr();
+                    alert(test);
+                    $.ajax({
+                        type: 'DELETE',
+                        //host: 'localhost',
+                        //port: 8080,
+				        url: '/bars/' + test,
+                        success: function(data){
+                            alert('gelöscht');
+                        }
+                    }).fail(function(data){
+                        alert("fail");
+                    });
+                    event.preventDefault();
+                });
+            });
+        
+        </script>
     </body>
 </html>
