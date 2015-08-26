@@ -105,7 +105,7 @@ app.delete('/user/:id', function(req, res){
         if(rep === 1){
             db.del('user:'+req.params.id,function(err, rep){
                 var temp = JSON.parse(rep);
-                    res.send(temp);
+                    res.status(200).send("User wurde gelöscht").end();
             });
         }
         else{

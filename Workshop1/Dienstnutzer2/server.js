@@ -566,6 +566,27 @@ app.put('/user/:id/bars/:bid/oeffnungszeiten', function(req, res){
       externalRequest.end();
 });
 
+app.delete('/user/:id', function(req, res){
+    
+    var options = {
+        host: "localhost",
+        port: 3000,
+        path: "/user/"+req.params.id,
+        method:"DELETE",
+        headers:{
+          accept:"application/json"
+        }
+    }
+    var externalRequest = http.request(options, function(externalResponse){
+        console.log("Connected User delete");
+        externalResponse.on("data", function(chunk){
+          
+            res.status(200);
+            res.end();
+        });
+      });
+      externalRequest.end();
+});
 
 
 // Weitere Seiten
