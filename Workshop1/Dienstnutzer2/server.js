@@ -486,13 +486,13 @@ app.post('/user/:id/bars/:bid/sitzplaetze', function(req, res){
 });
 });
 
-app.delete('/bars/:id', function(req, res){
+app.delete('/bars/:bid', function(req, res){
     console.log('test2');
     
     var options = {
         host: "localhost",
         port: 3000,
-        path: "/bars/"+req.params.id,
+        path: "/bars/"+req.params.bid,
         method:"DELETE",
         headers:{
           accept:"application/json"
@@ -501,13 +501,71 @@ app.delete('/bars/:id', function(req, res){
     var externalRequest = http.request(options, function(externalResponse){
         console.log("Connected Bar delete");
         externalResponse.on("data", function(chunk){
-          console.log(chunk);
-          var user = JSON.parse(chunk);
-          res.end();
+          
+            res.status(200);
+            res.end();
         });
       });
       externalRequest.end();
 });
+
+app.put('/user/:id/bars/:bid', function(req, res){
+    console.log('test2');
+    var neu = req.body;
+    
+    var options = {
+        host: "localhost",
+        port: 3000,
+        path: "/user/" + req.params.id + "/bars/"+req.params.bid,
+        method:"PUT",
+        headers:{
+          accept:"application/json"
+        }
+    }
+    var externalRequest = http.request(options, function(externalResponse){
+        console.log("Connected Bar PUT");
+        externalResponse.on("data", function(chunk){
+          
+            res.status(200);
+            res.end();
+        });
+      });
+      externalRequest.on('error', function(e) {
+        console.log('problem with request: ' + e.message);
+      });
+      externalRequest.setHeader("content-type", "application/json");
+      externalRequest.write(JSON.stringify(neu));
+      externalRequest.end();
+});
+
+app.put('/user/:id/bars/:bid/oeffnungszeiten', function(req, res){
+    console.log('test2');
+    var neu = req.body;
+    
+    var options = {
+        host: "localhost",
+        port: 3000,
+        path: "/user/" + req.params.id + "/bars/"+req.params.bid +'/oeffnungszeiten',
+        method:"PUT",
+        headers:{
+          accept:"application/json"
+        }
+    }
+    var externalRequest = http.request(options, function(externalResponse){
+        console.log("Connected oeffnungszeiten PUT");
+        externalResponse.on("data", function(chunk){
+            res.status(200);
+            res.end();
+        });
+      });
+      externalRequest.on('error', function(e) {
+        console.log('problem with request: ' + e.message);
+      });
+      externalRequest.setHeader("content-type", "application/json");
+      externalRequest.write(JSON.stringify(neu));
+      externalRequest.end();
+});
+
 
 
 // Weitere Seiten

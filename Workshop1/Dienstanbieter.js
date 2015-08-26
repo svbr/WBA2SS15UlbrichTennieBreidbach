@@ -223,8 +223,7 @@ app.delete('/bars/:bid', function(req, res){
     db.exists('bars:'+req.params.bid, function(err, rep){
         if(rep === 1){
             db.del('bars:'+req.params.bid,function(err, rep){
-                var temp = JSON.parse(rep);
-                    res.send(temp).end();
+                res.status(200).send("bar wurde gelöscht").end();
             });
         }
         else{
@@ -354,7 +353,7 @@ app.put('/user/:id/bars/:bid/oeffnungszeiten', function(req, res){
         if(rep){
             var newZeiten = req.body;
             var temp = JSON.parse(rep);
-            db.set('bars:'+req.params.bid, JSON.stringify(newZeiten), function(err, rep){
+            db.set('bars:'+req.params.bid+'/oeffnungszeiten', JSON.stringify(newZeiten), function(err, rep){
                 res.type('json').send(newZeiten).end();
             });
         }
@@ -499,7 +498,7 @@ app.get('/bars/:bid/events', function(req, res){
 
 
 //Ausgabe einer Liste der Bars die in der Stadt geöffnet haben.
-app.get('/suchbars', function(req, res){
+app.get('/aktuell', function(req, res){
     var data = [];
     
     async.series([
@@ -638,7 +637,7 @@ app.get('/suchbars', function(req, res){
 //Abrufen der aktuellen Infos einer Bar
 //Benötigt: BarID
 //Ausgabe: Infos der Bar
-app.get('/bars/:bid/aktuell', function(req, res){
+/*app.get('/bars/:bid/aktuell', function(req, res){
     var currentdate = new Date();
 	var tag = currentdate.getDay(); //aktueller tag, 0-6, 0 == sonntag
 	var stunde = currentdate.getHours(); //aktuelle stunde
@@ -752,6 +751,6 @@ app.get('/bars/:bid/aktuell', function(req, res){
     ], function(){
         res.send(temp);
     });
-});
+});*/
 
 app.listen(3000);

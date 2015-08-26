@@ -27,33 +27,97 @@
                 <input type="submit" value="Bar löschen" style="height: 50px; width: 100px;">
             </form>
             <form id="test">
-                <input type="text" id="blub" value="<%=bars.bid%>">
+                ID: 
+                <input type="text" id="bid" value="<%=bars.bid%>" disabled> <br>
+                Erstellt von ID: 
+                <input type="text" id="uid" value="<%=bars.userID%>" disabled>
             </form>
-            <h1><%= bars.name %></h1>
+            <h1 id='n'><%= bars.name %></h1>
             <ul>
-              <br><li><h4>Adresse:</h4><%= bars.adresse %></li>
-              <br><li><h4>Stadt:</h4><%= bars.stadt %></li>
-              <br><li><h4>Typ:</h4><%= bars.typ %></li>
-              <br><li><h4>Gegebenheiten:</h4><%= bars.gegebenheiten %></li>
+                <div id="bearbeiten1" style="display:none">
+                    <form id="newBar">
+                        <label for="name">Barname: </label><br/> <input id="name" type="text" required ><br>
+                        <label for="adresse">Adresse: </label><br/> <input id="adresse" type="text" required><br>
+                        <label for="stadt">Stadt: </label> <br/> <input id="stadt" type="text" required><br>
+                        <label for="typ">Typ: </label> <br/> <input id="typ" type="text" required><br>
+                        <label for="gegebenheiten">Gegebenheiten: </label>  <br/> <input id="gegebenheiten" type="text" required><br>
+                        <div class="well">
+                            Änderungen Bestätigen:<br>
+                            <label for="name">Username: </label> <input id="uname" type="text" required><br>
+                            <label for="pass">Passwort: </label> <input id="pass" type="password" required><br>
+                            <input type="submit" value="ändern">
+                            <div id="pruefen"></div>
+                        </div>
+                    </form>
+                </div>
+                
+                <div id='hide1'>
+                    <form style="float: right" id="barBearbeiten">
+                        <input type="submit" value="Bar bearbeiten">
+                    </form>
+
+                    <br><li><h4>Adresse:</h4><p id='a'><%= bars.adresse %></p></li>
+                    <br><li><h4>Stadt:</h4><p id="s"><%= bars.stadt %></p></li>
+                    <br><li><h4>Typ:</h4><p id="t"><%= bars.typ %></p></li>  
+                    <br><li><h4>Gegebenheiten:</h4><p id="g"><%= bars.gegebenheiten %></p></li>
+                </div>
+                
                 <br><li><h4>Offnungszeiten:</h4>
+                <form style="float: right" id="oeffnungszeitenBearbeiten">
+                    <input type="submit" value="Öffnungszeiten bearbeiten">
+                </form>
+                
+                <div id="bearbeiten2" style="display:none">
+                    <form id="newOeffnungszeiten">
+                        <label for="montagVon">Montag von: </label> <input id="montagVon" type="text" required>
+                        <label for="montagBis">bis: </label> <input id="montagBis" type="text" required ><br>
+                        <label for="dienstagVon">Dienstag von: </label> <input id="dienstagVon" type="text" required >
+                        <label for="dienstagBis">bis: </label> <input id="dienstagBis" type="text" required ><br>
+                        <label for="mittwochVon">Mittwoch von: </label> <input id="mittwochVon" type="text" required >
+                        <label for="mittwochBis">bis: </label> <input id="mittwochBis" type="text" required ><br>
+                        <label for="donnerstagVon">Donnerstag von: </label> <input id="donnerstagVon" type="text" required >
+                        <label for="donnerstagBis">bis: </label> <input id="donnerstagBis" type="text" required ><br>
+                        <label for="freitagVon">Freitag von: </label> <input id="freitagVon" type="text" required >
+                        <label for="freitagBis">bis: </label> <input id="freitagBis" type="text" required ><br>
+                        <label for="samstagVon">Samstag von: </label> <input id="samstagVon" type="text" required >
+                        <label for="samstagBis">bis: </label> <input id="samstagBis" type="text" required ><br>
+                        <label for="sonntagVon">Sonntag von: </label> <input id="sonntagVon" type="text" required >
+                        <label for="sonntagBis">bis: </label> <input id="sonntagBis" type="text" required ><br>
+                        <div class="well">
+                            Änderungen Bestätigen:<br>
+                            <label for="name">Username: </label> <input id="uname1" type="text" required><br>
+                            <label for="pass">Passwort: </label> <input id="pass1" type="password" required><br>
+                            <input type="submit" value="ändern">
+                            <div id="pruefen1"></div>
+                        </div>
+                    </form>
+                </div>
+                
+                <div id="hide2">
                     <ul>            
-                        <li>Montag von:     <%= oeffnungszeiten.montagvon %> bis <%= oeffnungszeiten.montagbis %></li>
-                        <li>Dienstag von:   <%= oeffnungszeiten.dienstagvon %> bis <%= oeffnungszeiten.dienstagbis %></li>
-                        <li>Mittwoch von:   <%= oeffnungszeiten.mittwochvon %> bis <%= oeffnungszeiten.mittwochbis %></li>
-                        <li>Donnerstag von: <%= oeffnungszeiten.donnerstagvon %> bis <%= oeffnungszeiten.donnerstagbis %></li>
-                        <li>Freitag von:    <%= oeffnungszeiten.freitagvon %> bis <%= oeffnungszeiten.freitagbis %></li>
-                        <li>Samstag von:    <%= oeffnungszeiten.samstagvon %> bis <%= oeffnungszeiten.samstagbis %></li>
-                        <li>Sonntag von:    <%= oeffnungszeiten.sonntagvon %> bis <%= oeffnungszeiten.sonntagbis %></li>
+                        <li><p>Montag von: <strong id="mov"><%= oeffnungszeiten.montagvon%></strong> bis <strong id="mob"><%= oeffnungszeiten.montagbis %></strong> </p></li>
+                        <li><p>Dienstag von:    <strong id="div"><%= oeffnungszeiten.dienstagvon %></strong>   bis <strong id="dib"><%= oeffnungszeiten.dienstagbis %></strong></p></li>
+                        <li><p>Mittwoch von:    <strong id="miv"><%= oeffnungszeiten.mittwochvon %></strong>   bis <strong id="mib"><%= oeffnungszeiten.mittwochbis %></strong></p></li>
+                        <li><p>Donnerstag von:  <strong id="dov"><%= oeffnungszeiten.donnerstagvon %></strong> bis <strong id="dob"><%= oeffnungszeiten.donnerstagbis %></strong></p></li>
+                        <li><p>Freitag von:     <strong id="frv"><%= oeffnungszeiten.freitagvon %></strong>    bis <strong id="frb"><%= oeffnungszeiten.freitagbis %></strong></p></li>
+                        <li><p>Samstag von:     <strong id="sav"><%= oeffnungszeiten.samstagvon %></strong>    bis <strong id="sab"><%= oeffnungszeiten.samstagbis %></strong></p></li>
+                        <li><p>Sonntag von:     <strong id="sov"><%= oeffnungszeiten.sonntagvon %></strong>    bis <strong id="sob"><%= oeffnungszeiten.sonntagbis %></strong></p></li>
                     </ul>
                 </li>
+                </div>
+                <div>
                 <li><h4>Events</h4></li>
-                        <%for(var i = 0; i < bars.length; i++){%>
-                            <ul>
-                                <li><h4>Event <%= events[i].event %></a><h4></li>
-                                <li><h4>Am: <%= bars[i].datum %></h4></li>
-                                <li><h4>Um: <%= bars[i].uhrzeit %> Uhr</h4></li>
-                            </ul><%
-                        }%>
+                <form style="float: right" id="eventBearbeiten">
+                    <input type="submit" value="Events bearbeiten">
+                </form>
+                    <%for(var i = 0; i < bars.length; i++){%>
+                        <ul>
+                            <li><h4>Event <%= events[i].event %></a><h4></li>
+                            <li><h4>Am: <%= bars[i].datum %></h4></li>
+                            <li><h4>Um: <%= bars[i].uhrzeit %> Uhr</h4></li>
+                        </ul><%
+                    }%>
+                </div>
             </ul>
         </div>
     <footer>
@@ -62,19 +126,187 @@
         <script type='text/javascript'>
             $(document).ready(function() {
                 $("#löschen").submit(function(event){
-                    var test = $("#blub").val();
+                    event.preventDefault();
+                    var bid = $("#bid").val();
                     $.ajax({
                         type: 'DELETE',
                         host: 'localhost',
                         port: 8080,
-				        url: '/bars/' + test
-                    }).done(function(data){
-                        alert("test");
+				        url: '/bars/' + bid,
+                        success: function(data){
+                            alert("die Bar wurde gelöscht!");
+                            window.location.href = "http://localhost:8080/";
+                        }
                     }).fail(function(data){
                         alert("fail");
                     });
-                    event.preventDefault();
+                    
                 });
+                
+                
+                $("#barBearbeiten").submit(function(event){
+                    
+                    document.getElementById('bearbeiten1').removeAttribute('style');
+                    
+
+                    $("#name").val(document.getElementById('n').innerHTML);
+                    $("#adresse").val(document.getElementById('a').innerHTML);
+                    $("#stadt").val(document.getElementById('s').innerHTML);
+                    $("#typ").val(document.getElementById('t').innerHTML);
+                    $("#gegebenheiten").val(document.getElementById('g').innerHTML); 
+                    $('#hide1').replaceWith("<div></div>");
+                    event.preventDefault(); 
+                });
+                
+                $("#oeffnungszeitenBearbeiten").submit(function(event){
+                    
+                    document.getElementById('bearbeiten2').removeAttribute('style');
+                    $("#montagVon").val(document.getElementById('mov').innerHTML);
+                    $("#montagBis").val(document.getElementById('mob').innerHTML);
+                    $("#dienstagVon").val(document.getElementById('div').innerHTML);
+                    $("#dienstagBis").val(document.getElementById('dib').innerHTML);
+                    $("#mittwochVon").val(document.getElementById('miv').innerHTML);
+                    $("#mittwochBis").val(document.getElementById('mob').innerHTML);
+                    $("#donnerstagVon").val(document.getElementById('dov').innerHTML);
+                    $("#donnerstagBis").val(document.getElementById('dob').innerHTML);
+                    $("#freitagVon").val(document.getElementById('frv').innerHTML);
+                    $("#freitagBis").val(document.getElementById('frb').innerHTML);
+                    $("#samstagVon").val(document.getElementById('sav').innerHTML);
+                    $("#samstagBis").val(document.getElementById('sab').innerHTML);
+                    $("#sonntagVon").val(document.getElementById('sov').innerHTML);
+                    $("#sonntagBis").val(document.getElementById('sob').innerHTML);
+
+                    
+                    $('#hide2').replaceWith("<div></div>");
+                    event.preventDefault();                    
+                });
+                
+                $('#newBar').submit(function(event){
+                   
+                    
+                    $.ajaxSetup({
+                        contentType: "application/json; charset=utf-8"
+                    });
+                    
+                    var newBar = {
+                    name: $("#name").val(),
+                    adresse: $("#adresse").val(),
+                    stadt: $("#stadt").val(),
+                    typ: $("#typ").val(),
+                    gegebenheiten: $("#gegebenheiten").val() 
+                    };
+                    
+                    $.ajax({
+                        type: 'GET',
+                        host: 'localhost',
+                        port: 8080,
+                        url: '/user',
+                        data: { id: 'val1',
+                                name: 'val2',
+                                passwort: 'val3'
+                                },
+                        dataType: 'json',
+                        success: function(data){
+                            $('#pruefen').replaceWith("<div id='pruefen'></div>");
+                            var temp = false
+                            $.each(data, function(index, element) {
+                                if(element.name === $('#uname').val() && element.passwort == $('#pass').val() && element.id == $('#uid').val()  || element.id == "-1"){
+                                    temp = true;
+                                    var bid = $("#bid").val();
+                                    var uid = $('#uid').val();
+                                    newBar.userID = uid;
+                                    $.ajax({
+				                        type: 'PUT',
+                                        host: 'localhost',
+                                        port: 8080,
+                                        url: '/user/' + uid + '/bars/' + bid,
+                                        data: JSON.stringify(newBar),
+                                        success: function(data){
+                                            alert("die Bar wurde aktualisiert!");
+                                            window.location.href = "http://localhost:8080/bars/" + bid;
+                                        }
+                                           
+                                    });
+                                    
+                                }
+                            });
+                            if(temp == false){
+                                $('#pruefen').append("Der Benutzername oder das Passwort sind falsch oder Sie sind nicht der Besitzer!");
+                            }
+                        }
+                    }).fail(function(data){
+                        alert("fail Bar");
+                    });
+                     event.preventDefault();
+                });
+               
+                $('#newOeffnungszeiten').submit(function(event){
+                    event.preventDefault();
+                    
+                    $.ajaxSetup({
+                        contentType: "application/json; charset=utf-8"
+                    });
+                    
+                    var öffnungszeiten = {
+                    montagvon: $("#montagVon").val(),
+                    montagbis: $("#montagBis").val(),
+                    dienstagvon: $("#dienstagVon").val(),
+                    dienstagbis: $("#dienstagBis").val(),
+                    mittwochvon: $("#mittwochVon").val(),
+                    mittwochbis:  $("#mittwochBis").val(),
+                    donnerstagvon: $("#donnerstagVon").val(),
+                    donnerstagbis: $("#donnerstagBis").val(),
+                    freitagvon: $("#freitagVon").val(),
+                    freitagbis: $("#freitagBis").val(),
+                    samstagvon: $("#samstagVon").val(),
+                    samstagbis: $("#samstagBis").val(),
+                    sonntagvon: $("#sonntagVon").val(),
+                    sonntagbis: $("#sonntagBis").val()
+                    };
+                    
+                    $.ajax({
+                        type: 'GET',
+                        host: 'localhost',
+                        port: 8080,
+                        url: '/user',
+                        data: { id: 'val1',
+                                name: 'val2',
+                                passwort: 'val3'
+                                },
+                        dataType: 'json',
+                        success: function(data){
+                            $('#pruefen1').replaceWith("<div id='pruefen1'></div>");
+                            var temp = false
+                            $.each(data, function(index, element) {
+                                if(element.name === $('#uname1').val() && element.passwort == $('#pass1').val() && element.id == $('#uid').val()  || element.id == "-1"){
+                                    temp = true;
+                                    var bid = $("#bid").val();
+                                    var uid = $('#uid').val();
+                                    newBar.userID = uid;
+                                    $.ajax({
+				                        type: 'PUT',
+                                        host: 'localhost',
+                                        port: 8080,
+                                        url: '/user/' + uid + '/bars/' + bid + '/oeffnungszeiten',
+                                        data: JSON.stringify(öffnungszeiten),
+                                        success: function(data){
+                                            alert("die Öffnungszeiten wurde aktualisiert!");
+                                            window.location.href = "http://localhost:8080/bars/" + bid;
+                                        }
+                                           
+                                    });
+                                    
+                                }
+                            });
+                            if(temp == false){
+                                $('#pruefen1').append("Der Benutzername oder das Passwort sind falsch oder Sie sind nicht der Besitzer!");
+                            }
+                        }
+                    }).fail(function(data){
+                        alert("fail oeffnungszeiten");
+                    });
+                });
+                 event.preventDefault();
             });
         
         </script>

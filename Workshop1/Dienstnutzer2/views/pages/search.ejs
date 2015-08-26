@@ -28,9 +28,16 @@
                 dataType: 'json',
                 success: function(data){
                     $('#results').replaceWith("<div id='results'></div>");
+                    
                     $.each(data, function(index, element) {
-                        if(element.stadt == $("#search").val() || element.name == $("#search").val() || element.offen == $("#search").val()){
-                            $('#results').append($("<div class='jumbotron' id='test'> <h3><a href='http://localhost:8080/bars/" + element.id + "'> "+ element.name.toString() + "</a></h3><br/> ID: " + element.id.toString()+ "<br/>Stadt: " + element.stadt.toString()+ "<br/>Geöffnet: " + element.offen.toString() + "<br/> Sitzplätze: " + element.sitzplaetze.toString() + "<br/>Aktuelle Sitzplätze: " + element.asp.toString() + "</div>"));
+                        if((element.stadt == $("#search").val() || element.name == $("#search").val() || element.adresse == $("#search").val())){
+                            if(document.getElementById("offen").checked){
+                                if(element.offen == "true"){
+                                    $('#results').append($("<div class='jumbotron' id='test'> <h3><a href='http://localhost:8080/bars/" + element.id + "'> "+ element.name.toString() + "</a></h3><br/> ID: " + element.id.toString()+ "<br/>Stadt: " + element.stadt.toString()+ "<br/>Geöffnet: " + element.offen.toString() + "<br/> Sitzplätze: " + element.sitzplaetze.toString() + "<br/>Aktuelle Sitzplätze: " + element.asp.toString() + "</div>"));
+                                }
+                            } else {
+                                $('#results').append($("<div class='jumbotron' id='test'> <h3><a href='http://localhost:8080/bars/" + element.id + "'> "+ element.name.toString() + "</a></h3><br/> ID: " + element.id.toString()+ "<br/>Stadt: " + element.stadt.toString()+ "<br/>Geöffnet: " + element.offen.toString() + "<br/> Sitzplätze: " + element.sitzplaetze.toString() + "<br/>Aktuelle Sitzplätze: " + element.asp.toString() + "</div>"));
+                            }   
                         }
                     });
                 }
@@ -60,8 +67,10 @@
         <div class="jumbotron">
           <h1>Kneipentour</h1>
 					<form id='form'>
-						<br><br><br>Bar suchen: <input type='text' id='search' name='bar' placeholder="Stadt oder Name oder Adresse" size="30">
+						<br><br><br>Nur geöffnete Bars anzeigen <input type='checkbox' id='offen'><br>
+                        Bar suchen: <input type='text' id='search' name='bar' placeholder="Stadt oder Name oder Adresse" size="30">
 						<input type='submit' value='Suche'>
+                        
 					</form>
     		</div>
         <div id="results"></div>

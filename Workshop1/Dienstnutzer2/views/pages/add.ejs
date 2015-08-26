@@ -91,10 +91,6 @@
 				data: JSON.stringify(newBar),
                 success: function(data){
                     barID = data.bid;
-                    /*öffnungszeiten.barID = barID;
-                    sitzplätze.barID = barID;
-                    öffnungszeiten.userID = uID;
-                    sitzplätze.userID = uID;*/
                     
                     $.ajax({
                         type: 'POST',
@@ -176,7 +172,7 @@
                         <label for="dienstagVon">Dienstag von: </label> <input id="dienstagVon" type="text" required >
                         <label for="dienstagBis">bis: </label> <input id="dienstagBis" type="text" required ><br>
                         <label for="mittwochVon">Mittwoch von: </label> <input id="mittwochVon" type="text" required >
-                        <label for="mittwochBis">bis: </label> <input id="mitwochBis" type="text" required ><br>
+                        <label for="mittwochBis">bis: </label> <input id="mittwochBis" type="text" required ><br>
                         <label for="donnerstagVon">Donnerstag von: </label> <input id="donnerstagVon" type="text" required >
                         <label for="donnerstagBis">bis: </label> <input id="donnerstagBis" type="text" required ><br>
                         <label for="freitagVon">Freitag von: </label> <input id="freitagVon" type="text" required >
