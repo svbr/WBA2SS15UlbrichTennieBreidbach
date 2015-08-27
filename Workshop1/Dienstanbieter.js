@@ -389,7 +389,6 @@ app.get('/bars/:bid/oeffnungszeiten', function(req, res){
 //Benötigt: (BarID)
 //Ausgabe: BarID
 app.post('/user/:id/bars/:bid/getraenkekarte', function(req, res){
-
 	var newKarte = req.body;
 	db.get('bars:'+req.params.bid, function(err, rep){
        if(rep){

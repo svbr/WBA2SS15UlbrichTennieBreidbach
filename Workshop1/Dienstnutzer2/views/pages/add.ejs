@@ -47,8 +47,24 @@
                 alert("fail"); 
             });
         });
+        var getränke = false;
+        var t = 0;
+        $("#plusGetraenke").click(function(){
+            getränke = true;
+            t += 1;
+            $("#test").append("<label for='getraenk "+ t +"'>Getränk Nr.: "+ t +" </label>  <br/> <input id='getraenk" + t + "' type='text' required><label for='preis "+ t +"'>Preis:  </label>  <input id='preis" + t + "' type='text' required><br>");
+        });
+        
         $("#form").submit(function(event) {
-
+            var getraenkeKarte = {};
+            getraenkeKarte[$("#getraenk0").val()] = $("#preis0").val();
+            
+            if(getränke == true){
+                for(var i = 1; i <= t; i++){
+                    getraenkeKarte[$("#getraenk"+i).val()] = $("#preis"+i).val();
+                }
+            }
+            
             var newBar = {
                 name: $("#name").val(),
                 adresse: $("#adresse").val(),
@@ -91,6 +107,19 @@
 				data: JSON.stringify(newBar),
                 success: function(data){
                     barID = data.bid;
+                    
+                    
+                    $.ajax({
+                        type: 'POST',
+                        host: 'localhost',
+                        port: 8080,
+                        url: "/user/" + uID + "/bars/" + barID + "/getraenkekarte",
+                        data: JSON.stringify(getraenkeKarte)
+                    }).fail(function(data){
+                        alert("fail getränkekarte");
+                    });
+
+                    
                     
                     $.ajax({
                         type: 'POST',
@@ -181,6 +210,11 @@
                         <label for="samstagBis">bis: </label> <input id="samstagBis" type="text" required ><br>
                         <label for="sonntagVon">Sonntag von: </label> <input id="sonntagVon" type="text" required >
                         <label for="sonntagBis">bis: </label> <input id="sonntagBis" type="text" required ><br>
+                        <br>
+                        <p><strong>Getränke</strong></p>
+                        <div id="test"><label for='getraenk0'>Getränk Nr.: 0 </label>  <br/> <input id='getraenk0' type='text' required><label for='preis0'>Preis:  </label>  <input id='preis0' type='text' required><br></div>
+                        <input type="button" id="plusGetraenke" value="+">
+                        
                         <input type="submit" id="test" value="ADD">
                     </form>
 				    <p>Es dürfen keine Felder frei bleiben.</p>

@@ -455,10 +455,7 @@ app.post('/user/:id/bars/:bid/oeffnungszeiten', function(req, res){
 app.post('/user/:id/bars/:bid/sitzplaetze', function(req, res){
     var sitzplaetze = req.body;
     console.log(sitzplaetze);
-   fs.readFile("./views/pages/add.ejs", {encoding:"utf-8"}, function(err, filestring){
-    if(err){
-      throw err;
-    } else{
+    
       var options = {
         host: "localhost",
         port: 3000,
@@ -468,12 +465,10 @@ app.post('/user/:id/bars/:bid/sitzplaetze', function(req, res){
       var externalRequest = http.request(options, function(externalResponse){
         console.log("Connected sitzplaetze post");
         externalResponse.on("data", function(chunk){
-          var sitzplaezte = JSON.parse(chunk);
-          var html = ejs.render(filestring, {sitzplaezte: sitzplaezte, filename: __dirname + '/views/pages/add.ejs'});
-          res.setHeader("content-type", "text/html");
-          res.writeHead(200);
-          res.write(html);
-          res.end();
+            var sitzplaezte = JSON.parse(chunk);
+            
+            res.status(200);
+            res.end();
         });
       });
       externalRequest.on('error', function(e) {
@@ -482,8 +477,7 @@ app.post('/user/:id/bars/:bid/sitzplaetze', function(req, res){
       externalRequest.setHeader("content-type", "application/json");
       externalRequest.write(JSON.stringify(sitzplaetze));
       externalRequest.end();
-    }
-});
+    
 });
 
 app.delete('/bars/:bid', function(req, res){
@@ -617,6 +611,7 @@ app.delete('/user/:id', function(req, res){
       externalRequest.end();
 });
 
+<<<<<<< Updated upstream
 /*app.delete('/bars/:bid/events', function(req, res){
 
 	var options = {
@@ -640,6 +635,36 @@ app.delete('/user/:id', function(req, res){
 
 });
 */
+=======
+app.post("/user/:id/bars/:bid/getraenkekarte", function(req, res){
+    var getraenkekarte = req.body;
+    console.log(getraenkekarte);
+    
+    var options = {
+        host: "localhost",
+        port: 3000,
+        path: "/user/" + req.params.id + "/bars/" + req.params.bid + "/getraenkekarte",
+        method:"POST"
+      }
+    
+    var externalRequest = http.request(options, function(externalResponse){
+        console.log("Connected getraenkekarte post");
+        externalResponse.on("data", function(chunk){
+            var getränkekarte = JSON.parse(chunk);
+            res.status(200);
+            res.end();
+        });
+      });
+      externalRequest.on('error', function(e) {
+        console.log('problem with request: ' + e.message);
+      });
+      externalRequest.setHeader("content-type", "application/json");
+      externalRequest.write(JSON.stringify(getraenkekarte));
+      externalRequest.end();
+    
+});
+
+>>>>>>> Stashed changes
 
 // Weitere Seiten
 /*
