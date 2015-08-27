@@ -13,7 +13,7 @@ app.use(bodyParser.json());
 var env = process.env.NODE_ENV || 'development';
 if ('development' == env) {
 	app.use(express.static(__dirname + '/public'));
-	
+
 	app.use(function(err, req, res, next){
 		console.error(err.stack);
 		res.end(err.status + ' ' + err.massage);
@@ -28,9 +28,9 @@ db.on('connect', function() { // Verbing zum Server hergestellt?
 //Benötigt: Username
 //Ausgabe: Username, UserID
 app.post('/user', function(req, res){
-    
+
     var newUser = req.body;
-    
+
     db.incr('id:user', function(err, rep){
         newUser.id = rep;
         db.set('user:'+ newUser.id, JSON.stringify(newUser),function(err, rep){
@@ -60,7 +60,7 @@ app.put('/user/:id', function(req, res){
 });
 
 //Ausgabe einer Liste von Usern
-//Benötigt: - 
+//Benötigt: -
 //Ausgabe: Liste von Usern
 app.get('/user', function(req, res){
     var data = [];
@@ -70,7 +70,7 @@ app.get('/user', function(req, res){
                 } else {
                     db.mget(rep, function(err, rep){
                         rep.forEach(function(val){
-                            data.push(JSON.parse(val));         
+                            data.push(JSON.parse(val));
                         });
                         console.log(data);
                         data = data.map(function(user){
@@ -78,7 +78,7 @@ app.get('/user', function(req, res){
                         });
                         res.type('json').send(data);
                     });
-                    
+
                 }
     });
 });
@@ -109,18 +109,18 @@ app.delete('/user/:id', function(req, res){
             });
         }
         else{
-            res.status(404).send("Der User wurde nicht gefunden!").end();   
+            res.status(404).send("Der User wurde nicht gefunden!").end();
         }
     });
 });
 
-//Hinzufügen von einer Bar 
+//Hinzufügen von einer Bar
 //Benötigt: (UserID)
 //Ausgabe: Barname, BarID, UserID
-app.post('/user/:id/bars',function(req, res){ 
-    
+app.post('/user/:id/bars',function(req, res){
+
     var newBar = req.body;
-    
+
     db.get('user:'+ req.params.id, function(err, rep){
         if(rep){
             db.incr('bid:bars', function(err, rep){
@@ -130,13 +130,13 @@ app.post('/user/:id/bars',function(req, res){
                 var temp = {
                     barEvent: []
                 };
-                
+
                 db.set('maxAnzahlBars', JSON.stringify(newBar), function(err, rep){
                 });
-                
+
                 db.set('barsEvent:'+newBar.bid, JSON.stringify(temp), function(err, rep){
                 });
-                
+
                 db.set('bars:'+newBar.bid, JSON.stringify(newBar),function(err, rep){
                     res.type('json').send(newBar).end();
                 });
@@ -159,13 +159,13 @@ app.get('/bars', function(req, res){
                 } else {
                     db.mget(rep, function(err, rep){
                         rep.forEach(function(val){
-                            data.push(JSON.parse(val));         
+                            data.push(JSON.parse(val));
                         });
-                        
+
                         data = data.map(function(bars){
                             return {id: bars.bid, name: bars.name, userID: bars.userID};
                         });
-                        
+
                         var i = 0, p = 0;
                         var temp = [];
                         while(i < data.length){
@@ -178,7 +178,7 @@ app.get('/bars', function(req, res){
                         res.send(data);
                     });
                 }
-       
+
     });
 
 });
@@ -227,7 +227,7 @@ app.delete('/bars/:bid', function(req, res){
             });
         }
         else{
-            res.status(404).send("Die Bar wurde nicht gefunden!").end();   
+            res.status(404).send("Die Bar wurde nicht gefunden!").end();
         }
     });
 });
@@ -271,7 +271,7 @@ app.put('/user/:id/bars/:bid/sitzplaetze', function(req, res){
                                 var temp = JSON.parse(rep);
                                 if(newSp.asp > temp.sitzplaetze){ //achtung!!! Groß und Kleinschreibung
                                     res.send("Der neue asp wert ist zu hoch!");
-                                } 
+                                }
                                 else{
                                     delete temp.asp;
                                     temp.asp = newSp.asp;
@@ -292,7 +292,7 @@ app.put('/user/:id/bars/:bid/sitzplaetze', function(req, res){
                 else{
                     res.status(404).type('text').send("Die Bar mit der ID " + req.params.bid + " wurde nicht gefunden");
                 }
-                
+
             });
         }
     });
@@ -381,7 +381,7 @@ app.get('/bars/:bid/oeffnungszeiten', function(req, res){
         else{
                 res.status(404).type('text').send("Die Bar mit der ID " + req.params.bid + " wurde nicht gefunden");
         }
-            
+
     });
 });
 
@@ -389,7 +389,7 @@ app.get('/bars/:bid/oeffnungszeiten', function(req, res){
 //Benötigt: (BarID)
 //Ausgabe: BarID
 app.post('/user/:id/bars/:bid/getraenkekarte', function(req, res){
-    
+
 	var newKarte = req.body;
 	db.get('bars:'+req.params.bid, function(err, rep){
        if(rep){
@@ -464,11 +464,11 @@ app.put('/user/:id/bars/:bid/events', function(req, res){
 		                  oldEventlist = JSON.parse(rep);
 		                  oldEventlist.barEvent.push(newEvent);
                           db.set('barsEvent:'+req.params.bid, JSON.stringify(oldEventlist), function(err, rep){
-                              res.type('json').send(oldEventlist).end();			
+                              res.type('json').send(oldEventlist).end();
                           });
-                          }         
+                          }
 		              });
-                
+
                 }
                 else{
                     res.status(404).type('text').send("Der User mit der ID " +req.params.id + " darf die Bar mit der ID " + req.params.bid + " nicht    verändern");
@@ -492,15 +492,32 @@ app.get('/bars/:bid/events', function(req, res){
            res.status(404).type('text').send("Für die Bar mit der ID " + req.params.bid + " wurden keine Events gefunden");
        }
    });
-});	    
+});
 
-
+//Events löschen
+app.delete('/bars/:bid/events', function(req, res){
+    db.exists('barsEvent:'+req.params.bid, function(err, rep){
+        if(rep === 1){
+            db.del('barsEvent:'+req.params.bid,function(err, rep){
+                res.status(200).send("Die Events wurden gelöscht").end();
+								var temp = {
+                    barEvent: []
+                };
+								db.set('barsEvent:'+req.params.bid, JSON.stringify(temp), function(err, rep){
+                });
+            });
+        }
+        else{
+            res.status(404).send("Es wurden keine Events gefunden!").end();
+        }
+    });
+});
 
 
 //Ausgabe einer Liste der Bars die in der Stadt geöffnet haben.
 app.get('/aktuell', function(req, res){
     var data = [];
-    
+
     async.series([
         function(callback){ //Liste aller Bars erstellen
             db.keys('bars:*', function(err, rep){
@@ -509,7 +526,7 @@ app.get('/aktuell', function(req, res){
                 } else {
                     db.mget(rep, function(err, rep){
                         rep.forEach(function(val){
-                            data.push(JSON.parse(val));         
+                            data.push(JSON.parse(val));
                         });
                         data = data.map(function(bars){
                             return {id: bars.bid, name: bars.name, adresse: bars.adresse, stadt: bars.stadt, typ: bars.typ, gegebenheiten: bars.gegebenheiten, userID: bars.userID};
@@ -523,9 +540,9 @@ app.get('/aktuell', function(req, res){
                             i++;
                         }
                         data = temp;
-                        
+
                         callback();
-                    }); 
+                    });
                 }
             });
         },
@@ -538,8 +555,8 @@ app.get('/aktuell', function(req, res){
             /*var i = 0, j = 0, p = 0;
             while(j < data.length){
                 if(data[j] === undefined){
-                } else { 
-                    temp[p++] = data[j]; 
+                } else {
+                    temp[p++] = data[j];
                 }
                 j++;
             }
@@ -547,19 +564,19 @@ app.get('/aktuell', function(req, res){
             async.forEach(data, function(bars, callback){
                 db.get('bars:' + bars.id + '/oeffnungszeiten', function(err, rep){
                    if(rep){
-                       var zeiten = JSON.parse(rep); 
+                       var zeiten = JSON.parse(rep);
                        if(rep){
                             switch(tag){
                                 case 1:
                                     if(zeiten.montagvon <= stunde && zeiten.montagbis >= stunde){
                                         data[i++].offen = "true";
-                                    }   
+                                    }
                                     else{
                                         data[i++].offen = "false";
-                                    }					       
+                                    }
                                     break;
-			         
-                                case 2:                                   
+
+                                case 2:
                                     if(zeiten.dienstagvon <= stunde && zeiten.dienstagbis >= stunde){
                                         data[i++].offen = "true";
                                     }
@@ -611,7 +628,7 @@ app.get('/aktuell', function(req, res){
                            callback();
                        }
                    }
-                       
+
                 });
             }, callback);
         },
@@ -628,10 +645,10 @@ app.get('/aktuell', function(req, res){
                 });
             }, callback);
         }
-    
+
     ], function(){
         res.send(data);
-    });                   
+    });
 });
 
 //Abrufen der aktuellen Infos einer Bar
@@ -641,20 +658,20 @@ app.get('/aktuell', function(req, res){
     var currentdate = new Date();
 	var tag = currentdate.getDay(); //aktueller tag, 0-6, 0 == sonntag
 	var stunde = currentdate.getHours(); //aktuelle stunde
-    
+
     var dd = currentdate.getDate();
     var mm = currentdate.getMonth()+1; //January is 0!
     var yyyy = currentdate.getFullYear();
-    if(dd<10) { 
+    if(dd<10) {
         dd='0'+dd
-    } 
+    }
     if(mm<10) {
         mm='0'+mm
-    } 
+    }
     var today = dd+'.'+mm+'.'+yyyy;
     var bid = req.params.bid;
     var temp = {};
-    
+
     async.series([
         function(callback){
             db.get('bars:'+ bid + '/oeffnungszeiten', function(err, rep){
@@ -721,7 +738,7 @@ app.get('/aktuell', function(req, res){
                     callback();
                 } else {
                     res.status(404).type('text').send("Die Bar mit der ID " + req.params.bid + " wurde nicht gefunden");
-                }      
+                }
             });
         },
         function(callback){
@@ -733,7 +750,7 @@ app.get('/aktuell', function(req, res){
                     callback();
                 });
             }
-            
+
         },
         function(callback){
             db.get('barsEvent:' + bid, function(err, rep){

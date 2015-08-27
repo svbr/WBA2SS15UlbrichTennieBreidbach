@@ -488,7 +488,7 @@ app.post('/user/:id/bars/:bid/sitzplaetze', function(req, res){
 
 app.delete('/bars/:bid', function(req, res){
     console.log('test2');
-    
+
     var options = {
         host: "localhost",
         port: 3000,
@@ -501,7 +501,7 @@ app.delete('/bars/:bid', function(req, res){
     var externalRequest = http.request(options, function(externalResponse){
         console.log("Connected Bar delete");
         externalResponse.on("data", function(chunk){
-          
+
             res.status(200);
             res.end();
         });
@@ -512,7 +512,7 @@ app.delete('/bars/:bid', function(req, res){
 app.put('/user/:id/bars/:bid', function(req, res){
     console.log('test2');
     var neu = req.body;
-    
+
     var options = {
         host: "localhost",
         port: 3000,
@@ -525,7 +525,7 @@ app.put('/user/:id/bars/:bid', function(req, res){
     var externalRequest = http.request(options, function(externalResponse){
         console.log("Connected Bar PUT");
         externalResponse.on("data", function(chunk){
-          
+
             res.status(200);
             res.end();
         });
@@ -541,7 +541,7 @@ app.put('/user/:id/bars/:bid', function(req, res){
 app.put('/user/:id/bars/:bid/oeffnungszeiten', function(req, res){
     console.log('test2');
     var neu = req.body;
-    
+
     var options = {
         host: "localhost",
         port: 3000,
@@ -567,7 +567,7 @@ app.put('/user/:id/bars/:bid/oeffnungszeiten', function(req, res){
 });
 
 app.delete('/user/:id', function(req, res){
-    
+
     var options = {
         host: "localhost",
         port: 3000,
@@ -580,7 +580,7 @@ app.delete('/user/:id', function(req, res){
     var externalRequest = http.request(options, function(externalResponse){
         console.log("Connected User delete");
         externalResponse.on("data", function(chunk){
-          
+
             res.status(200);
             res.end();
         });
@@ -588,6 +588,29 @@ app.delete('/user/:id', function(req, res){
       externalRequest.end();
 });
 
+/*app.delete('/bars/:bid/events', function(req, res){
+
+	var options = {
+	        host: "localhost",
+	        port: 3000,
+	        path: "/bars/" + req.params.bid + "/events",
+	        method:"DELETE",
+	        headers:{
+	          accept:"application/json"
+	        }
+	    }
+			var externalRequest = http.request(options, function(externalResponse){
+			        console.log("Connected Event delete");
+							externalResponse.on("data", function(chunk){
+
+							            res.status(200);
+							            res.end();
+							        });
+							      });
+							      externalRequest.end();
+
+});
+*/
 
 // Weitere Seiten
 /*
