@@ -512,7 +512,7 @@ app.get('/aktuell', function(req, res){
                             data.push(JSON.parse(val));         
                         });
                         data = data.map(function(bars){
-                            return {id: bars.bid, name: bars.name, adresse: bars.adresse, stadt: bars.stadt, typ: bars.typ, gegebenheiten: bars.gegebenheiten};
+                            return {id: bars.bid, name: bars.name, adresse: bars.adresse, stadt: bars.stadt, typ: bars.typ, gegebenheiten: bars.gegebenheiten, userID: bars.userID};
                         });
                         //console.log(data);
                         var i = 0, p = 0;
