@@ -10,7 +10,7 @@
 	<script type="text/javascript">
 
 	$(document).ready(function() {
-			var uID, barID;
+			var uID, barID, pw;
 			$("#login").submit(function(event){
 					event.preventDefault();
 
@@ -33,11 +33,13 @@
                             var temp = false
                             $.each(data, function(index, element) {                                        
                                 if(element.name === $('#uname').val() && element.passwort == $('#pass').val() || element.id == "-1"){
+                                    pw = $('#pass').val();
                                     document.getElementById('hide').removeAttribute('style');
                                     document.getElementById('löschen').removeAttribute('style');
+                                    document.getElementById('bearbeiten').removeAttribute('style');
                                     uID = element.id;
                                     
-                                    $('#hide').replaceWith("<div  class='well' id='hide'><p>Eingeloggt als:<br/>UserID: <strong id='id'>" + element.id + "</strong><br/> Username: " + element.name + " <br/></p></div>");
+                                    $('#hide').replaceWith("<div  class='well' id='hide'><p>Eingeloggt als:<br/>UserID: <strong id='id'>" + element.id + "</strong><br/> Username: <strong id='username'>" + element.name + "</strong><br/></p></div>");
                                     
                                     $.ajaxSetup({
                                         contentType: "application/json; charset=utf-8"
@@ -95,7 +97,48 @@
                 });
                 event.preventDefault();
             });
-		});
+        
+            $('#bearbeiten').submit(function(event){
+               
+               document.getElementById('bearbeiten1').removeAttribute('style');
+                var s = document.getElementById('username').innerHTML;
+                alert(s);
+               $("#n").val(document.getElementById('username').innerHTML);
+               alert("Ich bin hier!");
+               event.preventDefault();    
+                
+		    });
+        
+            $('#newUser').submit(function(event){
+                event.preventDefault();
+                $.ajaxSetup({
+                        contentType: "application/json; charset=utf-8"
+                });
+                
+                var newUser = {
+                    name : $("#n").val(),
+                    
+                };
+                
+                newUser.passwort = pw;
+                
+                $.ajax({
+                    type: 'PUT',
+                    host: 'localhost',
+                    port: 8080,
+                    url: '/user/' + uID,
+                    data: JSON.stringify(newUser),
+                    success: function(data){
+                        alert("Der User wurde geändert!");
+                        window.location.href = "http://localhost:8080/user/"+uID;
+                    } 
+                }).fail(function(data){
+                    alert("fail");
+                });
+                
+                event.preventDefault();
+            }); 
+    });
 			</script>
 </head>
 <body class="container">
@@ -128,8 +171,17 @@
                 <form id="löschen" style="display:none">
                     <input type="submit" value="User Löschen">
                 </form>
+                <form id="bearbeiten" style="display:none">
+                    <input type="submit" value="User bearbeiten">
+                </form>
 				<div class="well" id='hide' style="display:none"> 
 			</div>
+                <div id='bearbeiten1' style="display:none">
+                    <form id="newUser">
+                        <label for="name">Username:</label><br/> <input id="n" type="text" required ><br>
+                        <input type="submit" value="ändern">
+                    </form>
+            </div>
             <div id="bars"></div>
     </div>
 

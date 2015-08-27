@@ -509,6 +509,35 @@ app.delete('/bars/:bid', function(req, res){
       externalRequest.end();
 });
 
+app.put('/user/:id', function(req, res){
+    console.log('test3');
+    var neu = req.body;
+    
+    var options = {
+        host: "localhost",
+        port: 3000,
+        path: "/user/" + req.params.id,
+        method:"PUT",
+        headers:{
+          accept:"application/json"
+        }
+    }
+    var externalRequest = http.request(options, function(externalResponse){
+        console.log("Connected User PUT");
+        externalResponse.on("data", function(chunk){
+          
+            res.status(200);
+            res.end();
+        });
+      });
+      externalRequest.on('error', function(e) {
+        console.log('problem with request: ' + e.message);
+      });
+      externalRequest.setHeader("content-type", "application/json");
+      externalRequest.write(JSON.stringify(neu));
+      externalRequest.end();
+});
+
 app.put('/user/:id/bars/:bid', function(req, res){
     console.log('test2');
     var neu = req.body;
