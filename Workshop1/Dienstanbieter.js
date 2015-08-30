@@ -270,13 +270,15 @@ app.put('/user/:id/bars/:bid/sitzplaetze', function(req, res){
                             if(rep){
                                 var temp = JSON.parse(rep);
                                 if(newSp.asp > temp.sitzplaetze){ //achtung!!! Groß und Kleinschreibung
-                                    res.send("Der neue asp wert ist zu hoch!");
+                                    res.status(404).type('text').send("Der neue asp wert ist zu hoch!");
                                 }
                                 else{
                                     delete temp.asp;
                                     temp.asp = newSp.asp;
+                                    console.log(newSp.asp);
                                     db.set('bars:'+req.params.bid+'/sitzplaetze', JSON.stringify(temp),function(err, rep){
-			                             res.send("aktuell").end();
+                                        
+			                             res.status(202).type('text').send('Der Wert wurde aktualisiert');
 		                            });
                                 }
                             }

@@ -679,6 +679,32 @@ app.post('/user/:id/bars/:bid/events', function(req, res){
     
 });
 
+app.put('/user/:id/bars/:bid/sitzplaetze', function(req, res){
+    var neu = req.body;
+    console.log(neu);
+    var options = {
+        host: "localhost",
+        port: 3000,
+        path: "/user/" + req.params.id + "/bars/"+req.params.bid +'/sitzplaetze',
+        method:"PUT",
+        headers:{
+          accept:"application/json"
+        }
+    }
+    var externalRequest = http.request(options, function(externalResponse){
+        console.log("Connected sitzplaetze PUT");
+        externalResponse.on("data", function(chunk){
+            res.status(200);
+            res.end();
+        });
+      });
+      externalRequest.on('error', function(e) {
+        console.log('problem with request: ' + e.message);
+      });
+      externalRequest.setHeader("content-type", "application/json");
+      externalRequest.write(JSON.stringify(neu));
+      externalRequest.end();
+});
 
 
 // Weitere Seiten
