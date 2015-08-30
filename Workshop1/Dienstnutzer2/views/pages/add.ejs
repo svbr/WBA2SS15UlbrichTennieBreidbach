@@ -47,21 +47,33 @@
                 alert("fail"); 
             });
         });
-        var getränke = false;
+        
         var t = 0;
         $("#plusGetraenke").click(function(){
-            getränke = true;
             t += 1;
-            $("#test").append("<label for='getraenk "+ t +"'>Getränk Nr.: "+ t +" </label>  <br/> <input id='getraenk" + t + "' type='text' required><label for='preis "+ t +"'>Preis:  </label>  <input id='preis" + t + "' type='text' required><br>");
+            $("#newG").append("<label for='getraenk "+ t +"'>Getränk Nr.: "+ t +" </label>  <br/> <input id='getraenk" + t + "' type='text' required><label for='preis "+ t +"'> Preis:  </label>  <input id='preis" + t + "' type='text' required>€<br>");
+        });
+        var e = 0;
+        var newevent = false;
+        $("#plusEvent").click(function(){
+            newevent = true;
+            e += 1;
+            $("#newEvent").append("<h4>Event Nr.: " + e + " <br><label for='event "+ e +"'>Event: </label> <input id='event" + e + "' type='text' required><br><label for='datum "+ e +"'>Datum:  </label>  <input id='datum" + e + "' type='text' required><br><label for='uhrzeit "+ e +"'>Uhrzeit:  </label>  <input id='uhrzeit" + e + "' type='text' required><br>");
         });
         
         $("#form").submit(function(event) {
-            var getraenkeKarte = {};
-            getraenkeKarte[$("#getraenk0").val()] = $("#preis0").val();
+            var getraenkeKarte = {
+                karte: []
+            };
+            var jOne = {};
+            jOne[$("#getraenk0").val()] = $("#preis0").val();
+            getraenkeKarte.karte.push(jOne);
             
             if(getränke == true){
                 for(var i = 1; i <= t; i++){
-                    getraenkeKarte[$("#getraenk"+i).val()] = $("#preis"+i).val();
+                    var jNew = {};
+                    jNew[$("#getraenk"+i).val()] = $("#preis"+i).val();
+                    getraenkeKarte.karte.push(jNew);
                 }
             }
             
@@ -107,6 +119,7 @@
 				data: JSON.stringify(newBar),
                 success: function(data){
                     barID = data.bid;
+                    
                     
                     
                     $.ajax({
@@ -212,9 +225,16 @@
                         <label for="sonntagBis">bis: </label> <input id="sonntagBis" type="text" required ><br>
                         <br>
                         <p><strong>Getränke</strong></p>
-                        <div id="test"><label for='getraenk0'>Getränk Nr.: 0 </label>  <br/> <input id='getraenk0' type='text' required><label for='preis0'>Preis:  </label>  <input id='preis0' type='text' required><br></div>
-                        <input type="button" id="plusGetraenke" value="+">
-                        
+                        <div id="newG">
+                            <label for='getraenk0'>Getränk Nr.: 0 </label>  <br/> <input id='getraenk0' type='text' required>
+                            <label for='preis0'>Preis:  </label>  <input id='preis0' type='text' required>€<br>
+                        </div>
+                        <input type="button" id="plusGetraenke" value="+Getränk hinzufügen+"><br>
+                    
+                        <div id="newEvent">
+                            
+                        </div>
+                        <input type="button" id="plusEvent" value="+Event hinzufügen+"><br>
                         <input type="submit" id="test" value="ADD">
                     </form>
 				    <p>Es dürfen keine Felder frei bleiben.</p>

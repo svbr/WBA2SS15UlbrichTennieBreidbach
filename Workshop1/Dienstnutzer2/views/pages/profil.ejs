@@ -10,7 +10,7 @@
 	<script type="text/javascript">
 
 	$(document).ready(function() {
-			var uID, barID, pw;
+			var uID, barID, pw, bars = [];
 			$("#login").submit(function(event){
 					event.preventDefault();
 
@@ -56,9 +56,10 @@
                                               },
                                         dataType: 'json',
                                         success: function(data){
+                                             var x = 0;
                                             $.each(data, function(index, element){
                                                 if(element.userID == uID){
-                                                    
+                                                    bars[x++] = element.id;
                                                     $('#bars').append($("<div class='jumbotron' id='test'> <h3><a href='http://localhost:8080/bars/" + element.id + "'> "+ element.name.toString() + "</a></h3><br/> ID: " + element.id.toString() + "</div>"));
                                                 }
                                             });
@@ -90,6 +91,16 @@
                     url: '/user/' + id,
                     success: function(data){
                         alert("Der User wurde gelöscht!");
+                        for(var i = 0; i < bars.length; i++){
+                            $.ajax({
+                                type: 'DELETE',
+                                host: 'localhost',
+                                port: 8080,
+                                url: '/bars/' + bars[i]
+                            }).fail(function(data){
+                                alert("fail delete bars" + i);
+                            });
+                        }
                         window.location.href = "http://localhost:8080/";
                     }
                 }).fail(function(data){

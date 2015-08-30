@@ -60,6 +60,8 @@
                     <br><li><h4>Stadt:</h4><p id="s"><%= bars.stadt %></p></li>
                     <br><li><h4>Typ:</h4><p id="t"><%= bars.typ %></p></li>  
                     <br><li><h4>Gegebenheiten:</h4><p id="g"><%= bars.gegebenheiten %></p></li>
+                    <br><li><h4>Gesamte Sitzplätze:</h4><p id="sitz"><%= sitzplaetze.sitzplaetze %></p></li>
+                    <br><li><h4>Aktuell besetzte Sitzplätze:</h4><p id="asp"><%= sitzplaetze.asp %></p></li>
                 </div>
                 
                 <br><li><h4>Offnungszeiten:</h4>
@@ -103,21 +105,31 @@
                         <li><p>Samstag von:     <strong id="sav"><%= oeffnungszeiten.samstagvon %></strong>    bis <strong id="sab"><%= oeffnungszeiten.samstagbis %></strong></p></li>
                         <li><p>Sonntag von:     <strong id="sov"><%= oeffnungszeiten.sonntagvon %></strong>    bis <strong id="sob"><%= oeffnungszeiten.sonntagbis %></strong></p></li>
                     </ul>
+                    </div>
+
                 </li>
-                </div>
                 <div>
                 <li><h4>Events</h4></li>
                 <form style="float: right" id="eventBearbeiten">
                     <input type="submit" value="Events bearbeiten">
                 </form>
-                    <%for(var i = 0; i < bars.length; i++){%>
+                    <%for(var i = 0; i < events.length; i++){%>
                         <ul>
                             <li><h4>Event <%= events[i].event %></a><h4></li>
-                            <li><h4>Am: <%= bars[i].datum %></h4></li>
-                            <li><h4>Um: <%= bars[i].uhrzeit %> Uhr</h4></li>
+                            <li><h4>Am: <%= events[i].datum %></h4></li>
+                            <li><h4>Um: <%= events[i].uhrzeit %> Uhr</h4></li>
                         </ul><%
                     }%>
                 </div>
+                <li><h4>Getränkekarte</h4>
+                    <%for(var i = 0; i <= getraenk.karte.length; i++){
+                        for(var key in getraenk.karte[i]){%>
+                            <ul>
+                                <li><h4>Getränk: <%= key %><br>    Preis: <%= getraenk.karte[i][key] %> €</a><h4></li>
+                            </ul><%
+                        }
+                    }%>
+                </li>
             </ul>
         </div>
     <footer>

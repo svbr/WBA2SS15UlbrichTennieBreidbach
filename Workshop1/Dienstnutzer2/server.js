@@ -38,7 +38,7 @@ app.get('/user', function(req, res){
       }
       var externalRequest = http.request(options, function(externalResponse){
           console.log("Connected User get");
-          if(externalResponse.statusCode == 404){
+          if(externalResponse.statusCode == 404){ // das muss umebdingt noch überarbeitet werden (statuscodes) !!
               console.log("kein Nutzer vorhanden");
               var noUser = {
                   id: "-1",
@@ -225,13 +225,9 @@ app.get('/bars', function(req, res){
 // Bar Seite
 // eine Bar auflisten
 app.get("/bars/:bid", function(req, res, next){
-    var bar, sitzplatz, events;
-
-  fs.readFile("./views/pages/bar.ejs", {encoding:"utf-8"}, function(err, filestring){
-    if(err){
-      throw err;
-    } else{
-      var options = {
+    var bar, sitzplatz, events, getränk;
+    //Get bars
+    var options = {
         host: "localhost",
         port: 3000,
         path: "/bars/"+req.params.bid,
@@ -243,23 +239,13 @@ app.get("/bars/:bid", function(req, res, next){
       var externalRequest = http.request(options, function(externalResponse){
         console.log("Connected Bars get");
         externalResponse.on("data", function(chunk){
-          var bars = JSON.parse(chunk);
-          /*var html = ejs.render(filestring, {bars: bars, filename: __dirname + '/bars.ejs'});
-          res.setHeader("content-type", "text/html");
-          res.writeHead(200);
-          res.write(html);
-          res.end();*/
+            var bars = JSON.parse(chunk);
             bar = bars;
         });
       });
-      externalRequest.end();
-    }
-  });
-    fs.readFile("./views/pages/bar.ejs", {encoding:"utf-8"}, function(err, filestring){
-    if(err){
-      throw err;
-    } else{
-      var options = {
+    externalRequest.end();
+    //GET bars/:id/sitzplätze
+    var options = {
         host: "localhost",
         port: 3000,
         path: "/bars/"+ req.params.bid + "/sitzplaetze",
@@ -271,23 +257,13 @@ app.get("/bars/:bid", function(req, res, next){
       var externalRequest = http.request(options, function(externalResponse){
         console.log("Connected sitzplaetze get");
         externalResponse.on("data", function(chunk){
-          var sitzplaetze = JSON.parse(chunk);
-          /*var html = ejs.render(filestring, {bars: bars, filename: __dirname + '/bars.ejs'});
-          res.setHeader("content-type", "text/html");
-          res.writeHead(200);
-          res.write(html);
-          res.end();*/
+            var sitzplaetze = JSON.parse(chunk);
             sitzplatz = sitzplaetze;
         });
-      });
-      externalRequest.end();
-    }
-  });
-    fs.readFile("./views/pages/bar.ejs", {encoding:"utf-8"}, function(err, filestring){
-    if(err){
-      throw err;
-    } else{
-      var options = {
+      });  
+    externalRequest.end();
+    //GET bars/:id/events
+    var options = {
         host: "localhost",
         port: 3000,
         path: "/bars/"+ req.params.bid + "/events",
@@ -299,19 +275,30 @@ app.get("/bars/:bid", function(req, res, next){
       var externalRequest = http.request(options, function(externalResponse){
         console.log("Connected events get");
         externalResponse.on("data", function(chunk){
-          var event = JSON.parse(chunk);
-          /*var html = ejs.render(filestring, {bars: bars, filename: __dirname + '/bars.ejs'});
-          res.setHeader("content-type", "text/html");
-          res.writeHead(200);
-          res.write(html);
-          res.end();*/
+            var event = JSON.parse(chunk);
             events = event;
+        });
+      });  
+    externalRequest.end();
+    //GET bars/:id/getränkekarte
+      var options = {
+        host: "localhost",
+        port: 3000,
+        path: "/bars/"+ req.params.bid + "/getraenkekarte",
+        method:"GET",
+        headers:{
+          accept:"application/json"
+        }
+      }
+      var externalRequest = http.request(options, function(externalResponse){
+        console.log("Connected getränkekarte get");
+        externalResponse.on("data", function(chunk){
+            var gk = JSON.parse(chunk);
+            getränk = gk;
         });
       });
       externalRequest.end();
-    }
-  });
-    // getränkekarte fehlt!!!!
+    //GET bars/:id/öffnungszeiten
     fs.readFile("./views/pages/bar.ejs", {encoding:"utf-8"}, function(err, filestring){
         if(err){
           throw err;
@@ -330,7 +317,7 @@ app.get("/bars/:bid", function(req, res, next){
             externalResponse.on("data", function(chunk){
               var oeffnungszeiten = JSON.parse(chunk);
 
-              var html = ejs.render(filestring, {oeffnungszeiten: oeffnungszeiten, bars: bar, sitzplaetze: sitzplatz, events: events,  filename: __dirname + '/bars.ejs'});
+              var html = ejs.render(filestring, {oeffnungszeiten: oeffnungszeiten, bars: bar, sitzplaetze: sitzplatz, events: events, getraenk: getränk, filename: __dirname + '/bars.ejs'});
               res.setHeader("content-type", "text/html");
               res.writeHead(200);
               res.write(html);
@@ -611,7 +598,7 @@ app.delete('/user/:id', function(req, res){
       externalRequest.end();
 });
 
-<<<<<<< Updated upstream
+
 /*app.delete('/bars/:bid/events', function(req, res){
 
 	var options = {
@@ -635,7 +622,7 @@ app.delete('/user/:id', function(req, res){
 
 });
 */
-=======
+
 app.post("/user/:id/bars/:bid/getraenkekarte", function(req, res){
     var getraenkekarte = req.body;
     console.log(getraenkekarte);
@@ -664,7 +651,7 @@ app.post("/user/:id/bars/:bid/getraenkekarte", function(req, res){
     
 });
 
->>>>>>> Stashed changes
+
 
 // Weitere Seiten
 /*
