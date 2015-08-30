@@ -394,8 +394,9 @@ app.post('/user/:id/bars/:bid/getraenkekarte', function(req, res){
        if(rep){
            rep=JSON.parse(rep);
             if(rep.userID == req.params.id){
-		      db.set('bars:'+req.params.id+'/karte', JSON.stringify(newKarte),function(err, rep){
-			     res.type('json').send(newKarte).end();
+                
+		      db.set('bars:'+req.params.bid+'/karte', JSON.stringify(newKarte),function(err, rep){   
+                  res.type('json').send(newKarte).end();
 		      });
             }
             else{
@@ -452,7 +453,7 @@ app.get('/bars/:bid/getraenkekarte', function(req, res){ //Rückgabe der Karte d
 //Hinzufügen von Events
 //Benötigt: BarID
 //Ausgabe: Liste der Events
-app.put('/user/:id/bars/:bid/events', function(req, res){
+app.post('/user/:id/bars/:bid/events', function(req, res){
     db.get('bars:'+ req.params.bid, function(err,rep){
         if(rep){
             rep=JSON.parse(rep);

@@ -58,7 +58,7 @@
         $("#plusEvent").click(function(){
             newevent = true;
             e += 1;
-            $("#newEvent").append("<h4>Event Nr.: " + e + " <br><label for='event "+ e +"'>Event: </label> <input id='event" + e + "' type='text' required><br><label for='datum "+ e +"'>Datum:  </label>  <input id='datum" + e + "' type='text' required><br><label for='uhrzeit "+ e +"'>Uhrzeit:  </label>  <input id='uhrzeit" + e + "' type='text' required><br>");
+            $("#newEvent").append("<h4>Event Nr.: " + e + " </h4><br><label for='event "+ e +"'>Event: </label> <input id='event" + e + "' type='text' required><br><label for='datum "+ e +"'>Datum:  </label>  <input id='datum" + e + "' type='text' required><br><label for='uhrzeit "+ e +"'>Uhrzeit:  </label>  <input id='uhrzeit" + e + "' type='text' required><br>");
         });
         
         $("#form").submit(function(event) {
@@ -69,12 +69,10 @@
             jOne[$("#getraenk0").val()] = $("#preis0").val();
             getraenkeKarte.karte.push(jOne);
             
-            if(getränke == true){
-                for(var i = 1; i <= t; i++){
-                    var jNew = {};
-                    jNew[$("#getraenk"+i).val()] = $("#preis"+i).val();
-                    getraenkeKarte.karte.push(jNew);
-                }
+            for(var i = 1; i <= t; i++){
+                var jNew = {};
+                jNew[$("#getraenk"+i).val()] = $("#preis"+i).val();
+                getraenkeKarte.karte.push(jNew);
             }
             
             var newBar = {
@@ -119,7 +117,25 @@
 				data: JSON.stringify(newBar),
                 success: function(data){
                     barID = data.bid;
-                    
+                    if(newevent){
+                        for(var i = 1; i <= e; i++){
+                            var jNewEvent = {
+                                datum: $('#datum'+ i).val(),
+                                uhrzeit: $('#uhrzeit'+i).val(),
+                                event: $('#event'+i).val()
+                            };
+                            
+                            $.ajax({
+                                type: 'POST',
+                                host: 'localhost',
+                                port: 8080,
+                                url: "/user/" + uID + "/bars/" + barID + "/events",
+                                data: JSON.stringify(jNewEvent)
+                            }).fail(function(data){
+                                alert("fail events " + i);
+                            });
+                        }
+                    }
                     
                     
                     $.ajax({

@@ -109,18 +109,19 @@
 
                 </li>
                 <div>
-                <li><h4>Events</h4></li>
+                <li><h4>Events</h4>
                 <form style="float: right" id="eventBearbeiten">
                     <input type="submit" value="Events bearbeiten">
                 </form>
-                    <%for(var i = 0; i < events.length; i++){%>
+                    <%for(var i = 0; i < events.barEvent.length; i++){%>
                         <ul>
-                            <li><h4>Event <%= events[i].event %></a><h4></li>
-                            <li><h4>Am: <%= events[i].datum %></h4></li>
-                            <li><h4>Um: <%= events[i].uhrzeit %> Uhr</h4></li>
+                            <li><h4>Event <%= events.barEvent[i].event %></a><h4></li>
+                            <li><h4>Am: <%= events.barEvent[i].datum %></h4></li>
+                            <li><h4>Um: <%= events.barEvent[i].uhrzeit %> Uhr</h4></li>
                         </ul><%
                     }%>
                 </div>
+                </li>
                 <li><h4>Getränkekarte</h4>
                     <%for(var i = 0; i <= getraenk.karte.length; i++){
                         for(var key in getraenk.karte[i]){%>
@@ -318,7 +319,7 @@
                         alert("fail oeffnungszeiten");
                     });
                 });
-                 event.preventDefault();
+                //event.preventDefault();
             });
         
         </script>

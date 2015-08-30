@@ -651,6 +651,34 @@ app.post("/user/:id/bars/:bid/getraenkekarte", function(req, res){
     
 });
 
+app.post('/user/:id/bars/:bid/events', function(req, res){
+    var events = req.body;
+    console.log(events);
+    
+      var options = {
+        host: "localhost",
+        port: 3000,
+        path: "/user/" + req.params.id + "/bars/" + req.params.bid + "/events",
+        method:"POST"
+      }
+      var externalRequest = http.request(options, function(externalResponse){
+        console.log("Connected events post");
+        externalResponse.on("data", function(chunk){
+            var events = JSON.parse(chunk);
+            // das muss auf jeden fall bearbeitet werden (statuscode)!!
+            res.status(200);
+            res.end();
+        });
+      });
+      externalRequest.on('error', function(e) {
+        console.log('problem with request: ' + e.message);
+      });
+      externalRequest.setHeader("content-type", "application/json");
+      externalRequest.write(JSON.stringify(events));
+      externalRequest.end();
+    
+});
+
 
 
 // Weitere Seiten
