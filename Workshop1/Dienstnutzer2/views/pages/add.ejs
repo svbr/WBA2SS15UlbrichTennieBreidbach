@@ -172,12 +172,8 @@
                 }
 				}).done(function(data){
                     
-				    //alert("geschafft");
-                    $("#name").val('');
-                    $("#adresse").val('');
-                    $("#stadt").val('');
-                    $("#typ").val('');
-                    $("#gegebenheiten").val('');
+				    alert("Die Bar mit der ID:" + barID + "wurde angelegt!");
+                    window.location.href = "http://localhost:8080/bars/" + barID;
 				}).fail(function(e){
 				    alert("fehler");
 				});

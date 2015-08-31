@@ -599,7 +599,7 @@ app.delete('/user/:id', function(req, res){
 });
 
 
-/*app.delete('/bars/:bid/events', function(req, res){
+app.delete('/bars/:bid/events', function(req, res){
 
 	var options = {
 	        host: "localhost",
@@ -610,18 +610,17 @@ app.delete('/user/:id', function(req, res){
 	          accept:"application/json"
 	        }
 	    }
-			var externalRequest = http.request(options, function(externalResponse){
-			        console.log("Connected Event delete");
-							externalResponse.on("data", function(chunk){
-
-							            res.status(200);
-							            res.end();
-							        });
-							      });
-							      externalRequest.end();
+        var externalRequest = http.request(options, function(externalResponse){    
+            console.log("Connected Event delete");
+            externalResponse.on("data", function(chunk){
+                res.status(200);
+                res.end(); 
+            });
+        });
+        externalRequest.end();
 
 });
-*/
+
 
 app.post("/user/:id/bars/:bid/getraenkekarte", function(req, res){
     var getraenkekarte = req.body;
@@ -649,6 +648,34 @@ app.post("/user/:id/bars/:bid/getraenkekarte", function(req, res){
       externalRequest.write(JSON.stringify(getraenkekarte));
       externalRequest.end();
     
+});
+
+app.put('/user/:id/bars/:bid/getraenkekarte', function(req, res){
+    var neu = req.body;
+    console.log(neu);
+    
+    var options = {
+        host: "localhost",
+        port: 3000,
+        path: "/user/" + req.params.id + "/bars/"+req.params.bid +'/getraenkekarte',
+        method:"PUT",
+        headers:{
+          accept:"application/json"
+        }
+    }
+    var externalRequest = http.request(options, function(externalResponse){
+        console.log("Connected getraenkekarte PUT");
+        externalResponse.on("data", function(chunk){
+            res.status(200);
+            res.end();
+        });
+      });
+      externalRequest.on('error', function(e) {
+        console.log('problem with request: ' + e.message);
+      });
+      externalRequest.setHeader("content-type", "application/json");
+      externalRequest.write(JSON.stringify(neu));
+      externalRequest.end();
 });
 
 app.post('/user/:id/bars/:bid/events', function(req, res){

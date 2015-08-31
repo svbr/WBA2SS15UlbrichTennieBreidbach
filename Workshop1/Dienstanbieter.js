@@ -501,12 +501,12 @@ app.delete('/bars/:bid/events', function(req, res){
     db.exists('barsEvent:'+req.params.bid, function(err, rep){
         if(rep === 1){
             db.del('barsEvent:'+req.params.bid,function(err, rep){
-                res.status(200).send("Die Events wurden gelöscht").end();
-								var temp = {
+                var temp = {
                     barEvent: []
                 };
-								db.set('barsEvent:'+req.params.bid, JSON.stringify(temp), function(err, rep){
+                db.set('barsEvent:'+req.params.bid, JSON.stringify(temp), function(err, rep){
                 });
+                res.status(200).send("Die Events wurden gelöscht").end();
             });
         }
         else{
