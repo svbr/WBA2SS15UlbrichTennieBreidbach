@@ -8,13 +8,13 @@
     <meta http-equiv="content-type" content="text/html; charset=utf-8">
 
     <script type="text/javascript">
-    
+
     $(document).ready(function() {
         var uID, barID;
         $("#login").submit(function(event){
             event.preventDefault();
-            
-            
+
+
             $.ajaxSetup({
                 contentType: "application/json; charset=utf-8"
             });
@@ -34,7 +34,7 @@
                     $.each(data, function(index, element) {
                         if(element.name === $('#uname').val() && element.passwort == $('#pass').val() || element.id == "-1"){
                                 document.getElementById('hide').removeAttribute('style');
-                                uID = element.id; 
+                                uID = element.id;
                                 $('#pruefen').replaceWith("<div  class='well' id='pruefen'><p>Eingeloggt als:<br/>UserID: " + element.id + "<br/> Username: " + element.name + " <br/></p></div>");
                                 temp = true;
                         }
@@ -44,10 +44,10 @@
                     }
             }
             }).fail(function(data){
-                alert("fail"); 
+                alert("fail");
             });
         });
-        
+
         var t = 0;
         $("#plusGetraenke").click(function(){
             t += 1;
@@ -60,7 +60,7 @@
             e += 1;
             $("#newEvent").append("<h4>Event Nr.: " + e + " </h4><br><label for='event "+ e +"'>Event: </label> <input id='event" + e + "' type='text' required><br><label for='datum "+ e +"'>Datum:  </label>  <input id='datum" + e + "' type='text' required><br><label for='uhrzeit "+ e +"'>Uhrzeit:  </label>  <input id='uhrzeit" + e + "' type='text' required><br>");
         });
-        
+
         $("#form").submit(function(event) {
             var getraenkeKarte = {
                 karte: []
@@ -68,13 +68,13 @@
             var jOne = {};
             jOne[$("#getraenk0").val()] = $("#preis0").val();
             getraenkeKarte.karte.push(jOne);
-            
+
             for(var i = 1; i <= t; i++){
                 var jNew = {};
                 jNew[$("#getraenk"+i).val()] = $("#preis"+i).val();
                 getraenkeKarte.karte.push(jNew);
             }
-            
+
             var newBar = {
                 name: $("#name").val(),
                 adresse: $("#adresse").val(),
@@ -83,7 +83,7 @@
                 gegebenheiten: $("#gegebenheiten").val(),
                 userID: uID
             };
-            
+
             var öffnungszeiten = {
                 montagvon: $("#montagVon").val(),
                 montagbis: $("#montagBis").val(),
@@ -100,7 +100,7 @@
                 sonntagvon: $("#sonntagVon").val(),
                 sonntagbis: $("#sonntagBis").val()
             };
-            
+
             var sitzplätze = {
                 sitzplaetze: $("#sitzplaetze").val(),
                 asp: "0"
@@ -124,7 +124,7 @@
                                 uhrzeit: $('#uhrzeit'+i).val(),
                                 event: $('#event'+i).val()
                             };
-                            
+
                             $.ajax({
                                 type: 'POST',
                                 host: 'localhost',
@@ -136,8 +136,8 @@
                             });
                         }
                     }
-                    
-                    
+
+
                     $.ajax({
                         type: 'POST',
                         host: 'localhost',
@@ -148,8 +148,8 @@
                         alert("fail getränkekarte");
                     });
 
-                    
-                    
+
+
                     $.ajax({
                         type: 'POST',
                         host: 'localhost',
@@ -159,7 +159,7 @@
                     }).fail(function(data){
                         alert("fail oeffnugnszeiten");
                     });
-                    
+
                     $.ajax({
                         type: 'POST',
                         host: 'localhost',
@@ -171,7 +171,7 @@
                     });
                 }
 				}).done(function(data){
-                    
+
 				    alert("Die Bar mit der ID:" + barID + "wurde angelegt!");
                     window.location.href = "http://localhost:8080/bars/" + barID;
 				}).fail(function(e){
@@ -242,19 +242,19 @@
                             <label for='preis0'>Preis:  </label>  <input id='preis0' type='text' required>€<br>
                         </div>
                         <input type="button" id="plusGetraenke" value="+Getränk hinzufügen+"><br>
-                    
+
                         <div id="newEvent">
-                            
+
                         </div>
                         <input type="button" id="plusEvent" value="+Event hinzufügen+"><br>
-                        <input type="submit" id="test" value="ADD">
+                        <input type="submit" id="test" value="Bar speichern">
                     </form>
 				    <p>Es dürfen keine Felder frei bleiben.</p>
                 </div>
-                
+
       </div>
         <div class='col-sm-8' id="new">
-                        
+
                 </div>
     </div>
 
