@@ -86,8 +86,19 @@ app.get('/aktuell', function(req, res) {
       }
       var externalRequest = http.request(options, function(externalResponse){
         if(externalResponse.statusCode == 404){
-					console.log("Got response: " + externalResponse.statusCode);
-					res.end();
+            console.log("Got response: " + externalResponse.statusCode);
+            var status = externalResponse.statusCode;
+            externalResponse.on("data", function(chunk){
+                var fehlermeldung = chunk;
+                var fehler = {};
+                fehler.status = status;
+                fehler.fehlermeldung = fehlermeldung;
+                
+                var html = ejs.render('./pages/barsnotfound.ejs', {fehler: fehler, filename: __dirname + '/views/pages/barsnotfound.ejs'});
+                res.setHeader("content-type", "application/json");
+                res.writeHead(404);
+                res.end();
+            });
         } else {
             console.log("Connected Bars get");
             externalResponse.on("data", function(chunk){
@@ -208,8 +219,26 @@ app.get('/bars', function(req, res){
       var externalRequest = http.request(options, function(externalResponse){
         console.log("Connected Bars get");
         if(externalResponse.statusCode == 404){
-					console.log("Got response: " + externalResponse.statusCode);
-					res.render('./pages/barsnotfound.ejs');
+            fs.readFile("./views/pages/barsnotfound.ejs", {encoding:"utf-8"}, function(err, filestring){
+                if(err){
+                  throw err;
+                } else{
+                    console.log("Got response: " + externalResponse.statusCode);
+                    var status = externalResponse.statusCode;
+                    externalResponse.on("data", function(chunk){
+                        var fehlermeldung = chunk.toString();
+                        console.log(fehlermeldung);
+                        var fehler = {};
+                        fehler.status = status;
+                        fehler.fehlermeldung = fehlermeldung;
+                        var html = ejs.render(filestring , {fehler: fehler, filename: __dirname + '/barsnotfound.ejs'});
+                        res.setHeader("content-type", "text/html");
+                        res.writeHead(200);
+                        res.write(html);
+                        res.end();
+                    });
+                }
+            });
         } else {
             externalResponse.on("data", function(chunk){
 

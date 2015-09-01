@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<% include ../partials/head %>
+    <% include ./views/partials/head %>
 </head>
 <body class="container">
 
 	<header>
-		<% include ../partials/header %>
+		<% include ./views/partials/header %>
 	</header>
 
 	<main>
@@ -16,12 +16,12 @@
 					<p>Der schnellste Weg zum Kater</p>
 				</div>
 
-		<br><h2>Leider keine Bars gefunden!</h2><br><br>
+		<br><h2><%= fehler.status %> - <%= fehler.fehlermeldung %></h2><br>
 
 	</main>
 
 	<footer>
-		<% include ../partials/footer %>
+		<% include ./views/partials/footer %>
 	</footer>
 
 </body>
