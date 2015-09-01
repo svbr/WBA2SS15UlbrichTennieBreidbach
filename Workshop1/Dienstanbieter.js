@@ -101,15 +101,18 @@ app.get('/user/:id', function(req, res){
 //Benötigt: (UserID)
 //Ausgabe: UserID, Username des gelöschten Users
 app.delete('/user/:id', function(req, res){
-    db.exists('user:'+req.params.id, function(err, rep){
-        if(rep === 1){
-            db.del('user:'+req.params.id,function(err, rep){
-                var temp = JSON.parse(rep);
-                    res.status(200).send("User wurde gelöscht").end();
-            });
-        }
-        else{
-            res.status(404).send("Der User wurde nicht gefunden!").end();
+    db.get('bars:'+ req.params.bid, function(err, rep){
+        if(rep){
+            rep=JSON.parse(rep);
+            if(rep.userID == req.params.id){
+                db.del('user:'+req.params.id,function(err, rep){
+                    var temp = JSON.parse(rep);
+                    res.status(204).send("User wurde gelöscht").end();
+                });
+            }
+            else{
+                res.status(404).send("Der User wurde nicht gefunden!").end();   
+            }
         }
     });
 });
@@ -219,17 +222,20 @@ app.get('/bars/:bid', function(req, res){
 //Löschen einer Bar
 //Benötigt: Bar ID
 //Ausgabe: Daten der gelöschten Bar
-app.delete('/bars/:bid', function(req, res){
-    db.exists('bars:'+req.params.bid, function(err, rep){
-        if(rep === 1){
-            db.del('bars:'+req.params.bid,function(err, rep){
-                res.status(200).send("bar wurde gelöscht").end();
-            });
+app.delete('/user/:id/bars/:bid', function(req, res){ 
+    db.get('bars:'+ req.params.bid, function(err, rep){
+        if(rep){
+            rep=JSON.parse(rep);
+            if(rep.userID == req.params.id){
+                db.del('bars:'+req.params.bid,function(err, rep){
+                    res.status(204).send("bar wurde gelöscht").end();
+                });
+            }
+            else{
+                res.status(404).send("Die Bar wurde nicht gefunden!").end();   
+            }
         }
-        else{
-            res.status(404).send("Die Bar wurde nicht gefunden!").end();
-        }
-    });
+    });        
 });
 
 //Hinzufügen der Sitzplatzzahlen einer Bar
@@ -452,6 +458,31 @@ app.get('/bars/:bid/getraenkekarte', function(req, res){ //Rückgabe der Karte d
    });
 });
 
+//Getränkekarte löschen
+app.delete('/user/:id/bars/:bid/getraenkekarte', function(req, res){
+    db.get('bars:'+ req.params.bid, function(err, rep){
+        if(rep){
+            rep=JSON.parse(rep);
+            if(rep.userID == req.params.id){
+                db.del('bars:'+req.params.bid + '/karte',function(err, rep){
+                    var temp = {
+                        barEvent: []
+                    };
+                    db.set('bars:'+req.params.bid + '/karte', JSON.stringify(temp), function(err, rep){
+                    });
+                    res.status(204).send("Die Getränkekarte wurde gelöscht").end();
+                });
+            }
+            else{
+                res.status(401).send("Dieser User darf nichts ändern!").end();
+            }
+        }
+        else{
+            res.status(404).send("Die Bar wurde nicht gefunden!").end();
+        }
+    });
+});
+
 //Hinzufügen von Events
 //Benötigt: BarID
 //Ausgabe: Liste der Events
@@ -482,6 +513,21 @@ app.post('/user/:id/bars/:bid/events', function(req, res){
     });
 });
 
+app.put('/user/:id/bars/:bid/events', function(req, res){
+    var newEvent = req.body;
+    console.log(newEvent);
+    db.get('bars:'+ req.params.bid, function(err,rep){
+        if(rep){
+            db.set('barsEvent:'+req.params.bid, JSON.stringify(newEvent), function(err, rep){
+                res.status(201).type('json').send(newEvent).end();
+            });
+        }
+        else{
+            res.status(404).type('text').send("Die Bar mit der ID " + req.params.bid + " wurde nicht gefunden");
+        }
+    });
+});
+
 //Abrufen der Eventliste einer Bar
 //Benötigt: BarID
 //Ausgabe: Liste von Events
@@ -497,24 +543,26 @@ app.get('/bars/:bid/events', function(req, res){
 });
 
 //Events löschen
-app.delete('/bars/:bid/events', function(req, res){
-    db.exists('barsEvent:'+req.params.bid, function(err, rep){
-        if(rep === 1){
-            db.del('barsEvent:'+req.params.bid,function(err, rep){
-                var temp = {
-                    barEvent: []
-                };
-                db.set('barsEvent:'+req.params.bid, JSON.stringify(temp), function(err, rep){
+app.delete('/user/:id/bars/:bid/events', function(req, res){
+    db.get('bars:'+ req.params.bid, function(err, rep){
+        if(rep){
+            rep=JSON.parse(rep);
+            if(rep.userID == req.params.id){
+                db.del('barsEvent:'+req.params.bid,function(err, rep){
+                    var temp = {
+                        barEvent: []
+                    };
+                    db.set('barsEvent:'+req.params.bid, JSON.stringify(temp), function(err, rep){
+                    });
+                    res.status(204).send("Die Events wurden gelöscht").end();
                 });
-                res.status(200).send("Die Events wurden gelöscht").end();
-            });
-        }
-        else{
-            res.status(404).send("Es wurden keine Events gefunden!").end();
+            }
+            else{
+                res.status(404).send("Es wurden keine Events gefunden!").end();
+            }
         }
     });
 });
-
 
 //Ausgabe einer Liste der Bars die in der Stadt geöffnet haben.
 app.get('/aktuell', function(req, res){
