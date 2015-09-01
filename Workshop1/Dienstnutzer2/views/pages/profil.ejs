@@ -10,7 +10,7 @@
 	<script type="text/javascript">
 
 	$(document).ready(function() {
-			var uID, barID, pw, bars = [];
+			var uID, barID, pw, bars = [], user;
 			$("#login").submit(function(event){
 					event.preventDefault();
 
@@ -31,6 +31,7 @@
                         success: function(data){
                             $('#pruefen').replaceWith("<div id='pruefen'></div>");
                             var temp = false
+                            user = data;
                             $.each(data, function(index, element) {                                        
                                 if(element.name === $('#uname').val() && element.passwort == $('#pass').val() || element.id == "-1"){
                                     pw = $('#pass').val();
@@ -44,7 +45,7 @@
                                     $.ajaxSetup({
                                         contentType: "application/json; charset=utf-8"
                                     });
-                                    // ajax aufruf funtioniert nicht da kein json objekt übergeben wird 
+                                    
                                     $.ajax({
                                         type: 'GET',
                                         host: 'localhost',
@@ -57,6 +58,7 @@
                                         dataType: 'json',
                                         success: function(data){
                                              var x = 0;
+                                                
                                             $.each(data, function(index, element){
                                                 if(element.userID == uID){
                                                     bars[x++] = element.id;
@@ -124,26 +126,32 @@
                 });
                 
                 var newUser = {
-                    name : $("#n").val(),
-                    
+                    name : $("#n").val()   
                 };
-                
+                var neuerName = true;
+                for(var i = 0; i < user.length; i++){
+                    if(newUser.name == user[i].name){
+                            neuerName = false;
+                       } 
+                }      
                 newUser.passwort = pw;
-                
-                $.ajax({
-                    type: 'PUT',
-                    host: 'localhost',
-                    port: 8080,
-                    url: '/user/' + uID,
-                    data: JSON.stringify(newUser),
-                    success: function(data){
-                        alert("Der User wurde geändert!");
-                        window.location.href = "http://localhost:8080/user/"+uID;
-                    } 
-                }).fail(function(data){
-                    alert("fail");
-                });
-                
+                if(neuerName){       
+                    $.ajax({
+                        type: 'PUT',
+                        host: 'localhost',
+                        port: 8080,
+                        url: '/user/' + uID,
+                        data: JSON.stringify(newUser),
+                        success: function(data){
+                            alert("Der User wurde geändert!");
+                            window.location.href = "http://localhost:8080/user/"+uID;
+                        } 
+                    }).fail(function(data){
+                        alert("fail");
+                    });
+                } else {
+                    alert("Der Name ist leider schon vorhanden");
+                }
                 event.preventDefault();
             }); 
     });

@@ -85,24 +85,29 @@ app.get('/aktuell', function(req, res) {
         }
       }
       var externalRequest = http.request(options, function(externalResponse){
-        console.log("Connected Bars get");
-        externalResponse.on("data", function(chunk){
-            var bars = JSON.parse(chunk);
-            var temp = [];
-            var k = 0;
-            /*for(var i = 0; i < bars.length; i++){
-                if(search.stadt == bars[i].stadt){
-                    temp[k++] = bars[i];
+        if(externalResponse.statusCode == 404){
+					console.log("Got response: " + externalResponse.statusCode);
+					res.end();
+        } else {
+            console.log("Connected Bars get");
+            externalResponse.on("data", function(chunk){
+                var bars = JSON.parse(chunk);
+                var temp = [];
+                var k = 0;
+                /*for(var i = 0; i < bars.length; i++){
+                    if(search.stadt == bars[i].stadt){
+                        temp[k++] = bars[i];
+                    }
                 }
-            }
-            bars = temp;*/
-            console.log(bars);
-          //var html = ejs.render(filestring, {bars: bars, filename: __dirname + '/views/pages/search.ejs'});
-          //res.setHeader("content-type", "application/json");
-          //res.writeHead(200);
-          res.send(bars);
-          res.end();
-        });
+                bars = temp;*/
+                console.log(bars);
+              //var html = ejs.render(filestring, {bars: bars, filename: __dirname + '/views/pages/search.ejs'});
+              //res.setHeader("content-type", "application/json");
+              //res.writeHead(200);
+              res.send(bars);
+              res.end();
+            });
+        }
       });
       externalRequest.end();
     }
