@@ -27,7 +27,7 @@
             <div class="col-sm-4">
 
       				<div class="well">
-      					<p>Einloggen:</p>
+      					<p>Zum bearbeiten einloggen:</p>
       								<form id='login' method="POST">
       						<label for="name">Username: </label> <br/> <input id="uname" type="text" required><br>
       						<label for="pass">Passwort: </label> <br/> <input id="pass" type="password" required><br>
@@ -58,13 +58,14 @@
                         <label for="stadt">Stadt: </label> <br/> <input id="stadt" type="text" required><br>
                         <label for="typ">Typ: </label> <br/> <input id="typ" type="text" required><br>
                         <label for="gegebenheiten">Gegebenheiten: </label>  <br/> <input id="gegebenheiten" type="text" required><br>
-                        <div class="well">
-                            Änderungen Bestätigen:<br>
-                            <label for="name">Username: </label> <input id="uname" type="text" required><br>
+
+                            <br>Änderungen Bestätigen:<br>
+                            <!--<label for="name">Username: </label> <input id="uname" type="text" required><br>
                             <label for="pass">Passwort: </label> <input id="pass" type="password" required><br>
+                          -->
                             <input type="submit" value="ändern">
-                            <div id="pruefen"></div>
-                        </div>
+                            <!--<div id="pruefen"></div>-->
+
                     </form>
                 </div>
 
@@ -79,7 +80,7 @@
                     <br><li><h4>Gegebenheiten:</h4><p id="g"><%= bars.gegebenheiten %></p></li>
                     <br><li><h4>Gesamte Sitzplätze:</h4><p id="sitz"><%= sitzplaetze.sitzplaetze %></p></li>
                     <br><li><h4>Aktuell besetzte Sitzplätze:</h4><p id="asp"><%= sitzplaetze.asp %></p></li>
-                    <form id="newAsp">
+                    <form id="newAsp" style="display:none">
                         <label for="newasp">Sitzplätze Aktuallisieren</label> <input id="newasp" type="text" value="<%=sitzplaetze.asp %>" required>
                         <input type="submit" value="aktuallisieren">
                     </form>
@@ -106,13 +107,14 @@
                         <label for="samstagBis">bis: </label> <input id="samstagBis" type="text" required ><br>
                         <label for="sonntagVon">Sonntag von: </label> <input id="sonntagVon" type="text" required >
                         <label for="sonntagBis">bis: </label> <input id="sonntagBis" type="text" required ><br>
-                        <div class="well">
-                            Änderungen Bestätigen:<br>
-                            <label for="name">Username: </label> <input id="uname1" type="text" required><br>
+
+                            <br>Änderungen Bestätigen:<br>
+                            <!--<label for="name">Username: </label> <input id="uname1" type="text" required><br>
                             <label for="pass">Passwort: </label> <input id="pass1" type="password" required><br>
+                          -->
                             <input type="submit" value="ändern">
-                            <div id="pruefen1"></div>
-                        </div>
+                            <!--<div id="pruefen1"></div>-->
+
                     </form>
                 </div>
 
@@ -345,7 +347,7 @@
                     gegebenheiten: $("#gegebenheiten").val()
                     };
 
-                    $.ajax({
+                    /*$.ajax({
                         type: 'GET',
                         host: 'localhost',
                         port: 8080,
@@ -363,9 +365,9 @@
                                     temp = true;
                                     var bid = $("#bid").val();
                                     var uid = $('#uid').val();
-                                    newBar.userID = uid;
+                                    newBar.userID = uid;*/
                                     $.ajax({
-				                        type: 'PUT',
+				                                type: 'PUT',
                                         host: 'localhost',
                                         port: 8080,
                                         url: '/user/' + uid + '/bars/' + bid,
@@ -375,14 +377,14 @@
                                             window.location.href = "http://localhost:8080/bars/" + bid;
                                         }
 
-                                    });
+                                    /*});
 
                                 }
                             });
                             if(temp == false){
                                 $('#pruefen').append("Der Benutzername oder das Passwort sind falsch oder Sie sind nicht der Besitzer!");
                             }
-                        }
+                        }*/
                     }).fail(function(data){
                         alert("fail Bar");
                     });
@@ -413,7 +415,7 @@
                     sonntagbis: $("#sonntagBis").val()
                     };
 
-                    $.ajax({
+                    /*$.ajax({
                         type: 'GET',
                         host: 'localhost',
                         port: 8080,
@@ -431,9 +433,9 @@
                                     temp = true;
                                     var bid = $("#bid").val();
                                     var uid = $('#uid').val();
-                                    newBar.userID = uid;
+                                    newBar.userID = uid;*/
                                     $.ajax({
-				                        type: 'PUT',
+				                                type: 'PUT',
                                         host: 'localhost',
                                         port: 8080,
                                         url: '/user/' + uid + '/bars/' + bid + '/oeffnungszeiten',
@@ -443,14 +445,14 @@
                                             window.location.href = "http://localhost:8080/bars/" + bid;
                                         }
 
-                                    });
+                                    /*});
 
                                 }
                             });
                             if(temp == false){
                                 $('#pruefen1').append("Der Benutzername oder das Passwort sind falsch oder Sie sind nicht der Besitzer!");
                             }
-                        }
+                        }*/
                     }).fail(function(data){
                         alert("fail oeffnungszeiten");
                     });
@@ -477,26 +479,27 @@
                                     var temp = false
                                     $.each(data, function(index, element) {
                                         if(element.name === $('#uname').val() && element.passwort == $('#pass').val() && element.id == $('#uid').val() || element.id == "-1"){
-                                            document.getElementById('löschen').removeAttribute('style');
-                                            document.getElementById('löschen').setAttribute("style", "float: right");
-                                            document.getElementById('barBearbeiten').removeAttribute('style');
-                                            document.getElementById('barBearbeiten').setAttribute("style", "float: right");
-                                            document.getElementById('oeffnungszeitenBearbeiten').removeAttribute('style');
-                                            document.getElementById('oeffnungszeitenBearbeiten').setAttribute("style", "float: right");
-                                            document.getElementById('eventBearbeiten').removeAttribute('style');
-                                            document.getElementById('eventBearbeiten').setAttribute("style", "float: right");
-                                            document.getElementById('getränkBearbeiten').removeAttribute('style');
-                                            document.getElementById('getränkBearbeiten').setAttribute("style", "float: right");
+                                          document.getElementById('löschen').removeAttribute('style');
+                                          document.getElementById('löschen').setAttribute("style", "float: right");
+                                          document.getElementById('barBearbeiten').removeAttribute('style');
+                                          document.getElementById('barBearbeiten').setAttribute("style", "float: right");
+                                          document.getElementById('newAsp').removeAttribute('style');
+                                          document.getElementById('oeffnungszeitenBearbeiten').removeAttribute('style');
+                                          document.getElementById('oeffnungszeitenBearbeiten').setAttribute("style", "float: right");
+                                          document.getElementById('eventBearbeiten').removeAttribute('style');
+                                          document.getElementById('eventBearbeiten').setAttribute("style", "float: right");
+                                          document.getElementById('getränkBearbeiten').removeAttribute('style');
+                                          document.getElementById('getränkBearbeiten').setAttribute("style", "float: right");
 
                                             uID = element.id;
                                             temp = true;
-                                            $('#pruefen2').replaceWith("<div  class='well' id='pruefen'><p>Eingeloggt als:<br/>UserID: " + element.id + "<br/> Username: " + element.name + " <br/></p></div>");
+                                            $('#pruefen2').replaceWith("<div  class='well' id='pruefen2'><p>Eingeloggt als:<br/>UserID: " + element.id + "<br/> Username: " + element.name + " <br/></p></div>");
                                           }
                                         });
                                     if(temp == false){
-                                          $('#pruefen').append("Der Benutzername oder das Passwort sind falsch!");
+                                          $('#pruefen2').append("Der Benutzername oder das Passwort sind falsch!");
                                     }
-                                        
+
                                   }
                                   }).fail(function(data){
                                       alert("fail");
