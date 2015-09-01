@@ -471,11 +471,11 @@ app.delete('/user/:id/bars/:bid/getraenkekarte', function(req, res){
             if(rep.userID == req.params.id){
                 db.del('bars:'+req.params.bid + '/karte',function(err, rep){
                     var temp = {
-                        barEvent: []
+                        karte: []
                     };
                     db.set('bars:'+req.params.bid + '/karte', JSON.stringify(temp), function(err, rep){
                     });
-                    res.status(204).send("Die Getränkekarte wurde gelöscht").end();
+                    res.status(200).send("Die Getränkekarte wurde gelöscht").end();
                 });
             }
             else{

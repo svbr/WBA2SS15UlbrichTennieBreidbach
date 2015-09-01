@@ -145,13 +145,13 @@
                             </ul>
                         <%}%>
                         <form id="eventbearbeiten1" style="display:none">
-                            <p>Anzahl der Events:</p><p id="controlLength"><%=events.barEvent.length %></p>
+                            <p>Anzahl der Events:</p><p id="controlLengthEvents"><%=events.barEvent.length %></p>
                         <%for(var i = 0; i < events.barEvent.length; i++){%>
                             <label for="event<%=i%>">Event: </label> <input id="event<%= i%>" value="<%= events.barEvent[i].event %>" type="text" required><br>
                             <label for="datum<%= i%>">Datum: </label> <input id="datum<%= i %>" value="<%=events.barEvent[i].datum%>" type="text" required><br>
                             <label for="uhrzeit<%=i %>">Event: </label> <input id="uhrzeit<%= i%>" value="<%= events.barEvent[i].uhrzeit %>" type="text" required><br> <br>  
                         <%}%>
-                            <input type="button" id='eventändern' value="Änderung speichern">
+                            <input type="submit" id='eventändern' value="Änderung speichern">
                         </form>
                     <%} else {%>
                         <p>Es sind keine Events Vorhanden</p>
@@ -165,13 +165,18 @@
                         <input type="button" id='getränkekartelöschen' value="Ganze Getränkekarte löschen">
                     <%}%>
                 </form>
-                    <%for(var i = 0; i < getraenk.karte.length; i++){
-                        for(var key in getraenk.karte[i]){%>
-                            <ul>
-                                <li><h4>Getränk: <%= key %><br>    Preis: <%= getraenk.karte[i][key] %> €</a><h4></li>
-                            </ul><%
-                        }
-                    }%>
+                    <%if(getraenk.karte.length > 0){%>
+                        <input type="button" id='getränkekartelöschen' value="Ganze Getränkekarte löschen">
+                        <%for(var i = 0; i < getraenk.karte.length; i++){
+                            for(var key in getraenk.karte[i]){%>
+                                <ul>
+                                    <li><h4>Getränk: <%= key %><br>    Preis: <%= getraenk.karte[i][key] %> €</a><h4></li>
+                                </ul><%
+                            }
+                        }%>
+                    <%} else {%>
+                        <p>Es sind keine Getränke eingetragen</p>
+                    <%}%>
 
                     <div id='getränkeHide' style="display:none">
                         <p>Anzahl der Getränke:</p><p id="controlLength"><%=getraenk.karte.length %></p>
@@ -263,7 +268,9 @@
                     var temp = {
                         barEvent: []
                     };
-                    for(var i = 1; i <= e; i++){
+                    
+                    var length =  document.getElementById('controlLengthEvents').innerHTML;
+                    for(var i = 0; i < length; i++){
                         var jNewEvent = {
                             datum: $('#datum'+ i).val(),
                             uhrzeit: $('#uhrzeit'+i).val(),
@@ -276,9 +283,9 @@
                         host: 'localhost',
                         port: 8080,
                         url: "/user/" + uid + "/bars/" + bid + "/events",
-                        data: JSON.stringify(jNewEvent),
+                        data: JSON.stringify(temp),
                         success: function(data){
-                            alert("die GetraenkeKarte wurde aktualisiert!");
+                            alert("die Event wurde aktualisiert!");
                             window.location.href = "http://localhost:8080/bars/" + bid;
                     }
                     }).fail(function(data){
