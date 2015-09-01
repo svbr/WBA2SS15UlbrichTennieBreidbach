@@ -34,7 +34,7 @@ app.post('/user', function(req, res){
     db.incr('id:user', function(err, rep){
         newUser.id = rep;
         db.set('user:'+ newUser.id, JSON.stringify(newUser),function(err, rep){
-			res.type('json').send(newUser).end();
+			res.status(201).type('json').send(newUser).end();
 		});
     });
 
@@ -50,7 +50,7 @@ app.put('/user/:id', function(req, res){
             newUser.id = req.params.id;
             var temp = JSON.parse(rep);
             db.set('user:'+req.params.id, JSON.stringify(newUser), function(err, rep){
-                res.type('json').send(newUser).end();
+                res.status(201).type('json').send(newUser).end();
             });
         }
         else{
@@ -76,7 +76,7 @@ app.get('/user', function(req, res){
                         data = data.map(function(user){
                             return {id: user.id, name: user.name, passwort: user.passwort};
                         });
-                        res.type('json').send(data);
+                        res.status(200).type('json').send(data);
                     });
 
                 }
@@ -89,7 +89,7 @@ app.get('/user', function(req, res){
 app.get('/user/:id', function(req, res){
     db.get('user:'+req.params.id, function(err, rep){
        if(rep){
-           res.type('json').send(rep);
+           res.status(200).type('json').send(rep);
        }
        else{
            res.status(404).type('text').send("Der User mit der ID " + req.params.id + " wurde nicht gefunden");
@@ -101,18 +101,21 @@ app.get('/user/:id', function(req, res){
 //Benötigt: (UserID)
 //Ausgabe: UserID, Username des gelöschten Users
 app.delete('/user/:id', function(req, res){
-    db.get('bars:'+ req.params.bid, function(err, rep){
+    db.get('user:'+ req.params.id, function(err, rep){
         if(rep){
             rep=JSON.parse(rep);
             if(rep.userID == req.params.id){
                 db.del('user:'+req.params.id,function(err, rep){
                     var temp = JSON.parse(rep);
-                    res.status(204).send("User wurde gelöscht").end();
+                    res.status(204).type('text').send("User wurde gelöscht").end();
                 });
             }
             else{
-                res.status(404).send("Der User wurde nicht gefunden!").end();   
+                res.status(401).type('text').send("Der User darf das nicht!").end();   
             }
+        }
+        else{
+            res.status(404).type('text').send("Der User wurde nicht gefunden!").end();
         }
     });
 });
@@ -141,7 +144,7 @@ app.post('/user/:id/bars',function(req, res){
                 });
 
                 db.set('bars:'+newBar.bid, JSON.stringify(newBar),function(err, rep){
-                    res.type('json').send(newBar).end();
+                    res.status(201).type('json').send(newBar).end();
                 });
             });
         }
@@ -192,15 +195,21 @@ app.get('/bars', function(req, res){
 app.put('/user/:id/bars/:bid', function(req, res){
     db.get('bars:'+ req.params.bid, function(err,rep){
         if(rep){
-            var newBar = req.body;
-            newBar.bid = req.params.bid;
-            var temp = JSON.parse(rep);
-            db.set('bars:'+req.params.bid, JSON.stringify(newBar), function(err, rep){
-                res.type('json').send(newBar).end();
-            });
+             rep=JSON.parse(rep);
+                if(rep.userID == req.params.id){
+                    var newBar = req.body;
+                    newBar.bid = req.params.bid;
+                    var temp = JSON.parse(rep);
+                    db.set('bars:'+req.params.bid, JSON.stringify(newBar), function(err, rep){
+                        res.status(201).type('json').send(newBar).end();
+                    });
+                }
+                else{
+                    res.status(401).type('text').send("Dieser User darf das nicht!");
+                }
         }
         else{
-            res.status(404).type('text').send("Die Bar mit der ID " + req.params.bid + " wurde nicht gefunden");
+            res.status(404).type('text').send("Die Bar wurde nicht gefunden!");
         }
     });
 });
@@ -211,7 +220,7 @@ app.put('/user/:id/bars/:bid', function(req, res){
 app.get('/bars/:bid', function(req, res){
             db.get('bars:'+req.params.bid, function(err, rep){
                 if(rep){
-                    res.type('json').send(rep);
+                    res.status(200).type('json').send(rep);
                 }
                 else{
                     res.status(404).type('text').send("Die Bar mit der ID " + req.params.bid + " wurde nicht gefunden");
@@ -248,11 +257,11 @@ app.post('/user/:id/bars/:bid/sitzplaetze', function(req, res){
            rep=JSON.parse(rep);
            if(rep.userID == req.params.id){
               db.set('bars:'+req.params.bid+'/sitzplaetze', JSON.stringify(newSp),function(err, rep){
-			     res.type('json').send(newSp).end();
+			     res.status(201).type('json').send(newSp).end();
 		      });
            }
            else{
-                res.status(404).type('text').send("Der User mit der ID " + req.params.id + " darf die Bar mit der ID " + req.params.bid + " nicht verändern");
+                res.status(401).type('text').send("Der User mit der ID " + req.params.id + " darf die Bar mit der ID " + req.params.bid + " nicht verändern");
            }
        }
        else{
@@ -284,17 +293,17 @@ app.put('/user/:id/bars/:bid/sitzplaetze', function(req, res){
                                     console.log(newSp.asp);
                                     db.set('bars:'+req.params.bid+'/sitzplaetze', JSON.stringify(temp),function(err, rep){
                                         
-			                             res.status(202).type('text').send('Der Wert wurde aktualisiert');
+			                             res.status(201).type('text').send('Der Wert wurde aktualisiert');
 		                            });
                                 }
                             }
                             else{
-                                res.status(404).type('text').send("Die Bar mit der ID " + req.params.bid + " wurde nicht gefunden");
+                                res.status(404).type('text').send("Die Sitzplätze der Bar mit der ID " + req.params.bid + " wurden nicht gefunden");
                             }
                         });
                     }
                     else{
-                        res.status(404).type('text').send("Dieser Benutzer darf die Bar mit der ID " + req.params.bid + " nicht verändern!");
+                        res.status(401).type('text').send("Dieser Benutzer darf die Bar mit der ID " + req.params.bid + " nicht verändern!");
                     }
                 }
                 else{
@@ -302,6 +311,9 @@ app.put('/user/:id/bars/:bid/sitzplaetze', function(req, res){
                 }
 
             });
+        }
+        else{
+            res.status(404).type('text').send("Die Bar wurde nicht gefunden!");
         }
     });
 });
@@ -315,7 +327,7 @@ app.get('/bars/:bid/sitzplaetze', function(req, res){
             db.get('bars:'+ req.params.bid+'/sitzplaetze', function(err, rep){
                 if(rep){
                     var temp = rep;
-                    res.send(JSON.parse(temp));
+                    res.status(200).send(JSON.parse(temp));
                 }
                 else{
                     res.status(404).type('text').send("Die Sitzplätze der Bar mit der ID " + req.params.bid + " wurde nicht gefunden");
@@ -339,15 +351,15 @@ app.post('/user/:id/bars/:bid/oeffnungszeiten', function(req,res){
             rep=JSON.parse(rep);
             if(rep.userID == req.params.id){
                 db.set('bars:'+req.params.bid+'/oeffnungszeiten', JSON.stringify(zeiten),function(err,rep){
-                    res.type('json').send(zeiten).end();
+                    res.status(201).type('json').send(zeiten).end();
                 });
             }
             else{
-                res.status(404).type('text').send("Der User mit der ID " + req.params.id + " darf die Bar mit der ID " + req.params.bid + " nicht verändern");
+                res.status(401).type('text').send("Der User mit der ID " + req.params.id + " darf die Bar mit der ID " + req.params.bid + " nicht verändern!");
             }
         }
         else{
-            res.status(404).type('text').send("Die Öffnungszeiten sind nicht angegeben.");
+            res.status(404).type('text').send("Die Bar wurde nicht gefunden!.");
         }
     });
 
@@ -362,7 +374,7 @@ app.put('/user/:id/bars/:bid/oeffnungszeiten', function(req, res){
             var newZeiten = req.body;
             var temp = JSON.parse(rep);
             db.set('bars:'+req.params.bid+'/oeffnungszeiten', JSON.stringify(newZeiten), function(err, rep){
-                res.type('json').send(newZeiten).end();
+                res.status(201).type('json').send(newZeiten).end();
             });
         }
         else{
@@ -379,7 +391,7 @@ app.get('/bars/:bid/oeffnungszeiten', function(req, res){
         if(rep === 1){
             db.get('bars:'+ req.params.bid+'/oeffnungszeiten', function(err, rep){
             if(rep){
-                res.send(JSON.parse(rep));
+                res.status(200).type('json').send(JSON.parse(rep));
             }
             else{
                 res.status(404).type('text').send("Die Öffnungszeiten der Bar mit der ID " + req.params.bid + " wurde nicht gefunden");
@@ -404,11 +416,11 @@ app.post('/user/:id/bars/:bid/getraenkekarte', function(req, res){
             if(rep.userID == req.params.id){
                 
 		      db.set('bars:'+req.params.bid+'/karte', JSON.stringify(newKarte),function(err, rep){   
-                  res.type('json').send(newKarte).end();
+                  res.status(201).type('json').send(newKarte).end();
 		      });
             }
             else{
-                res.status(404).type('text').send("Der User mit der ID " + req.params.id + " darf die Bar mit der ID " + req.params.bid + " nicht verändern");
+                res.status(401).type('text').send("Der User mit der ID " + req.params.id + " darf die Bar mit der ID " + req.params.bid + " nicht verändern");
             }
        }
        else{
@@ -427,7 +439,7 @@ app.put('/user/:id/bars/:bid/getraenkekarte', function(req, res){
     db.get('bars:'+ req.params.bid, function(err,rep){
         if(rep){
             db.set('bars:'+req.params.bid + '/karte', JSON.stringify(newKarte), function(err, rep){
-                res.type('json').send(newKarte).end();
+                res.status(201).type('json').send(newKarte).end();
             });
         }
         else{
@@ -445,7 +457,7 @@ app.get('/bars/:bid/getraenkekarte', function(req, res){ //Rückgabe der Karte d
             db.get('bars:'+req.params.bid+'/karte', function(err, rep){
                 if(rep){
                     var temp = JSON.parse(rep);
-                    res.send(temp).end();
+                    res.status(200).type('json').send(temp).end();
                 }
                 else{
                     res.status(404).type('text').send("Die Karte der Bar mit der ID " + req.params.bid + " wurde nicht gefunden");
@@ -474,7 +486,7 @@ app.delete('/user/:id/bars/:bid/getraenkekarte', function(req, res){
                 });
             }
             else{
-                res.status(401).send("Dieser User darf nichts ändern!").end();
+                res.status(401).send("Dieser User darf das nicht ändern!").end();
             }
         }
         else{
@@ -494,17 +506,20 @@ app.post('/user/:id/bars/:bid/events', function(req, res){
 	                 var newEvent = req.body;
 	                 db.get('barsEvent:'+req.params.bid, function(err, rep){
 		                  if(rep){
-		                  oldEventlist = JSON.parse(rep);
-		                  oldEventlist.barEvent.push(newEvent);
-                          db.set('barsEvent:'+req.params.bid, JSON.stringify(oldEventlist), function(err, rep){
-                              res.type('json').send(oldEventlist).end();
-                          });
+		                      oldEventlist = JSON.parse(rep);
+		                      oldEventlist.barEvent.push(newEvent);
+                              db.set('barsEvent:'+req.params.bid, JSON.stringify(oldEventlist), function(err, rep){
+                                res.status(201).type('json').send(oldEventlist).end();
+                              });
+                          }
+                          else{
+                              res.status(404).type('text').send("Es wurden keine Events gefunden!");
                           }
 		              });
 
                 }
                 else{
-                    res.status(404).type('text').send("Der User mit der ID " +req.params.id + " darf die Bar mit der ID " + req.params.bid + " nicht    verändern");
+                    res.status(401).type('text').send("Der User mit der ID " +req.params.id + " darf die Bar mit der ID " + req.params.bid + " nicht    verändern");
                 }
         }
         else{
@@ -534,10 +549,10 @@ app.put('/user/:id/bars/:bid/events', function(req, res){
 app.get('/bars/:bid/events', function(req, res){
 	db.get('barsEvent:'+req.params.bid, function(err, rep){
 		if(rep){
-			res.type('json').send(rep);
+			res.status(200).type('json').send(rep).end();;
 		}
        else{
-           res.status(404).type('text').send("Für die Bar mit der ID " + req.params.bid + " wurden keine Events gefunden");
+           res.status(404).type('text').send("Für die Bar mit der ID " + req.params.bid + " wurden keine Events gefunden").end();;
        }
    });
 });
@@ -558,8 +573,11 @@ app.delete('/user/:id/bars/:bid/events', function(req, res){
                 });
             }
             else{
-                res.status(404).send("Es wurden keine Events gefunden!").end();
+                res.status(401).send("Dieser User darf das nicht ändern!").end();
             }
+        }
+        else{
+            res.status(404).type('text').send("Die Bar wurde nicht gefunden!").end();
         }
     });
 });
@@ -678,6 +696,9 @@ app.get('/aktuell', function(req, res){
                            callback();
                        }
                    }
+                   else{
+                        res.status(404).send("Öffnungszeiten nicht gefunden!").end();
+                   }
 
                 });
             }, callback);
@@ -690,6 +711,9 @@ app.get('/aktuell', function(req, res){
                         var temp = JSON.parse(rep);
                         data[i].sitzplaetze = temp.sitzplaetze;
                         data[i++].asp = temp.asp;
+                    }
+                    else{
+                        res.status(404).send("Sitzplätze nicht gefunden!").end();
                     }
                     callback();
                 });
