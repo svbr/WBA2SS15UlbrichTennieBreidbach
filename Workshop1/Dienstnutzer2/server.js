@@ -650,19 +650,20 @@ app.post("/user/:id/bars/:bid/getraenkekarte", function(req, res){
     
 });
 
-app.put('/user/:id/bars/:bid/getraenkekarte', function(req, res){
+app.put("/user/:id/bars/:bid/getraenkekarte", function(req, res){
     var neu = req.body;
     console.log(neu);
     
     var options = {
         host: "localhost",
         port: 3000,
-        path: "/user/" + req.params.id + "/bars/"+req.params.bid +'/getraenkekarte',
+        path: "/user/" + req.params.id + "/bars/"+ req.params.bid + "/getraenkekarte",
         method:"PUT",
         headers:{
           accept:"application/json"
         }
     }
+    console.log(options.path);
     var externalRequest = http.request(options, function(externalResponse){
         console.log("Connected getraenkekarte PUT");
         externalResponse.on("data", function(chunk){

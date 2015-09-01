@@ -416,11 +416,11 @@ app.post('/user/:id/bars/:bid/getraenkekarte', function(req, res){
 //Benötigt: BarID
 //Ausgabe: neue Getränkekarte
 app.put('/user/:id/bars/:bid/getraenkekarte', function(req, res){
+    var newKarte = req.body;
+    console.log(newKarte);
     db.get('bars:'+ req.params.bid, function(err,rep){
         if(rep){
-            var newKarte = req.body;
-            var temp = JSON.parse(rep);
-            db.set('bars:'+req.params.bid, JSON.stringify(newKarte), function(err, rep){
+            db.set('bars:'+req.params.bid + '/karte', JSON.stringify(newKarte), function(err, rep){
                 res.type('json').send(newKarte).end();
             });
         }

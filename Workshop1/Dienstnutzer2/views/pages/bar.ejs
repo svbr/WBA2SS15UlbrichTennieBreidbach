@@ -136,7 +136,7 @@
                         <input type="button" id='getränkekartelöschen' value="Ganze Getränkekarte löschen">
                     <%}%>
                 </form>
-                    <%for(var i = 0; i <= getraenk.karte.length; i++){
+                    <%for(var i = 0; i < getraenk.karte.length; i++){
                         for(var key in getraenk.karte[i]){%>
                             <ul>
                                 <li><h4>Getränk: <%= key %><br>    Preis: <%= getraenk.karte[i][key] %> €</a><h4></li>
@@ -147,9 +147,10 @@
                     <div id='getränkeHide' style="display:none">
                         <p id="controlLength"><%=getraenk.karte.length %></p>
                         <form id="bearbeitenGetränk">
-                        <%for(var i = 0; i <= getraenk.karte.length; i++){
+                        <%for(var i = 0; i < getraenk.karte.length; i++){
                             for(var key in getraenk.karte[i]){%>
-                               <label for="getraenk"+i>Getränk: </label><br/> <input id="getraenk"+i type="text" value="<%= key %>" required><br><label for="preis"+i>Preis: </label><br/> <input id="preis"+i type="text" value="<%= getraenk.karte[i][key] %>" required> €<br>
+                                <label for="getraenk<%=i%>" >Getränk: </label><br/> <input id="getraenk<%=i%>" type="text" value="<%= key %>" required><br>
+                                <label for="preis<%=i%>">Preis: </label><br/> <input id="preis<%=i%>" type="text" value="<%= getraenk.karte[i][key] %>" required> €<br>
                             <% 
                             }
                         }%>
@@ -164,6 +165,8 @@
     </footer>
         <script type='text/javascript'>
             $(document).ready(function() {
+                var bid = $("#bid").val();
+                var uid = $('#uid').val();
                 $("#löschen").submit(function(event){
                     event.preventDefault();
                     var bid = $("#bid").val();
@@ -205,17 +208,24 @@
                     event.preventDefault(); 
                 });
                 
-                $("#bearbeitenGetränk").submit(function(data){
+                $("#bearbeitenGetränk").submit(function(event){
                     event.preventDefault();
                     var getraenkeKarte = {
                         karte: []
                     };
-                    var length =  $("#getränkeHide").val(document.getElementById('controlLength').innerHTML);
-                    for(var i = 1; i < length; i++){
+                    var length =  document.getElementById('controlLength').innerHTML;
+                    alert(length);
+                    for(var i = 0; i < length; i++){
                         var jNew = {};
                         jNew[$("#getraenk"+i).val()] = $("#preis"+i).val();
                         getraenkeKarte.karte.push(jNew);
+                        
                     }
+                    
+                    $.ajaxSetup({
+                        contentType: "application/json; charset=utf-8"
+                    });
+                    
                     $.ajax({
                         type: 'PUT',
                         host: 'localhost',
