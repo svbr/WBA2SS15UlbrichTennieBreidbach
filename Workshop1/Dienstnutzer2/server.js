@@ -279,7 +279,8 @@ app.get('/bars', function(req, res){
 // Bar Seite
 // eine Bar auflisten
 app.get("/bars/:bid", function(req, res, next){
-    var bar, sitzplatz, events, getränk;
+    var bar, sitzplatz, events, getränk, fail = false;
+    var fehler = {};
     //Get bars
     var options = {
         host: "localhost",
@@ -293,26 +294,17 @@ app.get("/bars/:bid", function(req, res, next){
       var externalRequest = http.request(options, function(externalResponse){
         console.log("Connected Bars get");
 				if(externalResponse.statusCode == 404){
-            fs.readFile("./views/pages/barsnotfound.ejs", {encoding:"utf-8"}, function(err, filestring){
-                if(err){
-                  throw err;
-                } else{
                     console.log("Got response: " + externalResponse.statusCode);
                     var status = externalResponse.statusCode;
                     externalResponse.on("data", function(chunk){
                         var fehlermeldung = chunk.toString();
                         console.log(fehlermeldung);
-                        var fehler = {};
+                        fail = true;
                         fehler.status = status;
                         fehler.fehlermeldung = fehlermeldung;
-                        var html = ejs.render(filestring , {fehler: fehler, filename: __dirname + '/barsnotfound.ejs'});
-                        res.setHeader("content-type", "text/html");
-                        res.writeHead(200);
-                        res.write(html);
-                        res.end();
                     });
-                }
-            });
+                
+            
           } else {
         externalResponse.on("data", function(chunk){
             var bars = JSON.parse(chunk);
@@ -334,26 +326,15 @@ app.get("/bars/:bid", function(req, res, next){
       var externalRequest = http.request(options, function(externalResponse){
         console.log("Connected sitzplaetze get");
 				if(externalResponse.statusCode == 404){
-					fs.readFile("./views/pages/barsnotfound.ejs", {encoding:"utf-8"}, function(err, filestring){
-							if(err){
-								throw err;
-							} else{
-									console.log("Got response: " + externalResponse.statusCode);
-									var status = externalResponse.statusCode;
-									externalResponse.on("data", function(chunk){
-											var fehlermeldung = chunk.toString();
-											console.log(fehlermeldung);
-											var fehler = {};
-											fehler.status = status;
-											fehler.fehlermeldung = fehlermeldung;
-											var html = ejs.render(filestring , {fehler: fehler, filename: __dirname + '/barsnotfound.ejs'});
-											res.setHeader("content-type", "text/html");
-											res.writeHead(200);
-											res.write(html);
-											res.end();
-									});
-							}
-					});
+                    console.log("Got response: " + externalResponse.statusCode);
+                    var status = externalResponse.statusCode;
+                    externalResponse.on("data", function(chunk){
+                        var fehlermeldung = chunk.toString();
+                        console.log(fehlermeldung);
+                        fail = true;
+                        fehler.status = status;
+                        fehler.fehlermeldung = fehlermeldung;
+                    });
 				} else {
         externalResponse.on("data", function(chunk){
             var sitzplaetze = JSON.parse(chunk);
@@ -375,26 +356,15 @@ app.get("/bars/:bid", function(req, res, next){
       var externalRequest = http.request(options, function(externalResponse){
         console.log("Connected events get");
 				if(externalResponse.statusCode == 404){
-            fs.readFile("./views/pages/barsnotfound.ejs", {encoding:"utf-8"}, function(err, filestring){
-                if(err){
-                  throw err;
-                } else{
                     console.log("Got response: " + externalResponse.statusCode);
                     var status = externalResponse.statusCode;
                     externalResponse.on("data", function(chunk){
                         var fehlermeldung = chunk.toString();
                         console.log(fehlermeldung);
-                        var fehler = {};
+                        fail = true
                         fehler.status = status;
                         fehler.fehlermeldung = fehlermeldung;
-                        var html = ejs.render(filestring , {fehler: fehler, filename: __dirname + '/barsnotfound.ejs'});
-                        res.setHeader("content-type", "text/html");
-                        res.writeHead(200);
-                        res.write(html);
-                        res.end();
                     });
-                }
-            });
           } else {
         externalResponse.on("data", function(chunk){
             var event = JSON.parse(chunk);
@@ -416,25 +386,14 @@ app.get("/bars/:bid", function(req, res, next){
       var externalRequest = http.request(options, function(externalResponse){
         console.log("Connected getränkekarte get");
 				if(externalResponse.statusCode == 404){
-            fs.readFile("./views/pages/barsnotfound.ejs", {encoding:"utf-8"}, function(err, filestring){
-                if(err){
-                  throw err;
-                } else{
                     console.log("Got response: " + externalResponse.statusCode);
                     var status = externalResponse.statusCode;
                     externalResponse.on("data", function(chunk){
                         var fehlermeldung = chunk.toString();
                         console.log(fehlermeldung);
-                        var fehler = {};
+                        fail = true;
                         fehler.status = status;
                         fehler.fehlermeldung = fehlermeldung;
-                        var html = ejs.render(filestring , {fehler: fehler, filename: __dirname + '/barsnotfound.ejs'});
-                        res.setHeader("content-type", "text/html");
-                        res.writeHead(200);
-                        res.write(html);
-                        res.end();
-                    });
-                }
             });
           } else {
         externalResponse.on("data", function(chunk){
@@ -460,7 +419,7 @@ app.get("/bars/:bid", function(req, res, next){
           }
           var externalRequest = http.request(options, function(externalResponse){
             console.log("Connected oeffnungszeiten get");
-						if(externalResponse.statusCode == 404){
+						if(externalResponse.statusCode == 404 || fail == true){
             fs.readFile("./views/pages/barsnotfound.ejs", {encoding:"utf-8"}, function(err, filestring){
                 if(err){
                   throw err;
@@ -470,7 +429,6 @@ app.get("/bars/:bid", function(req, res, next){
                     externalResponse.on("data", function(chunk){
                         var fehlermeldung = chunk.toString();
                         console.log(fehlermeldung);
-                        var fehler = {};
                         fehler.status = status;
                         fehler.fehlermeldung = fehlermeldung;
                         var html = ejs.render(filestring , {fehler: fehler, filename: __dirname + '/barsnotfound.ejs'});
