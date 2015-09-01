@@ -472,13 +472,13 @@ app.post('/user/:id/bars/:bid/sitzplaetze', function(req, res){
     
 });
 
-app.delete('/bars/:bid', function(req, res){
+app.delete('user/:id/bars/:bid', function(req, res){
     console.log('test2');
 
     var options = {
         host: "localhost",
         port: 3000,
-        path: "/bars/"+req.params.bid,
+        path: "/user/"+ req.params.id +"/bars/"+req.params.bid,
         method:"DELETE",
         headers:{
           accept:"application/json"
@@ -604,12 +604,12 @@ app.delete('/user/:id', function(req, res){
 });
 
 
-app.delete('/bars/:bid/events', function(req, res){
+app.delete('/user/:id/bars/:bid/events', function(req, res){
 
 	var options = {
 	        host: "localhost",
 	        port: 3000,
-	        path: "/bars/" + req.params.bid + "/events",
+	        path: "/user/"+ req.params.id +"/bars/" + req.params.bid + "/events",
 	        method:"DELETE",
 	        headers:{
 	          accept:"application/json"

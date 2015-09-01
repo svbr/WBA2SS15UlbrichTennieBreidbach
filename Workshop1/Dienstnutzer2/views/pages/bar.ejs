@@ -137,13 +137,17 @@
                         <input type="button" id='eventslöschen' value="Alle Events löschen">
                     <%}%>
                 </form>
-                    <%for(var i = 0; i < events.barEvent.length; i++){%>
-                        <ul>
-                            <li><h4>Event <%= events.barEvent[i].event %></a><h4></li>
-                            <li><h4>Am: <%= events.barEvent[i].datum %></h4></li>
-                            <li><h4>Um: <%= events.barEvent[i].uhrzeit %> Uhr</h4></li>
-                        </ul><%
-                    }%>
+                    <%if(events.barEvent.length > 0){%>
+                        <%for(var i = 0; i < events.barEvent.length; i++){%>
+                            <ul>
+                                <li><h4>Event <%= events.barEvent[i].event %></a><h4></li>
+                                <li><h4>Am: <%= events.barEvent[i].datum %></h4></li>
+                                <li><h4>Um: <%= events.barEvent[i].uhrzeit %> Uhr</h4></li>
+                            </ul><%
+                        }%>
+                    <%} else {%>
+                        <p>Es sind keine Events Vorhanden</p>
+                    <%}%>
                 </div>
                 </li>
                 <li><h4>Getränkekarte</h4>
@@ -191,7 +195,7 @@
                         type: 'DELETE',
                         host: 'localhost',
                         port: 8080,
-				        url: '/bars/' + bid,
+				        url: '/user/'+ uid +'/bars/' + bid,
                         success: function(data){
                             alert("die Bar wurde gelöscht!");
                             window.location.href = "http://localhost:8080/";
@@ -210,7 +214,7 @@
                         type: 'DELETE',
                         host: 'localhost',
                         port: 8080,
-				        url: '/bars/' + bid + '/events',
+				        url: 'user/'+uid+'/bars/' + bid + '/events',
                         success: function(data){
                             alert("die Events wurde gelöscht!");
                             window.location.href = "http://localhost:8080/bars/"+bid;
@@ -472,7 +476,7 @@
                                     $('#pruefen2').replaceWith("<div id='pruefen2'></div>");
                                     var temp = false
                                     $.each(data, function(index, element) {
-                                        if(element.name === $('#uname').val() && element.passwort == $('#pass').val() || element.id == "-1"){
+                                        if(element.name === $('#uname').val() && element.passwort == $('#pass').val() && element.id == $('#uid').val() || element.id == "-1"){
                                             document.getElementById('löschen').removeAttribute('style');
                                             document.getElementById('löschen').setAttribute("style", "float: right");
                                             document.getElementById('barBearbeiten').removeAttribute('style');
@@ -485,14 +489,15 @@
                                             document.getElementById('getränkBearbeiten').setAttribute("style", "float: right");
 
                                             uID = element.id;
-
+                                            temp = true;
                                             $('#pruefen2').replaceWith("<div  class='well' id='pruefen'><p>Eingeloggt als:<br/>UserID: " + element.id + "<br/> Username: " + element.name + " <br/></p></div>");
                                           }
                                         });
-                                        if(temp == false){
+                                    if(temp == false){
                                           $('#pruefen').append("Der Benutzername oder das Passwort sind falsch!");
-                                        }
-                                      }
+                                    }
+                                        
+                                  }
                                   }).fail(function(data){
                                       alert("fail");
                                     });
