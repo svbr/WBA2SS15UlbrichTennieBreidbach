@@ -181,7 +181,7 @@ app.get('/bars', function(req, res){
                         }
                         data = temp;
                         console.log(data);
-                        res.send(data);
+                        res.status(200).type('json').send(data);
                     });
                 }
 
@@ -293,7 +293,7 @@ app.put('/user/:id/bars/:bid/sitzplaetze', function(req, res){
                                     console.log(newSp.asp);
                                     db.set('bars:'+req.params.bid+'/sitzplaetze', JSON.stringify(temp),function(err, rep){
                                         
-			                             res.status(201).type('text').send('Der Wert wurde aktualisiert');
+			                             res.status(201).type('json').send(temp);
 		                            });
                                 }
                             }
