@@ -98,7 +98,7 @@
                                 type: 'DELETE',
                                 host: 'localhost',
                                 port: 8080,
-                                url: '/bars/' + bars[i]
+                                url: '/user/' + id +'/bars/' + bars[i]
                             }).fail(function(data){
                                 alert("fail delete bars" + i);
                             });

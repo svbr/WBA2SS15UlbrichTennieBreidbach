@@ -730,7 +730,7 @@ app.post('/user/:id/bars/:bid/sitzplaetze', function(req, res){
 
 });
 
-app.delete('user/:id/bars/:bid', function(req, res){
+app.delete('/user/:id/bars/:bid', function(req, res){
     console.log('test2');
 
     var options = {

@@ -103,18 +103,11 @@ app.get('/user/:id', function(req, res){
 app.delete('/user/:id', function(req, res){
     db.get('user:'+ req.params.id, function(err, rep){
         if(rep){
-            rep=JSON.parse(rep);
-            if(rep.userID == req.params.id){
-                db.del('user:'+req.params.id,function(err, rep){
-                    var temp = JSON.parse(rep);
-                    res.status(204).type('text').send("User wurde gelöscht").end();
-                });
-            }
-            else{
-                res.status(401).type('text').send("Der User darf das nicht!").end();   
-            }
-        }
-        else{
+            db.del('user:'+req.params.id,function(err, rep){
+                var temp = JSON.parse(rep);
+                res.status(200).type('text').send("User wurde gelöscht").end();
+            });
+        } else{
             res.status(404).type('text').send("Der User wurde nicht gefunden!").end();
         }
     });
@@ -199,7 +192,6 @@ app.put('/user/:id/bars/:bid', function(req, res){
                 if(rep.userID == req.params.id){
                     var newBar = req.body;
                     newBar.bid = req.params.bid;
-                    var temp = JSON.parse(rep);
                     db.set('bars:'+req.params.bid, JSON.stringify(newBar), function(err, rep){
                         res.status(201).type('json').send(newBar).end();
                     });
@@ -235,9 +227,10 @@ app.delete('/user/:id/bars/:bid', function(req, res){
     db.get('bars:'+ req.params.bid, function(err, rep){
         if(rep){
             rep=JSON.parse(rep);
+            console.log("blub");
             if(rep.userID == req.params.id){
                 db.del('bars:'+req.params.bid,function(err, rep){
-                    res.status(204).send("bar wurde gelöscht").end();
+                    res.status(200).send("bar wurde gelöscht").end();
                 });
             }
             else{
@@ -569,7 +562,7 @@ app.delete('/user/:id/bars/:bid/events', function(req, res){
                     };
                     db.set('barsEvent:'+req.params.bid, JSON.stringify(temp), function(err, rep){
                     });
-                    res.status(204).send("Die Events wurden gelöscht").end();
+                    res.status(200).send("Die Events wurden gelöscht").end();
                 });
             }
             else{

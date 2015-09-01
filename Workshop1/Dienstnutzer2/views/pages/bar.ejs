@@ -60,11 +60,9 @@
                         <label for="gegebenheiten">Gegebenheiten: </label>  <br/> <input id="gegebenheiten" type="text" required><br>
 
                             <br>Änderungen Bestätigen:<br>
-                            <!--<label for="name">Username: </label> <input id="uname" type="text" required><br>
-                            <label for="pass">Passwort: </label> <input id="pass" type="password" required><br>
-                          -->
+                            
                             <input type="submit" value="ändern">
-                            <!--<div id="pruefen"></div>-->
+                          
 
                     </form>
                 </div>
@@ -109,11 +107,9 @@
                         <label for="sonntagBis">bis: </label> <input id="sonntagBis" type="text" required ><br>
 
                             <br>Änderungen Bestätigen:<br>
-                            <!--<label for="name">Username: </label> <input id="uname1" type="text" required><br>
-                            <label for="pass">Passwort: </label> <input id="pass1" type="password" required><br>
-                          -->
+                        
                             <input type="submit" value="ändern">
-                            <!--<div id="pruefen1"></div>-->
+                            
 
                     </form>
                 </div>
@@ -140,13 +136,23 @@
                     <%}%>
                 </form>
                     <%if(events.barEvent.length > 0){%>
+                    
                         <%for(var i = 0; i < events.barEvent.length; i++){%>
                             <ul>
                                 <li><h4>Event <%= events.barEvent[i].event %></a><h4></li>
                                 <li><h4>Am: <%= events.barEvent[i].datum %></h4></li>
                                 <li><h4>Um: <%= events.barEvent[i].uhrzeit %> Uhr</h4></li>
-                            </ul><%
-                        }%>
+                            </ul>
+                        <%}%>
+                        <form id="eventbearbeiten1" style="display:none">
+                            <p>Anzahl der Events:</p><p id="controlLength"><%=events.barEvent.length %></p>
+                        <%for(var i = 0; i < events.barEvent.length; i++){%>
+                            <label for="event<%=i%>">Event: </label> <input id="event<%= i%>" value="<%= events.barEvent[i].event %>" type="text" required><br>
+                            <label for="datum<%= i%>">Datum: </label> <input id="datum<%= i %>" value="<%=events.barEvent[i].datum%>" type="text" required><br>
+                            <label for="uhrzeit<%=i %>">Event: </label> <input id="uhrzeit<%= i%>" value="<%= events.barEvent[i].uhrzeit %>" type="text" required><br> <br>  
+                        <%}%>
+                            <input type="button" id='eventändern' value="Änderung speichern">
+                        </form>
                     <%} else {%>
                         <p>Es sind keine Events Vorhanden</p>
                     <%}%>
@@ -168,7 +174,7 @@
                     }%>
 
                     <div id='getränkeHide' style="display:none">
-                        <p id="controlLength"><%=getraenk.karte.length %></p>
+                        <p>Anzahl der Getränke:</p><p id="controlLength"><%=getraenk.karte.length %></p>
                         <form id="bearbeitenGetränk">
                         <%for(var i = 0; i < getraenk.karte.length; i++){
                             for(var key in getraenk.karte[i]){%>
@@ -192,7 +198,7 @@
                 var uid = $('#uid').val();
                 $("#löschen").submit(function(event){
                     event.preventDefault();
-                    var bid = $("#bid").val();
+                    
                     $.ajax({
                         type: 'DELETE',
                         host: 'localhost',
@@ -208,15 +214,31 @@
 
                 });
 
-                $('#eventslöschen').click(function(event){
+                $('#getränkekartelöschen').click(function(event){
                     event.preventDefault();
-                    var bid = $('#bid').val();
 
                     $.ajax({
                         type: 'DELETE',
                         host: 'localhost',
                         port: 8080,
-				        url: 'user/'+uid+'/bars/' + bid + '/events',
+				        url: '/user/'+uid+'/bars/' + bid + '/getraenkekarte',
+                        success: function(data){
+                            alert("die Getränkekarte wurde gelöscht!");
+                            window.location.href = "http://localhost:8080/bars/"+bid;
+                        }
+                    }).fail(function(data){
+                        alert("fail delete getränkekarte");
+                    });
+                });
+                
+                $('#eventslöschen').click(function(event){
+                    event.preventDefault();
+
+                    $.ajax({
+                        type: 'DELETE',
+                        host: 'localhost',
+                        port: 8080,
+				        url: '/user/'+uid+'/bars/' + bid + '/events',
                         success: function(data){
                             alert("die Events wurde gelöscht!");
                             window.location.href = "http://localhost:8080/bars/"+bid;
@@ -225,10 +247,43 @@
                         alert("fail delete events");
                     });
                 });
+                
+                $("#eventBearbeiten").submit(function(event){
+                    document.getElementById('eventbearbeiten1').removeAttribute('style');
+                    event.preventDefault();
+                });
 
                 $("#getränkBearbeiten").submit(function(event){
                     document.getElementById('getränkeHide').removeAttribute('style');
                     event.preventDefault();
+                });
+                
+                $('#eventbearbeiten1').submit(function(event){
+                    event.preventDefault();
+                    var temp = {
+                        barEvent: []
+                    };
+                    for(var i = 1; i <= e; i++){
+                        var jNewEvent = {
+                            datum: $('#datum'+ i).val(),
+                            uhrzeit: $('#uhrzeit'+i).val(),
+                            event: $('#event'+i).val()
+                        };
+                        temp.barEvent.push(jNewEvent);
+                    }
+                    $.ajax({
+                        type: 'PUT',
+                        host: 'localhost',
+                        port: 8080,
+                        url: "/user/" + uid + "/bars/" + bid + "/events",
+                        data: JSON.stringify(jNewEvent),
+                        success: function(data){
+                            alert("die GetraenkeKarte wurde aktualisiert!");
+                            window.location.href = "http://localhost:8080/bars/" + bid;
+                    }
+                    }).fail(function(data){
+                        alert("fail events put");
+                    });
                 });
 
                 $("#bearbeitenGetränk").submit(function(event){
@@ -347,44 +402,20 @@
                     gegebenheiten: $("#gegebenheiten").val()
                     };
 
-                    /*$.ajax({
-                        type: 'GET',
+                    
+                    newBar.userID = uid;
+                    $.ajax({
+                                type: 'PUT',
                         host: 'localhost',
                         port: 8080,
-                        url: '/user',
-                        data: { id: 'val1',
-                                name: 'val2',
-                                passwort: 'val3'
-                                },
-                        dataType: 'json',
+                        url: '/user/' + uid + '/bars/' + bid,
+                        data: JSON.stringify(newBar),
                         success: function(data){
-                            $('#pruefen').replaceWith("<div id='pruefen'></div>");
-                            var temp = false
-                            $.each(data, function(index, element) {
-                                if(element.name === $('#uname').val() && element.passwort == $('#pass').val() && element.id == $('#uid').val()  || element.id == "-1"){
-                                    temp = true;
-                                    var bid = $("#bid").val();
-                                    var uid = $('#uid').val();
-                                    newBar.userID = uid;*/
-                                    $.ajax({
-				                                type: 'PUT',
-                                        host: 'localhost',
-                                        port: 8080,
-                                        url: '/user/' + uid + '/bars/' + bid,
-                                        data: JSON.stringify(newBar),
-                                        success: function(data){
-                                            alert("die Bar wurde aktualisiert!");
-                                            window.location.href = "http://localhost:8080/bars/" + bid;
-                                        }
+                            alert("die Bar wurde aktualisiert!");
+                            window.location.href = "http://localhost:8080/bars/" + bid;
+                        }
 
-                                    /*});
 
-                                }
-                            });
-                            if(temp == false){
-                                $('#pruefen').append("Der Benutzername oder das Passwort sind falsch oder Sie sind nicht der Besitzer!");
-                            }
-                        }*/
                     }).fail(function(data){
                         alert("fail Bar");
                     });
@@ -415,49 +446,22 @@
                     sonntagbis: $("#sonntagBis").val()
                     };
 
-                    /*$.ajax({
-                        type: 'GET',
+                    
+                    $.ajax({
+                                type: 'PUT',
                         host: 'localhost',
                         port: 8080,
-                        url: '/user',
-                        data: { id: 'val1',
-                                name: 'val2',
-                                passwort: 'val3'
-                                },
-                        dataType: 'json',
+                        url: '/user/' + uid + '/bars/' + bid + '/oeffnungszeiten',
+                        data: JSON.stringify(öffnungszeiten),
                         success: function(data){
-                            $('#pruefen1').replaceWith("<div id='pruefen1'></div>");
-                            var temp = false
-                            $.each(data, function(index, element) {
-                                if(element.name === $('#uname1').val() && element.passwort == $('#pass1').val() && element.id == $('#uid').val()  || element.id == "-1"){
-                                    temp = true;
-                                    var bid = $("#bid").val();
-                                    var uid = $('#uid').val();
-                                    newBar.userID = uid;*/
-                                    $.ajax({
-				                                type: 'PUT',
-                                        host: 'localhost',
-                                        port: 8080,
-                                        url: '/user/' + uid + '/bars/' + bid + '/oeffnungszeiten',
-                                        data: JSON.stringify(öffnungszeiten),
-                                        success: function(data){
-                                            alert("die Öffnungszeiten wurde aktualisiert!");
-                                            window.location.href = "http://localhost:8080/bars/" + bid;
-                                        }
-
-                                    /*});
-
-                                }
-                            });
-                            if(temp == false){
-                                $('#pruefen1').append("Der Benutzername oder das Passwort sind falsch oder Sie sind nicht der Besitzer!");
-                            }
-                        }*/
+                            alert("die Öffnungszeiten wurde aktualisiert!");
+                            window.location.href = "http://localhost:8080/bars/" + bid;
+                        }
                     }).fail(function(data){
                         alert("fail oeffnungszeiten");
                     });
                 });
-                //event.preventDefault();
+                
                 $('#login').submit(function(event){
                   event.preventDefault();
                   $.ajaxSetup({
