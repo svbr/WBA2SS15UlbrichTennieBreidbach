@@ -34,7 +34,7 @@ app.post('/user', function(req, res){
     db.incr('id:user', function(err, rep){
         newUser.id = rep;
         db.set('user:'+ newUser.id, JSON.stringify(newUser),function(err, rep){
-			res.status(201).type('json').send(newUser).end();
+			res.set("Content-Type", 'application/json').set("Location", "/user/" + newUser.id).status(201).json(newUser).end();
 		});
     });
 
@@ -50,7 +50,7 @@ app.put('/user/:id', function(req, res){
             newUser.id = req.params.id;
             var temp = JSON.parse(rep);
             db.set('user:'+req.params.id, JSON.stringify(newUser), function(err, rep){
-                res.status(201).type('json').send(newUser).end();
+                res.set("Content-Type", 'application/json').set("Location", "/user/" + req.params.id).status(201).json(newUser).end();
             });
         }
         else{
@@ -137,7 +137,7 @@ app.post('/user/:id/bars',function(req, res){
                 });
 
                 db.set('bars:'+newBar.bid, JSON.stringify(newBar),function(err, rep){
-                    res.status(201).type('json').send(newBar).end();
+                    res.set("Content-Type", 'application/json').set("Location", "/user/" + req.params.id+ "/bars/"+ newBar.bid).status(201).json(newBar).end();
                 });
             });
         }
@@ -193,7 +193,7 @@ app.put('/user/:id/bars/:bid', function(req, res){
                     var newBar = req.body;
                     newBar.bid = req.params.bid;
                     db.set('bars:'+req.params.bid, JSON.stringify(newBar), function(err, rep){
-                        res.status(201).type('json').send(newBar).end();
+                        res.set("Content-Type", 'application/json').set("Location", "/user/" + req.params.id + "/bars/" + req.params.bid).status(201).json(newBar).end();
                     });
                 }
                 else{
@@ -250,7 +250,7 @@ app.post('/user/:id/bars/:bid/sitzplaetze', function(req, res){
            rep=JSON.parse(rep);
            if(rep.userID == req.params.id){
               db.set('bars:'+req.params.bid+'/sitzplaetze', JSON.stringify(newSp),function(err, rep){
-			     res.status(201).type('json').send(newSp).end();
+			     res.set("Content-Type", 'application/json').set("Location", "/user/" + req.params.id +"/bars/"+req.params.bid+"/sitzplaetze").status(201).json(newSp).end();
 		      });
            }
            else{
@@ -285,8 +285,7 @@ app.put('/user/:id/bars/:bid/sitzplaetze', function(req, res){
                                     temp.asp = newSp.asp;
                                     console.log(newSp.asp);
                                     db.set('bars:'+req.params.bid+'/sitzplaetze', JSON.stringify(temp),function(err, rep){
-                                        
-			                             res.status(201).type('json').send(temp);
+			                             res.set("Content-Type", 'application/json').set("Location", "/user/" + req.params.id+"/bars/"+req.params.bid+"/sitzplaetze").status(201).json(newSp).end();
 		                            });
                                 }
                             }
@@ -344,7 +343,7 @@ app.post('/user/:id/bars/:bid/oeffnungszeiten', function(req,res){
             rep=JSON.parse(rep);
             if(rep.userID == req.params.id){
                 db.set('bars:'+req.params.bid+'/oeffnungszeiten', JSON.stringify(zeiten),function(err,rep){
-                    res.status(201).type('json').send(zeiten).end();
+                    res.set("Content-Type", 'application/json').set("Location", "/user/" + req.params.id +"/bars/" + req.params.bid +"/oeffnungszeiten").status(201).json(zeiten).end();
                 });
             }
             else{
@@ -367,7 +366,7 @@ app.put('/user/:id/bars/:bid/oeffnungszeiten', function(req, res){
             var newZeiten = req.body;
             var temp = JSON.parse(rep);
             db.set('bars:'+req.params.bid+'/oeffnungszeiten', JSON.stringify(newZeiten), function(err, rep){
-                res.status(201).type('json').send(newZeiten).end();
+                res.set("Content-Type", 'application/json').set("Location", "/user/" + req.params.id+"/bars/"+req.params.bid"/oeffnungszeiten").status(201).json(newZeiten).end();
             });
         }
         else{
@@ -409,7 +408,7 @@ app.post('/user/:id/bars/:bid/getraenkekarte', function(req, res){
             if(rep.userID == req.params.id){
                 
 		      db.set('bars:'+req.params.bid+'/karte', JSON.stringify(newKarte),function(err, rep){   
-                  res.status(201).type('json').send(newKarte).end();
+                  res.set("Content-Type", 'application/json').set("Location", "/user/" + req.params.id +"/bars/" +req.params.bid+"/getraenkekarte").status(201).json(newKarte).end();
 		      });
             }
             else{
@@ -432,7 +431,7 @@ app.put('/user/:id/bars/:bid/getraenkekarte', function(req, res){
     db.get('bars:'+ req.params.bid, function(err,rep){
         if(rep){
             db.set('bars:'+req.params.bid + '/karte', JSON.stringify(newKarte), function(err, rep){
-                res.status(201).type('json').send(newKarte).end();
+               res.set("Content-Type", 'application/json').set("Location", "/user/" + req.params.id +"/bars/" +req.params.bid+"/getraenkekarte").status(201).json(newKarte).end();
             });
         }
         else{
@@ -502,7 +501,7 @@ app.post('/user/:id/bars/:bid/events', function(req, res){
 		                      oldEventlist = JSON.parse(rep);
 		                      oldEventlist.barEvent.push(newEvent);
                               db.set('barsEvent:'+req.params.bid, JSON.stringify(oldEventlist), function(err, rep){
-                                res.status(201).type('json').send(oldEventlist).end();
+                                res.set("Content-Type", 'application/json').set("Location", "/user/" + req.params.id +"/bars/" +req.params.bid+"/events").status(201).json(newEvent).end();
                               });
                           }
                           else{
@@ -527,7 +526,7 @@ app.put('/user/:id/bars/:bid/events', function(req, res){
     db.get('bars:'+ req.params.bid, function(err,rep){
         if(rep){
             db.set('barsEvent:'+req.params.bid, JSON.stringify(newEvent), function(err, rep){
-                res.status(201).type('json').send(newEvent).end();
+                res.set("Content-Type", 'application/json').set("Location", "/user/" + req.params.id +"/bars/" +req.params.bid+"/events").status(201).json(newEvent).end();
             });
         }
         else{
