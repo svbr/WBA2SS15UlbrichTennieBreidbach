@@ -366,7 +366,7 @@ app.put('/user/:id/bars/:bid/oeffnungszeiten', function(req, res){
             var newZeiten = req.body;
             var temp = JSON.parse(rep);
             db.set('bars:'+req.params.bid+'/oeffnungszeiten', JSON.stringify(newZeiten), function(err, rep){
-                res.set("Content-Type", 'application/json').set("Location", "/user/" + req.params.id+"/bars/"+req.params.bid"/oeffnungszeiten").status(201).json(newZeiten).end();
+                res.set("Content-Type", 'application/json').set("Location", "/user/" + req.params.id+"/bars/"+req.params.bid+"/oeffnungszeiten").status(201).json(newZeiten).end();
             });
         }
         else{

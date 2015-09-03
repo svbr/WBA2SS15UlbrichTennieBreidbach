@@ -39,7 +39,7 @@ app.get('/user', function(req, res){
       var externalRequest = http.request(options, function(externalResponse){
           console.log("Connected User get");
 					if(externalResponse.statusCode == 404){
-            fs.readFile("./views/pages/barsnotfound.ejs", {encoding:"utf-8"}, function(err, filestring){
+            /*fs.readFile("./views/pages/barsnotfound.ejs", {encoding:"utf-8"}, function(err, filestring){
                 if(err){
                   throw err;
                 } else{
@@ -58,7 +58,14 @@ app.get('/user', function(req, res){
                         res.end();
                     });
                 }
-            });
+            });*/
+          console.log("kein Nutzer vorhanden");
+              var noUser = {
+                  id: "-1",
+              };
+
+              res.send(noUser);
+              res.end();
           } else {
                 externalResponse.on("data", function(chunk){
                 var user = JSON.parse(chunk);
