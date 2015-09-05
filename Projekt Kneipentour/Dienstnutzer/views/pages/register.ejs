@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<% include ../partials/head %>
+    <script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+    <script src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+    <script type="text/javascript">
+    $(document).ready(function() {
+        $("#form").submit(function(event) {
+            event.preventDefault();
+            $('#pruefen').append("<p id='pruefen'></p>");
+            if($("#passwort2").val() === $("#passwort").val()){
+                var newUser = {
+                    name: $("#name").val(),
+                    passwort: $("#passwort").val()
+                };
+                $.ajax({
+				    type: 'GET',
+                    host: 'localhost',
+                    port: 8080,
+				    url: '/user',
+                    data: { id: 'val1',
+                            name: 'val2',
+                            passwort: 'val3'
+                            },
+                    dataType: 'json',
+                    success: function(data){
+                        $('#pruefen').replaceWith("<div id='pruefen'></div>");
+                            var temp = false
+                            $.each(data, function(index, element) {
+                                if(element.name === $('#name').val()){
+                                    temp = true;
+                            }
+                        });
+                        if(temp == true){
+                            $('#pruefen').append("Der Benutzername gibt es schon!");
+                        } else {
+                            $.ajaxSetup({
+                                contentType: "application/json; charset=utf-8"
+                            });
+
+                            $.ajax({
+                                type: 'POST',
+                                host: 'localhost',
+                                port: 8080,
+                                url: '/register',
+                                data: JSON.stringify(newUser),
+                            }).done(function(data){
+                                    //alert("geschafft");
+                                    $("#name").val('');
+                                    $("#passwort").val('');
+                                    $("#passwort2").val('');
+                                    $('#pruefen').append("Benutzer wurde angelegt!")
+                                }).fail(function(e){
+                                alert("fehler");
+                            });
+                            event.preventDefault();
+                        }
+                    }
+                }).fail(function(data){
+                    alert("fail"); 
+                });
+                
+            } else {
+                $('#pruefen').append("Passwort stimmt nicht überein!");
+
+            }
+            });
+
+        });
+
+    </script>
+</head>
+<body class="container">
+
+<header>
+  <% include ../partials/header %>
+</header>
+
+  <main>
+    <div class="row">
+			<div class="col-sm-8">
+        <div class="jumbotron">
+          <h1>Kneipentour</h1>
+          <p>Der schnellste Weg zum Kater</p>
+        </div>
+      </div>
+      <div class="col-sm-4">
+<!-- Passwort bestätigen noch hinzufügen -->
+				<div class="well">
+                    <p>Neuen Nutzer registrieren:</p>
+                    <form id="form">
+											<label for="name">Benutzername:</label>
+                      <br/> <input id="name" type="text" required><br>
+                      <label for="bname">Passwort:</label>
+											<br/> <input id="passwort" type="password" required><br>
+											<label for="bname">Passwort wiederholen:</label>
+											<br/> <input id="passwort2" type="password" required><br>
+                        <input type="submit" value="Registrieren">
+                    </form>
+                    <p id="pruefen"></p>
+                </div>
+      </div>
+    </div>
+
+  </main>
+
+
+    <footer>
+  		<% include ../partials/footer %>
+    </footer>
+
+</body>
+</html>

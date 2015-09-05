@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<% include ../partials/head %>
+	<script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+	<script src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+
+	<meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+	<script type="text/javascript">
+
+	$(document).ready(function() {
+			var uID, barID, pw, bars = [], user;
+			$("#login").submit(function(event){
+					event.preventDefault();
+
+
+					$.ajaxSetup({
+							contentType: "application/json; charset=utf-8"
+					});
+					$.ajax({ 
+                        type: 'GET',
+                        host: 'localhost',
+                        port: 8080,
+                        url: '/user',
+				        data: { id: 'val1',
+                                name: 'val2',
+                                passwort: 'val3'  
+                              },
+                        dataType: 'json',
+                        success: function(data){
+                            $('#pruefen').replaceWith("<div id='pruefen'></div>");
+                            var temp = false
+                            user = data;
+                            $.each(data, function(index, element) {                                        
+                                if(element.name === $('#uname').val() && element.passwort == $('#pass').val() || element.id == "-1"){
+                                    pw = $('#pass').val();
+                                    document.getElementById('hide').removeAttribute('style');
+                                    document.getElementById('löschen').removeAttribute('style');
+                                    document.getElementById('bearbeiten').removeAttribute('style');
+                                    uID = element.id;
+                                    
+                                    $('#hide').replaceWith("<div  class='well' id='hide'><p>Eingeloggt als:<br/>UserID: <strong id='id'>" + element.id + "</strong><br/> Username: <strong id='username'>" + element.name + "</strong><br/></p></div>");
+                                    
+                                    $.ajaxSetup({
+                                        contentType: "application/json; charset=utf-8"
+                                    });
+                                    
+                                    $.ajax({
+                                        type: 'GET',
+                                        host: 'localhost',
+                                        port: 8080,
+                                        url: '/aktuell',
+                                        data: { id: 'val1',
+                                                name: 'val2',
+                                                userID: 'vla3' 
+                                              },
+                                        dataType: 'json',
+                                        success: function(data){
+                                             var x = 0;
+                                                
+                                            $.each(data, function(index, element){
+                                                if(element.userID == uID){
+                                                    bars[x++] = element.id;
+                                                    $('#bars').append($("<div class='jumbotron' id='test'> <h3><a href='http://localhost:8080/bars/" + element.id + "'> "+ element.name.toString() + "</a></h3><br/> ID: " + element.id.toString() + "</div>"));
+                                                }
+                                            });
+                                        }
+                                    }).fail(function(data){
+                                        alert("fail get bars");
+                                    });
+                                    temp = true;
+                                    
+                                }
+                            });
+                            if(temp == false){
+                                    $('#pruefen').append("Der Benutzername oder das Passwort sind falsch!");
+                            }
+                        }
+					}).fail(function(data){
+							alert("fail");
+					});
+					event.preventDefault();
+			});
+        
+            $('#löschen').submit(function(event){
+               
+                var id = document.getElementById('id').innerHTML;
+                $.ajax({
+                    type: 'DELETE',
+                    host: 'localhost',
+                    port: 8080,
+                    url: '/user/' + id,
+                    success: function(data){
+                        alert("Der User wurde gelöscht!");
+                        for(var i = 0; i < bars.length; i++){
+                            $.ajax({
+                                type: 'DELETE',
+                                host: 'localhost',
+                                port: 8080,
+                                url: '/user/' + id +'/bars/' + bars[i]
+                            }).fail(function(data){
+                                alert("fail delete bars" + i);
+                            });
+                        }
+                        window.location.href = "http://localhost:8080/";
+                    }
+                }).fail(function(data){
+                    alert("fail");
+                });
+                event.preventDefault();
+            });
+        
+            $('#bearbeiten').submit(function(event){
+               
+               document.getElementById('bearbeiten1').removeAttribute('style');
+               $("#n").val(document.getElementById('username').innerHTML);
+               event.preventDefault();    
+                
+		    });
+        
+            $('#newUser').submit(function(event){
+                event.preventDefault();
+                $.ajaxSetup({
+                        contentType: "application/json; charset=utf-8"
+                });
+                
+                var newUser = {
+                    name : $("#n").val()   
+                };
+                var neuerName = true;
+                for(var i = 0; i < user.length; i++){
+                    if(newUser.name == user[i].name){
+                            neuerName = false;
+                       } 
+                }      
+                newUser.passwort = pw;
+                if(neuerName){       
+                    $.ajax({
+                        type: 'PUT',
+                        host: 'localhost',
+                        port: 8080,
+                        url: '/user/' + uID,
+                        data: JSON.stringify(newUser),
+                        success: function(data){
+                            alert("Der User wurde geändert!");
+                            window.location.href = "http://localhost:8080/user/"+uID;
+                        } 
+                    }).fail(function(data){
+                        alert("fail");
+                    });
+                } else {
+                    alert("Der Name ist leider schon vorhanden");
+                }
+                event.preventDefault();
+            }); 
+    });
+			</script>
+</head>
+<body class="container">
+
+<header>
+  <% include ../partials/header %>
+</header>
+
+  <main>
+    <div class="row">
+			<div class="col-sm-8">
+        <div class="jumbotron">
+          <h1>Kneipentour</h1>
+          <p>Der schnellste Weg zum Kater</p>
+        </div>
+      </div>
+      <div class="col-sm-4">
+
+				<div class="well">
+					<p>Einloggen:</p>
+								<form id='login' method="POST">
+						<label for="name">Username: </label> <br/> <input id="uname" type="text" required><br>
+						<label for="pass">Passwort: </label> <br/> <input id="pass" type="password" required><br>
+						<input type="submit" value="Login">
+              </form>
+                    <p id='pruefen'></p>
+        </div>
+      </div>
+			<div class="col-sm-8">
+                <form id="löschen" style="display:none">
+                    <input type="submit" value="User Löschen">
+                </form>
+                <form id="bearbeiten" style="display:none">
+                    <input type="submit" value="User bearbeiten">
+                </form>
+				<div class="well" id='hide' style="display:none"> 
+			</div>
+                <div id='bearbeiten1' style="display:none">
+                    <form id="newUser">
+                        <label for="name">Username:</label><br/> <input id="n" type="text" required ><br>
+                        <input type="submit" value="ändern">
+                    </form>
+            </div>
+            <div id="bars"></div>
+    </div>
+
+  </main>
+
+    <footer>
+  		<% include ../partials/footer %>
+    </footer>
+
+</body>
+</html>

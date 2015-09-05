@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="en">
+
+
+    <head>
+	   <% include ./views/partials/head.ejs %>
+        <script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+        <script src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+        <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+    </head>
+    <body class="container">
+
+	<header>
+		<% include ./views/partials/header.ejs %>
+	</header>
+
+
+
+        <main>
+          <div class="row">
+          <div class="col-sm-8">
+            <div class="jumbotron">
+                <h1>Kneipentour</h1>
+              </div>
+            </div>
+            <div class="col-sm-4">
+
+      				<div class="well">
+      					<p>Zum bearbeiten einloggen:</p>
+      								<form id='login' method="POST">
+      						<label for="name">Username: </label> <br/> <input id="uname" type="text" required><br>
+      						<label for="pass">Passwort: </label> <br/> <input id="pass" type="password" required><br>
+      						<input type="submit" value="Login">
+                    </form>
+                          <p id='pruefen2'></p>
+              </div>
+            </div>
+
+        </main>
+        <div class="jumbotron">
+            <form style="float: right; display:none" id="löschen">
+                <input type="submit" value="Bar löschen" style="height: 50px; width: 100px;">
+            </form>
+
+            <form id="test">
+                ID:
+                <input type="text" id="bid" value="<%=bars.bid%>" disabled> <br>
+                Erstellt von ID:
+                <input type="text" id="uid" value="<%=bars.userID%>" disabled>
+            </form>
+            <h1 id='n'><%= bars.name %></h1>
+            <ul>
+                <div id="bearbeiten1" style="display:none">
+                    <form id="newBar">
+                        <label for="name">Barname: </label><br/> <input id="name" type="text" required ><br>
+                        <label for="adresse">Adresse: </label><br/> <input id="adresse" type="text" required><br>
+                        <label for="stadt">Stadt: </label> <br/> <input id="stadt" type="text" required><br>
+                        <label for="typ">Typ: </label> <br/> <input id="typ" type="text" required><br>
+                        <label for="gegebenheiten">Gegebenheiten: </label>  <br/> <input id="gegebenheiten" type="text" required><br>
+
+                            <br>Änderungen Bestätigen:<br>
+                            
+                            <input type="submit" value="ändern">
+                          
+
+                    </form>
+                </div>
+
+                <div id='hide1'>
+                    <form style="float: right; display:none" id="barBearbeiten">
+                        <input type="submit" value="Bar bearbeiten">
+                    </form>
+
+                    <br><li><h4>Adresse:</h4><p id='a'><%= bars.adresse %></p></li>
+                    <br><li><h4>Stadt:</h4><p id="s"><%= bars.stadt %></p></li>
+                    <br><li><h4>Typ:</h4><p id="t"><%= bars.typ %></p></li>
+                    <br><li><h4>Gegebenheiten:</h4><p id="g"><%= bars.gegebenheiten %></p></li>
+                    <br><li><h4>Gesamte Sitzplätze:</h4><p id="sitz"><%= sitzplaetze.sitzplaetze %></p></li>
+                    <br><li><h4>Aktuell besetzte Sitzplätze:</h4><p id="asp"><%= sitzplaetze.asp %></p></li>
+                    <form id="newAsp" style="display:none">
+                        <label for="newasp">Sitzplätze Aktuallisieren</label> <input id="newasp" type="text" value="<%=sitzplaetze.asp %>" required>
+                        <input type="submit" value="aktuallisieren">
+                    </form>
+                </div>
+
+                <br><li><h4>Offnungszeiten:</h4>
+                <form style="float: right; display:none" id="oeffnungszeitenBearbeiten">
+                    <input type="submit" value="Öffnungszeiten bearbeiten">
+                </form>
+
+                <div id="bearbeiten2" style="display:none">
+                    <form id="newOeffnungszeiten">
+                        <label for="montagVon">Montag von: </label> <input id="montagVon" type="text" required>
+                        <label for="montagBis">bis: </label> <input id="montagBis" type="text" required ><br>
+                        <label for="dienstagVon">Dienstag von: </label> <input id="dienstagVon" type="text" required >
+                        <label for="dienstagBis">bis: </label> <input id="dienstagBis" type="text" required ><br>
+                        <label for="mittwochVon">Mittwoch von: </label> <input id="mittwochVon" type="text" required >
+                        <label for="mittwochBis">bis: </label> <input id="mittwochBis" type="text" required ><br>
+                        <label for="donnerstagVon">Donnerstag von: </label> <input id="donnerstagVon" type="text" required >
+                        <label for="donnerstagBis">bis: </label> <input id="donnerstagBis" type="text" required ><br>
+                        <label for="freitagVon">Freitag von: </label> <input id="freitagVon" type="text" required >
+                        <label for="freitagBis">bis: </label> <input id="freitagBis" type="text" required ><br>
+                        <label for="samstagVon">Samstag von: </label> <input id="samstagVon" type="text" required >
+                        <label for="samstagBis">bis: </label> <input id="samstagBis" type="text" required ><br>
+                        <label for="sonntagVon">Sonntag von: </label> <input id="sonntagVon" type="text" required >
+                        <label for="sonntagBis">bis: </label> <input id="sonntagBis" type="text" required ><br>
+
+                            <br>Änderungen Bestätigen:<br>
+                        
+                            <input type="submit" value="ändern">
+                            
+
+                    </form>
+                </div>
+
+                <div id="hide2">
+                    <ul>
+                        <li><p>Montag von: <strong id="mov"><%= oeffnungszeiten.montagvon%></strong> bis <strong id="mob"><%= oeffnungszeiten.montagbis %></strong> </p></li>
+                        <li><p>Dienstag von:    <strong id="div"><%= oeffnungszeiten.dienstagvon %></strong>   bis <strong id="dib"><%= oeffnungszeiten.dienstagbis %></strong></p></li>
+                        <li><p>Mittwoch von:    <strong id="miv"><%= oeffnungszeiten.mittwochvon %></strong>   bis <strong id="mib"><%= oeffnungszeiten.mittwochbis %></strong></p></li>
+                        <li><p>Donnerstag von:  <strong id="dov"><%= oeffnungszeiten.donnerstagvon %></strong> bis <strong id="dob"><%= oeffnungszeiten.donnerstagbis %></strong></p></li>
+                        <li><p>Freitag von:     <strong id="frv"><%= oeffnungszeiten.freitagvon %></strong>    bis <strong id="frb"><%= oeffnungszeiten.freitagbis %></strong></p></li>
+                        <li><p>Samstag von:     <strong id="sav"><%= oeffnungszeiten.samstagvon %></strong>    bis <strong id="sab"><%= oeffnungszeiten.samstagbis %></strong></p></li>
+                        <li><p>Sonntag von:     <strong id="sov"><%= oeffnungszeiten.sonntagvon %></strong>    bis <strong id="sob"><%= oeffnungszeiten.sonntagbis %></strong></p></li>
+                    </ul>
+                    </div>
+
+                </li>
+                <div>
+                <li><h4>Events</h4>
+                <form style="float: right; display:none" id="eventBearbeiten">
+                    <input type="submit" value="Events bearbeiten"><br>
+                    <%if(events.barEvent.length > 0){%>
+                        <input type="button" id='eventslöschen' value="Alle Events löschen">
+                    <%}%>
+                </form>
+                    <%if(events.barEvent.length > 0){%>
+                    
+                        <%for(var i = 0; i < events.barEvent.length; i++){%>
+                            <ul>
+                                <li><h4>Event <%= events.barEvent[i].event %></a><h4></li>
+                                <li><h4>Am: <%= events.barEvent[i].datum %></h4></li>
+                                <li><h4>Um: <%= events.barEvent[i].uhrzeit %> Uhr</h4></li>
+                            </ul>
+                        <%}%>
+                        <form id="eventbearbeiten1" style="display:none">
+                            <p>Anzahl der Events:</p><p id="controlLengthEvents"><%=events.barEvent.length %></p>
+                        <%for(var i = 0; i < events.barEvent.length; i++){%>
+                            <label for="event<%=i%>">Event: </label> <input id="event<%= i%>" value="<%= events.barEvent[i].event %>" type="text" required><br>
+                            <label for="datum<%= i%>">Datum: </label> <input id="datum<%= i %>" value="<%=events.barEvent[i].datum%>" type="text" required><br>
+                            <label for="uhrzeit<%=i %>">Event: </label> <input id="uhrzeit<%= i%>" value="<%= events.barEvent[i].uhrzeit %>" type="text" required><br> <br>  
+                        <%}%>
+                            <input type="submit" id='eventändern' value="Änderung speichern">
+                        </form>
+                    <%} else {%>
+                        <p>Es sind keine Events Vorhanden</p>
+                    <%}%>
+                </div>
+                </li>
+                <li><h4>Getränkekarte</h4>
+                    <form style="float: right; display:none" id="getränkBearbeiten">
+                    <input type="submit" value="Getränke bearbeiten"><br>
+                    <%if(getraenk.karte.length > 0){%>
+                        <input type="button" id='getränkekartelöschen' value="Ganze Getränkekarte löschen">
+                    <%}%>
+                </form>
+                    <%if(getraenk.karte.length > 0){%>
+                        <input type="button" id='getränkekartelöschen' value="Ganze Getränkekarte löschen">
+                        <%for(var i = 0; i < getraenk.karte.length; i++){
+                            for(var key in getraenk.karte[i]){%>
+                                <ul>
+                                    <li><h4>Getränk: <%= key %><br>    Preis: <%= getraenk.karte[i][key] %> €</a><h4></li>
+                                </ul><%
+                            }
+                        }%>
+                    <%} else {%>
+                        <p>Es sind keine Getränke eingetragen</p>
+                    <%}%>
+
+                    <div id='getränkeHide' style="display:none">
+                        <p>Anzahl der Getränke:</p><p id="controlLength"><%=getraenk.karte.length %></p>
+                        <form id="bearbeitenGetränk">
+                        <%for(var i = 0; i < getraenk.karte.length; i++){
+                            for(var key in getraenk.karte[i]){%>
+                                <label for="getraenk<%=i%>" >Getränk: </label><br/> <input id="getraenk<%=i%>" type="text" value="<%= key %>" required><br>
+                                <label for="preis<%=i%>">Preis: </label><br/> <input id="preis<%=i%>" type="text" value="<%= getraenk.karte[i][key] %>" required> €<br>
+                            <%
+                            }
+                        }%>
+                            <input type="submit" value="Getränke aktuallisieren"><br>
+                        </form>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    <footer>
+        <% include ./views/partials/footer.ejs %>
+    </footer>
+        <script type='text/javascript'>
+            $(document).ready(function() {
+                var bid = $("#bid").val();
+                var uid = $('#uid').val();
+                $("#löschen").submit(function(event){
+                    event.preventDefault();
+                    
+                    $.ajax({
+                        type: 'DELETE',
+                        host: 'localhost',
+                        port: 8080,
+				        url: '/user/'+ uid +'/bars/' + bid,
+                        success: function(data){
+                            alert("die Bar wurde gelöscht!");
+                            window.location.href = "http://localhost:8080/";
+                        }
+                    }).fail(function(data){
+                        alert("fail");
+                    });
+
+                });
+
+                $('#getränkekartelöschen').click(function(event){
+                    event.preventDefault();
+
+                    $.ajax({
+                        type: 'DELETE',
+                        host: 'localhost',
+                        port: 8080,
+				        url: '/user/'+uid+'/bars/' + bid + '/getraenkekarte',
+                        success: function(data){
+                            alert("die Getränkekarte wurde gelöscht!");
+                            window.location.href = "http://localhost:8080/bars/"+bid;
+                        }
+                    }).fail(function(data){
+                        alert("fail delete getränkekarte");
+                    });
+                });
+                
+                $('#eventslöschen').click(function(event){
+                    event.preventDefault();
+
+                    $.ajax({
+                        type: 'DELETE',
+                        host: 'localhost',
+                        port: 8080,
+				        url: '/user/'+uid+'/bars/' + bid + '/events',
+                        success: function(data){
+                            alert("die Events wurde gelöscht!");
+                            window.location.href = "http://localhost:8080/bars/"+bid;
+                        }
+                    }).fail(function(data){
+                        alert("fail delete events");
+                    });
+                });
+                
+                $("#eventBearbeiten").submit(function(event){
+                    document.getElementById('eventbearbeiten1').removeAttribute('style');
+                    event.preventDefault();
+                });
+
+                $("#getränkBearbeiten").submit(function(event){
+                    document.getElementById('getränkeHide').removeAttribute('style');
+                    event.preventDefault();
+                });
+                
+                $('#eventbearbeiten1').submit(function(event){
+                    event.preventDefault();
+                    var temp = {
+                        barEvent: []
+                    };
+                    
+                    var length =  document.getElementById('controlLengthEvents').innerHTML;
+                    for(var i = 0; i < length; i++){
+                        var jNewEvent = {
+                            datum: $('#datum'+ i).val(),
+                            uhrzeit: $('#uhrzeit'+i).val(),
+                            event: $('#event'+i).val()
+                        };
+                        temp.barEvent.push(jNewEvent);
+                    }
+                    $.ajax({
+                        type: 'PUT',
+                        host: 'localhost',
+                        port: 8080,
+                        url: "/user/" + uid + "/bars/" + bid + "/events",
+                        data: JSON.stringify(temp),
+                        success: function(data){
+                            alert("die Event wurde aktualisiert!");
+                            window.location.href = "http://localhost:8080/bars/" + bid;
+                    }
+                    }).fail(function(data){
+                        alert("fail events put");
+                    });
+                });
+
+                $("#bearbeitenGetränk").submit(function(event){
+                    event.preventDefault();
+                    var getraenkeKarte = {
+                        karte: []
+                    };
+                    var length =  document.getElementById('controlLength').innerHTML;
+                    alert(length);
+                    for(var i = 0; i < length; i++){
+                        var jNew = {};
+                        jNew[$("#getraenk"+i).val()] = $("#preis"+i).val();
+                        getraenkeKarte.karte.push(jNew);
+
+                    }
+
+                    $.ajaxSetup({
+                        contentType: "application/json; charset=utf-8"
+                    });
+
+                    $.ajax({
+                        type: 'PUT',
+                        host: 'localhost',
+                        port: 8080,
+                        url: '/user/' + uid + '/bars/' + bid + '/getraenkekarte',
+                        data: JSON.stringify(getraenkeKarte),
+                        success: function(data){
+                            alert("die GetraenkeKarte wurde aktualisiert!");
+                            window.location.href = "http://localhost:8080/bars/" + bid;
+                        }
+
+                    }).fail(function(data){
+                        alert('fail put getraenkeKarte');
+                    });
+
+                });
+
+                $("#barBearbeiten").submit(function(event){
+
+                    document.getElementById('bearbeiten1').removeAttribute('style');
+
+
+                    $("#name").val(document.getElementById('n').innerHTML);
+                    $("#adresse").val(document.getElementById('a').innerHTML);
+                    $("#stadt").val(document.getElementById('s').innerHTML);
+                    $("#typ").val(document.getElementById('t').innerHTML);
+                    $("#gegebenheiten").val(document.getElementById('g').innerHTML);
+                    $('#hide1').replaceWith("<div></div>");
+                    event.preventDefault();
+                });
+
+                $("#oeffnungszeitenBearbeiten").submit(function(event){
+
+                    document.getElementById('bearbeiten2').removeAttribute('style');
+                    $("#montagVon").val(document.getElementById('mov').innerHTML);
+                    $("#montagBis").val(document.getElementById('mob').innerHTML);
+                    $("#dienstagVon").val(document.getElementById('div').innerHTML);
+                    $("#dienstagBis").val(document.getElementById('dib').innerHTML);
+                    $("#mittwochVon").val(document.getElementById('miv').innerHTML);
+                    $("#mittwochBis").val(document.getElementById('mob').innerHTML);
+                    $("#donnerstagVon").val(document.getElementById('dov').innerHTML);
+                    $("#donnerstagBis").val(document.getElementById('dob').innerHTML);
+                    $("#freitagVon").val(document.getElementById('frv').innerHTML);
+                    $("#freitagBis").val(document.getElementById('frb').innerHTML);
+                    $("#samstagVon").val(document.getElementById('sav').innerHTML);
+                    $("#samstagBis").val(document.getElementById('sab').innerHTML);
+                    $("#sonntagVon").val(document.getElementById('sov').innerHTML);
+                    $("#sonntagBis").val(document.getElementById('sob').innerHTML);
+
+
+                    $('#hide2').replaceWith("<div></div>");
+                    event.preventDefault();
+                });
+
+                $('#newAsp').submit(function(event){
+                    event.preventDefault();
+                    var bid = $("#bid").val();
+                    var uid = $('#uid').val();
+                    var aspNew = {
+                        asp: $('#newasp').val()
+                    };
+
+                    $.ajaxSetup({
+                        contentType: "application/json; charset=utf-8"
+                    });
+
+                    $.ajax({
+                        type: 'PUT',
+                        host: 'localhost',
+                        port: 8080,
+                        url: '/user/' + uid + '/bars/' + bid + '/sitzplaetze',
+                        data: JSON.stringify(aspNew),
+                        success: function(data){
+                            alert("die sitzplaetze wurde aktualisiert!");
+                            window.location.href = "http://localhost:8080/bars/" + bid;
+                        }
+
+                    }).fail(function(data){
+                        alert('fail put sitzplaetze');
+                    });
+
+                });
+
+                $('#newBar').submit(function(event){
+
+
+                    $.ajaxSetup({
+                        contentType: "application/json; charset=utf-8"
+                    });
+
+                    var newBar = {
+                    name: $("#name").val(),
+                    adresse: $("#adresse").val(),
+                    stadt: $("#stadt").val(),
+                    typ: $("#typ").val(),
+                    gegebenheiten: $("#gegebenheiten").val()
+                    };
+
+                    
+                    newBar.userID = uid;
+                    $.ajax({
+                                type: 'PUT',
+                        host: 'localhost',
+                        port: 8080,
+                        url: '/user/' + uid + '/bars/' + bid,
+                        data: JSON.stringify(newBar),
+                        success: function(data){
+                            alert("die Bar wurde aktualisiert!");
+                            window.location.href = "http://localhost:8080/bars/" + bid;
+                        }
+
+
+                    }).fail(function(data){
+                        alert("fail Bar");
+                    });
+                     event.preventDefault();
+                });
+
+                $('#newOeffnungszeiten').submit(function(event){
+                    event.preventDefault();
+
+                    $.ajaxSetup({
+                        contentType: "application/json; charset=utf-8"
+                    });
+
+                    var öffnungszeiten = {
+                    montagvon: $("#montagVon").val(),
+                    montagbis: $("#montagBis").val(),
+                    dienstagvon: $("#dienstagVon").val(),
+                    dienstagbis: $("#dienstagBis").val(),
+                    mittwochvon: $("#mittwochVon").val(),
+                    mittwochbis:  $("#mittwochBis").val(),
+                    donnerstagvon: $("#donnerstagVon").val(),
+                    donnerstagbis: $("#donnerstagBis").val(),
+                    freitagvon: $("#freitagVon").val(),
+                    freitagbis: $("#freitagBis").val(),
+                    samstagvon: $("#samstagVon").val(),
+                    samstagbis: $("#samstagBis").val(),
+                    sonntagvon: $("#sonntagVon").val(),
+                    sonntagbis: $("#sonntagBis").val()
+                    };
+
+                    
+                    $.ajax({
+                                type: 'PUT',
+                        host: 'localhost',
+                        port: 8080,
+                        url: '/user/' + uid + '/bars/' + bid + '/oeffnungszeiten',
+                        data: JSON.stringify(öffnungszeiten),
+                        success: function(data){
+                            alert("die Öffnungszeiten wurde aktualisiert!");
+                            window.location.href = "http://localhost:8080/bars/" + bid;
+                        }
+                    }).fail(function(data){
+                        alert("fail oeffnungszeiten");
+                    });
+                });
+                
+                $('#login').submit(function(event){
+                  event.preventDefault();
+                  $.ajaxSetup({
+                        contentType: "application/json; charset=utf-8"
+                    });
+
+                    $.ajax({
+                            type: 'GET',
+                            host: 'localhost',
+                            port: 8080,
+                            url: '/user',
+          				        data: { id: 'val1',
+                                  name: 'val2',
+                                  passwort: 'val3'
+                                  },
+                                  dataType: 'json',
+                                  success: function(data){
+                                    $('#pruefen2').replaceWith("<div id='pruefen2'></div>");
+                                    var temp = false
+                                    $.each(data, function(index, element) {
+                                        if(element.name === $('#uname').val() && element.passwort == $('#pass').val() && element.id == $('#uid').val() || element.id == "-1"){
+                                          document.getElementById('löschen').removeAttribute('style');
+                                          document.getElementById('löschen').setAttribute("style", "float: right");
+                                          document.getElementById('barBearbeiten').removeAttribute('style');
+                                          document.getElementById('barBearbeiten').setAttribute("style", "float: right");
+                                          document.getElementById('newAsp').removeAttribute('style');
+                                          document.getElementById('oeffnungszeitenBearbeiten').removeAttribute('style');
+                                          document.getElementById('oeffnungszeitenBearbeiten').setAttribute("style", "float: right");
+                                          document.getElementById('eventBearbeiten').removeAttribute('style');
+                                          document.getElementById('eventBearbeiten').setAttribute("style", "float: right");
+                                          document.getElementById('getränkBearbeiten').removeAttribute('style');
+                                          document.getElementById('getränkBearbeiten').setAttribute("style", "float: right");
+
+                                            uID = element.id;
+                                            temp = true;
+                                            $('#pruefen2').replaceWith("<div  class='well' id='pruefen2'><p>Eingeloggt als:<br/>UserID: " + element.id + "<br/> Username: " + element.name + " <br/></p></div>");
+                                          }
+                                        });
+                                    if(temp == false){
+                                          $('#pruefen2').append("Der Benutzername oder das Passwort sind falsch!");
+                                    }
+
+                                  }
+                                  }).fail(function(data){
+                                      alert("fail");
+                                    });
+                            });
+            });
+
+        </script>
+    </body>
+</html>

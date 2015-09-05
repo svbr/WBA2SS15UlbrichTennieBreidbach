@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<% include ../partials/head %>
+    <script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+    <script src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+    <script type="text/javascript">
+
+    $(document).ready(function() {
+        var uID, barID;
+        $("#login").submit(function(event){
+            event.preventDefault();
+
+
+            $.ajaxSetup({
+                contentType: "application/json; charset=utf-8"
+            });
+            $.ajax({
+				type: 'GET',
+                host: 'localhost',
+                port: 8080,
+				url: '/user',
+                data: { id: 'val1',
+                        name: 'val2',
+                        passwort: 'val3'
+                        },
+                dataType: 'json',
+                success: function(data){
+                    $('#pruefen').replaceWith("<div id='pruefen'></div>");
+                    var temp = false
+                    $.each(data, function(index, element) {
+                        if(element.name === $('#uname').val() && element.passwort == $('#pass').val() || element.id == "-1"){
+                                document.getElementById('hide').removeAttribute('style');
+                                uID = element.id;
+                                $('#pruefen').replaceWith("<div  class='well' id='pruefen'><p>Eingeloggt als:<br/>UserID: " + element.id + "<br/> Username: " + element.name + " <br/></p></div>");
+                                temp = true;
+                        }
+                    });
+                    if(temp == false){
+                        $('#pruefen').append("Der Benutzername oder das Passwort sind falsch!");
+                    }
+            }
+            }).fail(function(data){
+                alert("fail");
+            });
+        });
+
+        var t = 0;
+        $("#plusGetraenke").click(function(){
+            t += 1;
+            $("#newG").append("<label for='getraenk "+ t +"'>Getränk Nr.: "+ t +" </label>  <br/> <input id='getraenk" + t + "' type='text' required><label for='preis "+ t +"'> Preis:  </label>  <input id='preis" + t + "' type='text' required>€<br>");
+        });
+        var e = 0;
+        var newevent = false;
+        $("#plusEvent").click(function(){
+            newevent = true;
+            e += 1;
+            $("#newEvent").append("<h4>Event Nr.: " + e + " </h4><br><label for='event "+ e +"'>Event: </label> <input id='event" + e + "' type='text' required><br><label for='datum "+ e +"'>Datum:  </label>  <input id='datum" + e + "' type='text' required><br><label for='uhrzeit "+ e +"'>Uhrzeit:  </label>  <input id='uhrzeit" + e + "' type='text' required><br>");
+        });
+
+        $("#form").submit(function(event) {
+            var getraenkeKarte = {
+                karte: []
+            };
+            var jOne = {};
+            jOne[$("#getraenk0").val()] = $("#preis0").val();
+            getraenkeKarte.karte.push(jOne);
+
+            for(var i = 1; i <= t; i++){
+                var jNew = {};
+                jNew[$("#getraenk"+i).val()] = $("#preis"+i).val();
+                getraenkeKarte.karte.push(jNew);
+            }
+
+            var newBar = {
+                name: $("#name").val(),
+                adresse: $("#adresse").val(),
+                stadt: $("#stadt").val(),
+                typ: $("#typ").val(),
+                gegebenheiten: $("#gegebenheiten").val(),
+                userID: uID
+            };
+
+            var öffnungszeiten = {
+                montagvon: $("#montagVon").val(),
+                montagbis: $("#montagBis").val(),
+                dienstagvon: $("#dienstagVon").val(),
+                dienstagbis: $("#dienstagBis").val(),
+                mittwochvon: $("#mittwochVon").val(),
+                mittwochbis:  $("#mittwochBis").val(),
+                donnerstagvon: $("#donnerstagVon").val(),
+                donnerstagbis: $("#donnerstagBis").val(),
+                freitagvon: $("#freitagVon").val(),
+                freitagbis: $("#freitagBis").val(),
+                samstagvon: $("#samstagVon").val(),
+                samstagbis: $("#samstagBis").val(),
+                sonntagvon: $("#sonntagVon").val(),
+                sonntagbis: $("#sonntagBis").val()
+            };
+
+            var sitzplätze = {
+                sitzplaetze: $("#sitzplaetze").val(),
+                asp: "0"
+            };
+
+            $.ajaxSetup({
+                contentType: "application/json; charset=utf-8"
+            });
+            $.ajax({
+				type: 'POST',
+                host: 'localhost',
+                port: 8080,
+				url: '/add',
+				data: JSON.stringify(newBar),
+                success: function(data){
+                    barID = data.bid;
+                    if(newevent){
+                        for(var i = 1; i <= e; i++){
+                            var jNewEvent = {
+                                datum: $('#datum'+ i).val(),
+                                uhrzeit: $('#uhrzeit'+i).val(),
+                                event: $('#event'+i).val()
+                            };
+
+                            $.ajax({
+                                type: 'POST',
+                                host: 'localhost',
+                                port: 8080,
+                                url: "/user/" + uID + "/bars/" + barID + "/events",
+                                data: JSON.stringify(jNewEvent)
+                            }).fail(function(data){
+                                alert("fail events " + i);
+                            });
+                        }
+                    }
+
+
+                    $.ajax({
+                        type: 'POST',
+                        host: 'localhost',
+                        port: 8080,
+                        url: "/user/" + uID + "/bars/" + barID + "/getraenkekarte",
+                        data: JSON.stringify(getraenkeKarte)
+                    }).fail(function(data){
+                        alert("fail getränkekarte");
+                    });
+
+
+
+                    $.ajax({
+                        type: 'POST',
+                        host: 'localhost',
+                        port: 8080,
+				        url: "user/" + uID + "/bars/" + barID + "/oeffnungszeiten",
+				        data: JSON.stringify(öffnungszeiten),
+                    }).fail(function(data){
+                        alert("fail oeffnugnszeiten");
+                    });
+
+                    $.ajax({
+                        type: 'POST',
+                        host: 'localhost',
+                        port: 8080,
+				        url: "user/" + uID + "/bars/" + barID + "/sitzplaetze",
+				        data: JSON.stringify(sitzplätze),
+                    }).fail(function(data){
+                        alert("fail sitzplaetze");
+                    });
+                }
+				}).done(function(data){
+
+				    alert("Die Bar mit der ID:" + barID + "wurde angelegt!");
+                    window.location.href = "http://localhost:8080/bars/" + barID;
+				}).fail(function(e){
+				    alert("fehler");
+				});
+				event.preventDefault();
+            });
+
+        });
+
+    </script>
+</head>
+<body class="container">
+
+<header>
+  <% include ../partials/header %>
+</header>
+
+  <main>
+    <div class="row">
+			<div class="col-sm-8">
+        <div class="jumbotron">
+          <h1>Kneipentour</h1>
+          <p>Der schnellste Weg zum Kater</p>
+        </div>
+      </div>
+        <div class="col-sm-4">
+				<div class="well" id='log'>
+							<p>Zum hinzufügen einloggen:</p>
+                    <form id='login' method="POST">
+                <label for="name">Username: </label> <br/> <input id="uname" type="text" required><br>
+                <label for="pass">Passwort: </label> <br/> <input id="pass" type="password" required><br>
+                <input type="submit" value="Login">
+                <p id='pruefen'></p>
+              </form>
+        </div>
+      </div>
+      <div class="col-sm-8">
+				<div class="well" id='hide' style="display:none">
+                    <form id="form" method="POST">
+                        <p><strong>Algemeine Details</strong></p>
+                        <label for="name">Barname: </label><br/> <input id="name" type="text" required ><br>
+                        <label for="adresse">Adresse: </label><br/> <input id="adresse" type="text" required><br>
+                        <label for="stadt">Stadt: </label> <br/> <input id="stadt" type="text" required><br>
+                        <label for="typ">Typ: </label> <br/> <input id="typ" type="text" required><br>
+                        <label for="gegebenheiten">Gegebenheiten: </label>  <br/> <input id="gegebenheiten" type="text" required><br>
+                        <label for="sitzplaetze">Gesamte Sitzplaezte: </label>  <br/> <input id="sitzplaetze" type="text" required><br>
+                        <br>
+                        <p><strong>Öffnungszeiten</strong></p>
+                        <label for="montagVon">Montag von: </label> <input id="montagVon" type="text" required>
+                        <label for="montagBis">bis: </label> <input id="montagBis" type="text" required ><br>
+                        <label for="dienstagVon">Dienstag von: </label> <input id="dienstagVon" type="text" required >
+                        <label for="dienstagBis">bis: </label> <input id="dienstagBis" type="text" required ><br>
+                        <label for="mittwochVon">Mittwoch von: </label> <input id="mittwochVon" type="text" required >
+                        <label for="mittwochBis">bis: </label> <input id="mittwochBis" type="text" required ><br>
+                        <label for="donnerstagVon">Donnerstag von: </label> <input id="donnerstagVon" type="text" required >
+                        <label for="donnerstagBis">bis: </label> <input id="donnerstagBis" type="text" required ><br>
+                        <label for="freitagVon">Freitag von: </label> <input id="freitagVon" type="text" required >
+                        <label for="freitagBis">bis: </label> <input id="freitagBis" type="text" required ><br>
+                        <label for="samstagVon">Samstag von: </label> <input id="samstagVon" type="text" required >
+                        <label for="samstagBis">bis: </label> <input id="samstagBis" type="text" required ><br>
+                        <label for="sonntagVon">Sonntag von: </label> <input id="sonntagVon" type="text" required >
+                        <label for="sonntagBis">bis: </label> <input id="sonntagBis" type="text" required ><br>
+                        <br>
+                        <p><strong>Getränke</strong></p>
+                        <div id="newG">
+                            <label for='getraenk0'>Getränk Nr.: 0 </label>  <br/> <input id='getraenk0' type='text' required>
+                            <label for='preis0'>Preis:  </label>  <input id='preis0' type='text' required>€<br>
+                        </div>
+                        <input type="button" id="plusGetraenke" value="+Getränk hinzufügen+"><br>
+
+                        <div id="newEvent">
+
+                        </div>
+                        <input type="button" id="plusEvent" value="+Event hinzufügen+"><br>
+                        <input type="submit" id="test" value="Bar speichern">
+                    </form>
+				    <p>Es dürfen keine Felder frei bleiben.</p>
+                </div>
+
+      </div>
+        <div class='col-sm-8' id="new">
+
+                </div>
+    </div>
+
+  </main>
+
+    <footer>
+  		<% include ../partials/footer %>
+    </footer>
+
+</body>
+</html>

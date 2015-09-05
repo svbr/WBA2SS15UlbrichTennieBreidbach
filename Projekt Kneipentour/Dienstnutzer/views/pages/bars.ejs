@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+	   <% include ./views/partials/head.ejs %>
+        <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    </head>
+    <body class="container">
+
+	<header>
+		<% include ./views/partials/header.ejs %>
+	</header>
+
+
+
+        <main>
+            <div class="jumbotron">
+                <h1>Kneipentour</h1>
+            </div>
+        </main>
+        <!-- Hyperlink zu Nutzer überarbeiten
+        mit user.ejs?-->
+        
+        <%
+        for(var i = 0; i < bars.length; i++){%>
+        <div class="jumbotron">
+            <h3>Profil von <a class="<%= bars[i].userID %>" href="http://localhost:8080/user/<%= bars[i].userID %>"> <%= bars[i].userID %></a></h3>
+            <ul>
+                <li><h4>Bar Nr. <a class="<%= bars[i].id %>" href="http://localhost:8080/bars/<%= bars[i].id %>"><%= bars[i].id %></a><h4></li>
+                <li><h4>Name: <%= bars[i].name %></h4></li>
+            </ul></div><%
+        }
+        %>
+                    
+    <footer>
+        <% include ./views/partials/footer.ejs %>
+    </footer>
+
+    </body>
+</html>

@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <% include ./views/partials/head %>
+</head>
+<body class="container">
+
+	<header>
+		<% include ./views/partials/header %>
+	</header>
+
+	<main>
+
+				<div class="jumbotron">
+					<h1>Kneipentour</h1>
+					<p>Der schnellste Weg zum Kater</p>
+				</div>
+
+		<br><h2><%= fehler.status %> - <%= fehler.fehlermeldung %></h2><br>
+
+        <img src="http://images-cdn.9gag.com/photo/6811371_700b_v1.jpg" alt="eine grafik"/>
+
+	</main>
+
+	<footer>
+		<% include ./views/partials/footer %>
+	</footer>
+
+</body>
+</html>

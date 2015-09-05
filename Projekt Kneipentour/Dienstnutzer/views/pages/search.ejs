@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<% include ../partials/head %>
+    <script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+    <script src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+    
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    
+    <script type="text/javascript">
+    $(document).ready(function() {
+        $("#form").submit(function(event) {
+            
+            $.ajaxSetup({
+                contentType: "application/json; charset=utf-8"
+            });
+            $.ajax({
+				type: 'GET',
+                host: 'localhost',
+                port: 8080,
+				url: '/aktuell',
+                data: { id: 'val1',
+                        name: 'val2',
+                        stadt: 'val3',
+                        offen: 'val4',
+                        sitzplaetze: 'val5',
+                        asp: 'val6' },
+                dataType: 'json',
+                success: function(data){
+                    $('#results').replaceWith("<div id='results'></div>");
+                    
+                    $.each(data, function(index, element) {
+                        if((element.stadt == $("#search").val() || element.name == $("#search").val() || element.adresse == $("#search").val())){
+                            if(document.getElementById("offen").checked){
+                                if(element.offen == "true"){
+                                    $('#results').append($("<div class='jumbotron' id='test'> <h3><a href='http://localhost:8080/bars/" + element.id + "'> "+ element.name.toString() + "</a></h3><br/> ID: " + element.id.toString()+ "<br/>Stadt: " + element.stadt.toString()+ "<br/>Geöffnet: " + element.offen.toString() + "<br/> Sitzplätze: " + element.sitzplaetze.toString() + "<br/>Aktuelle Sitzplätze: " + element.asp.toString() + "</div>"));
+                                }
+                            } else {
+                                $('#results').append($("<div class='jumbotron' id='test'> <h3><a href='http://localhost:8080/bars/" + element.id + "'> "+ element.name.toString() + "</a></h3><br/> ID: " + element.id.toString()+ "<br/>Stadt: " + element.stadt.toString()+ "<br/>Geöffnet: " + element.offen.toString() + "<br/> Sitzplätze: " + element.sitzplaetze.toString() + "<br/>Aktuelle Sitzplätze: " + element.asp.toString() + "</div>"));
+                            }   
+                        }
+                    });
+                }
+				}).done(function(data){
+                    //alert("Passt");
+                    
+				}).fail(function(e){
+				    alert("fehler");
+				});
+				event.preventDefault();
+            });
+            
+        });
+        
+    
+    </script>
+</head>
+<body class="container">
+
+
+	<header>
+		<% include ../partials/header %>
+	</header>
+
+
+  <main>
+        <div class="jumbotron">
+          <h1>Kneipentour</h1>
+					<form id='form'>
+						<br><br><br>Nur geöffnete Bars anzeigen <input type='checkbox' id='offen'><br>
+                        Bar suchen: <input type='text' id='search' name='bar' placeholder="Stadt oder Name oder Adresse" size="30">
+						<input type='submit' value='Suche'>
+                        
+					</form>
+    		</div>
+        <div id="results"></div>
+    </main>
+
+    <footer>
+      <% include ../partials/footer %>
+    </footer>
+
+</body>
+</html>
