@@ -166,7 +166,6 @@
                     <%}%>
                 </form>
                     <%if(getraenk.karte.length > 0){%>
-                        <input type="button" id='getränkekartelöschen' value="Ganze Getränkekarte löschen">
                         <%for(var i = 0; i < getraenk.karte.length; i++){
                             for(var key in getraenk.karte[i]){%>
                                 <ul>
@@ -299,7 +298,6 @@
                         karte: []
                     };
                     var length =  document.getElementById('controlLength').innerHTML;
-                    alert(length);
                     for(var i = 0; i < length; i++){
                         var jNew = {};
                         jNew[$("#getraenk"+i).val()] = $("#preis"+i).val();
